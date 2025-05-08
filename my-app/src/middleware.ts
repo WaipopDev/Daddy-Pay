@@ -9,7 +9,7 @@ const cache = new LRUCache(options)
 
 export async function middleware(req: NextRequest) {
     const token = req.cookies.get('token')?.value;
-    const role = req.cookies.get('role')?.value;
+    // const role = req.cookies.get('role')?.value;
     const cacheKey = `user-data-${token}`;
     
     const publicPages = ['/login', '/logout'];
@@ -51,12 +51,14 @@ export async function middleware(req: NextRequest) {
 
             }
         } catch (err) {
-            // console.error('🚀 ~ middleware ~ API error:', err);
+            console.error('🚀 ~ middleware ~ API error:', err);
             const url = req.nextUrl.clone();
             url.pathname = '/login';
+            url.searchParams.set('error', 'token');
+            url.searchParams.set('v', `${new Date().getTime()}`);
             const response = NextResponse.redirect(url);
             response.cookies.set('token', '', { path: '/', expires: new Date(0) });
-            response.cookies.set('role', '', { path: '/', expires: new Date(0) });
+            
             return response;
         }
     }
@@ -69,7 +71,7 @@ export async function middleware(req: NextRequest) {
         );
     }
 
-    if (req.nextUrl.pathname === '/login' && role === 'admin') {
+    if (req.nextUrl.pathname === '/login' ) {
         const dashboardUrl = req.nextUrl.clone();
         dashboardUrl.pathname = '/dashboard';
         return NextResponse.redirect(dashboardUrl);
