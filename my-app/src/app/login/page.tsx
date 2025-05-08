@@ -35,12 +35,12 @@ const PageLogin = () => {
             e.stopPropagation();
         }
         setValidated(true);
-        const formData = new FormData(form);
-        const data = {
-            user: formData.get('user'),
-            password: formData.get('password')
-        }
-        console.log('data', data)
+        // const formData = new FormData(form);
+        // const data = {
+        //     user: formData.get('user'),
+        //     password: formData.get('password')
+        // }
+        // console.log('data', data)
         if (form.checkValidity() === true) {
             setIsProcess(true);
             try {
