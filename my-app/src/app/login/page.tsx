@@ -40,6 +40,7 @@ const PageLogin = () => {
             user: formData.get('user'),
             password: formData.get('password')
         }
+        console.log('data', data)
         if (form.checkValidity() === true) {
             setIsProcess(true);
             try {
