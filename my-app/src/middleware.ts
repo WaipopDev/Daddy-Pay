@@ -28,12 +28,14 @@ export async function middleware(req: NextRequest) {
     let userData = cache.get(cacheKey);
 
     if (!userData) {
+        console.log('token', token)
         try {
-            const res = await axios.get(`${process.env.API_URL}/v1/admin/me`, {
+            const res = await axios.get(`${process.env.API_URL}/api/v1/admin/me`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            console.log('res.data', res.data)
             userData = res.data?.data;
             if (userData) {
                 // if(res.data?.data?.id !== 1){
@@ -51,7 +53,6 @@ export async function middleware(req: NextRequest) {
 
             }
         } catch (err) {
-            console.error('🚀 ~ middleware ~ API error:', err);
             const url = req.nextUrl.clone();
             url.pathname = '/login';
             url.searchParams.set('error', 'token');

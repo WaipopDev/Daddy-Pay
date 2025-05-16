@@ -1,6 +1,6 @@
 
 import { NextResponse } from "next/server";
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 export async function POST(_request: Request) {
     try {
@@ -9,18 +9,24 @@ export async function POST(_request: Request) {
         if (!username || !password) {
             return NextResponse.json({ message: 'Username and password are required' }, { status: 400 });
         }
-        const response = await axios.post(`${process.env.API_URL}/v1/admin/auth/signin`, { username, password });
+
+        const response = await axios.post(`${process.env.API_URL}/api/v1/admin/auth/signin`, { email: username, password });
 
         if (response.status === 200) {
-            const { token } = response.data;
+            const { accessToken } = response.data;
+            console.log("🚀 ~ POST ~ accessToken:", accessToken)
+            if(!accessToken) {
+                return NextResponse.json({ message: 'Token not found in response' }, { status: 400 });
+            }
             const res = NextResponse.json({ message: 'Login successful' }, { status: 200 });
-            res.cookies.set('token', token, { path: '/', httpOnly: true });
+            res.cookies.set('token', accessToken, { path: '/', httpOnly: true });
             return res;
         } else {
             return NextResponse.json({ message: 'Invalid credentials' }, { status: 400 });
         }
     } catch (error) {
-        console.error('🚀 ~ API error:', error);
-        return NextResponse.json({ message: 'Internal Server Error' }, { status: 400 });
+        const err = error as AxiosError;
+         const errorMessage = (err.response?.data as { message?: string })?.message || 'Internal Server Error';
+        return NextResponse.json({ message: errorMessage|| 'Internal Server Error' }, { status: 400 });
     }
 }
