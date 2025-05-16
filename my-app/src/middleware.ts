@@ -28,27 +28,14 @@ export async function middleware(req: NextRequest) {
     let userData = cache.get(cacheKey);
 
     if (!userData) {
-        console.log('token', token)
         try {
             const res = await axios.get(`${process.env.API_URL}/api/v1/admin/me`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log('res.data', res.data)
             userData = res.data?.data;
             if (userData) {
-                // if(res.data?.data?.id !== 1){
-                //     const resUser = await axios.get(`${process.env.API_URL}/v1/admin/users/${res.data?.data?.id}`, {
-                //         headers: {
-                //             Authorization: `Bearer ${token}`,
-                //         },
-                //     });
-                //     userData = {
-                //         ...userData,
-                //         permissions: resUser.data?.data.permissions
-                //     }
-                // }
                 cache.set(cacheKey, userData);
 
             }
