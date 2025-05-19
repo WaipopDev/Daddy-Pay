@@ -48,14 +48,12 @@ const LoginForm = () => {
                 const username = form.user.value;
                 const password = form.password.value;
                 const response = await login(username, password);
-                console.log('response.status', response.status)
                 if (response.status === 200) {
                     router.push('/dashboard');
                     dispatch(setProcess(false));
                 }
                 setIsProcess(false);
                 setValidated(true);
-                console.log("🚀 ~ handdleSubmit ~ response:", response)
             } catch (error) {
                 setIsProcess(false);
                 console.log('Error:', error);

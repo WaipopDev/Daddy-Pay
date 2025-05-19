@@ -14,7 +14,6 @@ export async function POST(_request: Request) {
 
         if (response.status === 200) {
             const { accessToken } = response.data;
-            console.log("🚀 ~ POST ~ accessToken:", accessToken)
             if(!accessToken) {
                 return NextResponse.json({ message: 'Token not found in response' }, { status: 400 });
             }

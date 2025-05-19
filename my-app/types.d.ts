@@ -30,6 +30,13 @@ type RouteProps = {
     permission: number;
 }
 
+type RootState = {
+    auth  : AuthState;
+    modal : ModalsState;
+    customer: any;
+    basicData: any;
+}
+
 type DefaultSearchLogProps = {
     search    ?: string;
     ip        ?: string;
