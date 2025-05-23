@@ -3,23 +3,20 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 const initialState: UserAdmin = {
-    birthDate   : null,
-    department  : '',
-    email       : '',
-    firstName   : '',
-    id          : 0,
-    idCard      : '',
-    lastName    : '',
-    mobileNo    : '',
-    orgAddress  : null,
-    orgName     : null,
-    orgShortName: null,
-    orgType     : null,
-    position    : '',
-    prefixId    : 0,
-    userAddress : null,
-    username    : '',
-    permissions : []
+    id: 0,
+    username: '',
+    email: '',
+    role: '',
+    active: false,
+    subscribe: false,
+    isVerified: false,
+    isAdminLevel: 0,
+    subscribeStartDate: null,
+    subscribeEndDate: null,
+    createdAt: '',
+    updatedAt: '',
+    createdBy: 0,
+    updatedBy: 0
 };
 
 const userSlice = createSlice({

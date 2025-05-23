@@ -2,13 +2,15 @@ import { configureStore } from '@reduxjs/toolkit'
 import modalSlice from './features/modalSlice'
 import userSlice from './features/userSlice'
 import masterSlice from './features/masterSlice'
+import langSlice from './features/langSlice'
 
 export const makeStore = () => {
     return configureStore({
         reducer: {
             modal : modalSlice,
             user  : userSlice,
-            master: masterSlice
+            master: masterSlice,
+            lang: langSlice
         },
     })
 }

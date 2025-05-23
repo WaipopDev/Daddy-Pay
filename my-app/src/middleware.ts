@@ -9,8 +9,9 @@ const cache = new LRUCache(options)
 
 export async function middleware(req: NextRequest) {
     const token = req.cookies.get('token')?.value;
+    const lang = req.cookies.get('lang')?.value || 'en'; 
     // const role = req.cookies.get('role')?.value;
-    const cacheKey = `user-data-${token}`;
+    // const cacheKey = `user-data-${token}`;
     
     const publicPages = ['/login', '/logout'];
 
@@ -25,7 +26,8 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(loginUrl);
     }
 
-    let userData = cache.get(cacheKey);
+    let userData = cache.get('token');
+    // console.log("🚀 ~ middleware ~ userData:", userData)
 
     if (!userData) {
         try {
@@ -34,9 +36,10 @@ export async function middleware(req: NextRequest) {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            userData = res.data?.data;
+            userData = res.data;
+            console.log("🚀 ~ middleware ~ userData:", userData)
             if (userData) {
-                cache.set(cacheKey, userData);
+                cache.set('token', userData);
 
             }
         } catch (err) {
@@ -52,6 +55,14 @@ export async function middleware(req: NextRequest) {
     }
 
     const response = NextResponse.next();
+    response.headers.set('x-user-lang', lang);
+    if (!req.cookies.get('lang')) {
+        response.cookies.set('lang', 'th', {
+            path: '/',
+            maxAge: 60 * 60 * 24 * 30, // 30 วัน
+        });
+    }
+
     if (userData) {
         response.headers.set(
             'x-user-data',

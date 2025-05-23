@@ -1,3 +1,22 @@
-.btn-primary{
-    background-color: #2F5CA4;
+.btn-primary {
+    background-color: #2f5ca4;
+}
+.nav-dropdown-w {
+    .btn-primary {
+        background-color: #ECEEF5;
+        color: #000;
+        border: 0;
+        &:hover {
+            background-color: #2f5ca4;
+            color: #fff;
+        }
+        &:active {
+            background-color: #2f5ca4;
+            color: #fff;
+        }
+        &:focus {
+            background-color: #2f5ca4;
+            color: #fff;
+        }
+    }
 }

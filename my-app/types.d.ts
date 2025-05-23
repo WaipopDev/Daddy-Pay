@@ -1,21 +1,18 @@
 type UserAdmin = {
-    birthDate   : string | null;
-    department  : string;
-    email       : string;
-    firstName   : string;
-    id          : number;
-    idCard      : string;
-    lastName    : string;
-    mobileNo    : string;
-    orgAddress  : string | null;
-    orgName     : string | null;
-    orgShortName: string | null;
-    orgType     : string | null;
-    position    : string;
-    prefixId    : number;
-    userAddress : string | null;
-    username    : string;
-    permissions : permissionStage[];
+    id: number;
+    username: string;
+    email: string;
+    role: string;
+    active: boolean;
+    subscribe: boolean;
+    isVerified: boolean;
+    isAdminLevel: number;
+    subscribeStartDate: string | null;
+    subscribeEndDate: string | null;
+    createdAt: string;
+    updatedAt: string;
+    createdBy: number;
+    updatedBy: number;
 }
 
 interface permissionStage {
@@ -31,30 +28,30 @@ type RouteProps = {
 }
 
 type RootState = {
-    auth  : AuthState;
-    modal : ModalsState;
+    auth: AuthState;
+    modal: ModalsState;
     customer: any;
     basicData: any;
 }
 
 type DefaultSearchLogProps = {
-    search    ?: string;
-    ip        ?: string;
-    type      ?: string;
+    search?: string;
+    ip?: string;
+    type?: string;
     statusCode?: number;
-    method    ?: string;
-    page      : number;
+    method?: string;
+    page: number;
 }
 
 type PrefixProps = {
-    id   : number;
+    id: number;
     label: string;
 }
 type PermissionProps = {
-    id   : number;
+    id: number;
     label: string;
 }
 type MasterData = {
-    prefix    : PrefixProps[];
+    prefix: PrefixProps[];
     permission: PermissionProps[];
 }

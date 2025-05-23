@@ -4,5 +4,10 @@
 
 body {
   color: #171717;
-  background: #F8F9FF;
+  background: #f8f9ff;
+}
+
+.h1,
+h1 {
+  font-size: 2.5rem;
 }
