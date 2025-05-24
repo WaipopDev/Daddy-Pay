@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from "react";
 import { Provider } from 'react-redux'
 import { setupListeners } from "@reduxjs/toolkit/query";
@@ -15,15 +15,17 @@ interface Props {
 
 export const StoreProvider = ({ children }: Props) => {
     const storeRef = useRef<AppStore | null>(null)
+
     if (!storeRef.current) {
         storeRef.current = makeStore()
     }
-    const getLangtore = useCallback(async () => {
+    const getLangFromAPI = useCallback(async () => {
         try {
             const store = storeRef.current
             if (!store) return;
             const langState = store.getState().lang;
             const hasLang = langState && Object.keys(langState).length > 0;
+       
             if (!hasLang) {
                 const langCode = Cookies.get('lang') || 'en'
                 const langData = await axios.get(`/api/lang?langCode=${langCode}`)
@@ -39,13 +41,12 @@ export const StoreProvider = ({ children }: Props) => {
     useEffect(() => {
         if (storeRef.current) {
             const unsubscribe = setupListeners(storeRef.current.dispatch);
-            
-            getLangtore();
+            getLangFromAPI()
             return () => {
                 unsubscribe();
             };
         }
-    }, []);
+    }, [getLangFromAPI]);
 
 
     return <Provider store={storeRef.current}>{children}</Provider>

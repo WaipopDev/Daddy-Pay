@@ -37,7 +37,6 @@ export async function middleware(req: NextRequest) {
                 },
             });
             userData = res.data;
-            console.log("🚀 ~ middleware ~ userData:", userData)
             if (userData) {
                 cache.set('token', userData);
 
@@ -57,7 +56,7 @@ export async function middleware(req: NextRequest) {
     const response = NextResponse.next();
     response.headers.set('x-user-lang', lang);
     if (!req.cookies.get('lang')) {
-        response.cookies.set('lang', 'th', {
+        response.cookies.set('lang', 'en', {
             path: '/',
             maxAge: 60 * 60 * 24 * 30, // 30 วัน
         });
