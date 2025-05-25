@@ -38,7 +38,7 @@ const Sidebar: React.FC<MenuItems[]> = (menuItems) => {
                                     <i className={cn(item.icon, "text-lg w-[30px]")} />
                                     <span>{lang[item.key]}</span>
                                 </Link>
-                                {(index === 1 || index === 2 || index === 5) && (
+                                {(index == 1 || index == 2 || index == 5) && (
                                     <div className="border-t-2 border-gray-500 my-2 mx-4"></div>
                                 )}
                           </Fragment>

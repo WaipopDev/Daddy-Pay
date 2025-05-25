@@ -1,7 +1,7 @@
 import React from 'react'
 import PageNoData from '@/components/PageNoData'
 
-const DashboardPage = () => {
+const ProgramInfoPage = () => {
   return (
     <div>
       <PageNoData />
@@ -9,4 +9,4 @@ const DashboardPage = () => {
   )
 }
 
-export default DashboardPage
+export default ProgramInfoPage

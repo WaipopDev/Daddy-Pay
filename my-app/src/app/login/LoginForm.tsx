@@ -1,32 +1,36 @@
-'use client';
-import React, { useEffect, useState } from 'react'
-import { Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
+"use client";
+import React, { useEffect, useState } from "react";
+import { Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 import Image from "next/image";
-import ButtonSubmit from '@/components/Button/ButtonSubmit';
-import Link from 'next/link';
-import { login } from '@/lib/auth';
+import ButtonSubmit from "@/components/Button/ButtonSubmit";
+import Link from "next/link";
+import { login } from "@/lib/auth";
 import { useAppDispatch } from "@/store/hook";
 import { openModalAlert, setProcess } from "@/store/features/modalSlice";
-import { useRouter, useSearchParams } from 'next/navigation';
-
+import { useRouter, useSearchParams } from "next/navigation";
 
 const LoginForm = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
-    const searchParams = useSearchParams()
+    const searchParams = useSearchParams();
 
     const [validated, setValidated] = useState(false);
     const [isProcess, setIsProcess] = useState(false);
-    const error = searchParams.get('error')
-    const v = searchParams.get('v')
+    const error = searchParams.get("error");
+    const v = searchParams.get("v");
 
     useEffect(() => {
-        if (error === 'token' && v) {
-            dispatch(openModalAlert({ message: 'Session expired, please login again', title: 'Alert Message' }));
+        if (error === "token" && v) {
+            dispatch(
+                openModalAlert({
+                    message: "Session expired, please login again",
+                    title: "Alert Message",
+                })
+            );
             const currentPath = window.location.pathname;
             router.replace(currentPath); // ลบ query โดยไม่ reload
         }
-    }, [error, v])
+    }, [error, v, dispatch, router]);
 
     const handdleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -44,24 +48,23 @@ const LoginForm = () => {
         if (form.checkValidity() === true) {
             setIsProcess(true);
             try {
-
                 const username = form.user.value;
                 const password = form.password.value;
                 const response = await login(username, password);
                 if (response.status === 200) {
-                    router.push('/dashboard');
+                    router.push("/dashboard");
                     dispatch(setProcess(false));
                 }
                 setIsProcess(false);
                 setValidated(true);
             } catch (error) {
                 setIsProcess(false);
-                console.log('Error:', error);
-                dispatch(openModalAlert({ message: error as string, title: 'Alert Message' }));
+                console.log("Error:", error);
+                dispatch(openModalAlert({ message: error as string, title: "Alert Message" }));
                 // alert('เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
             }
         }
-    }
+    };
 
     return (
         <main className="main-login">
@@ -113,4 +116,4 @@ const LoginForm = () => {
     )
 }
 
-export default LoginForm
+export default LoginForm;

@@ -42,6 +42,7 @@ export async function middleware(req: NextRequest) {
 
             }
         } catch (err) {
+            console.log("🚀 ~ middleware ~ err:", err)
             const url = req.nextUrl.clone();
             url.pathname = '/login';
             url.searchParams.set('error', 'token');
