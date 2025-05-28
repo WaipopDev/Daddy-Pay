@@ -84,8 +84,8 @@ export default  async function AppAuthLayout({
             <div className="flex pt-[80px]">
                 <Sidebar {...menuItems} />
                 
-                <div className="pl-[16rem] w-full">
-                    <div className="p-3">
+                <div className="pl-[14rem] w-full">
+                    <div className="p-2">
                         <HeaderBar {...menuItems} />
                         {children}
                     </div>

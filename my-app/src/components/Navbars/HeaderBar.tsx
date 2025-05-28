@@ -21,7 +21,7 @@ const HeaderBar: React.FC<MenuItems[]> = (menuItems) => {
     const currentTitle = lang[currentMenu.key];
     // const currentIcon = currentMenu.icon;
     return (
-        <div className="mb-3 px-2 py-3 rounded-md flex items-center gap-2 bg-white">
+        <div className="mb-3 px-2 py-2 rounded-md flex items-center gap-2 bg-white">
             <i className={cn("fa-solid fa-house text-gray-500")} />
             <span className="font-medium text-gray-500">|</span>
             <h1 className="text-xl font-medium">{currentTitle}</h1>

@@ -15,8 +15,8 @@ const ShopInfoPage = () => {
         router.push('/shop-info/add');
     };
     return (
-        <main className="bg-white p-3">
-            <div className="flex border-b border-gray-300 pb-3">
+        <main className="bg-white p-2">
+            <div className="flex border-b border-gray-300 pb-2">
                 <Col className="flex justify-start">
 
                 </Col>

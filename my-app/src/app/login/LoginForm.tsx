@@ -69,9 +69,9 @@ const LoginForm = () => {
     return (
         <main className="main-login">
             <Container>
-                <div className="flex flex-col justify-center items-center h-[100vh]">
+                <div className="flex flex-col justify-center items-center h-screen">
                     <Row>
-                        <Col className="flex justify-center items-center mt-[-10em]">
+                        <Col className="flex justify-center items-center ">
                             <div className="flex flex-col justify-center items-center">
                                 <Image src="/images/logo.png" width={250} height={250} priority alt="logo" />
                                 <h1 className="text-4xl font-bold">Sign in to Daddy Pay</h1>
@@ -80,7 +80,7 @@ const LoginForm = () => {
                     </Row>
                     <Row>
                         <div className="shadow-lg my-5 w-[35em] bg-white">
-                            <div className="px-4 py-5">
+                            <div className="p-4">
 
                                 <Form onSubmit={(e) => handdleSubmit(e)} noValidate validated={validated}>
                                     <Form.Group className="mb-3" controlId="formBasicEmail">

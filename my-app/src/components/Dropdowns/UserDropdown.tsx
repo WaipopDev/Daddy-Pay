@@ -31,7 +31,7 @@ const UserDropdown = () => {
     return (
         <>
             <Dropdown className="nav-dropdown-w">
-                <Dropdown.Toggle className="flex items-center w-full cursor-pointer bg-[#ECEEF5] px-4 py-2 lg:min-w-[300px] rounded-md">
+                <Dropdown.Toggle className="flex items-center w-full cursor-pointer bg-[#ECEEF5] px-3 py-2 lg:min-w-[250px] rounded-md">
                     <i className="fa-solid fa-circle-user text-[30px]"></i>
                     <p className="px-2 w-full text-left">{user.username}</p>
                 </Dropdown.Toggle>

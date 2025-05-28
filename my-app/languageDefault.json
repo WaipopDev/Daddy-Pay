@@ -43,6 +43,8 @@
     "global_warning":"Warning",
     "global_info":"Info",
     "global_status":"Status",
-    "global_logo":"Logo"
+    "global_logo":"Logo",
+    "global_active":"Active",
+    "global_inactive":"Inactive"
 
 }

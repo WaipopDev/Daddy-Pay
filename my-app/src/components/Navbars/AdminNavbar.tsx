@@ -30,12 +30,12 @@ const AdminNavbar: React.FC = () => {
         <>
             {/* Navbar */}
             <nav className="w-full position-fixed items-center  z-10">
-                <div className="bg-white fixed top-0 left-0 right-0 flex flex-wrap items-center justify-between h-[80px] px-4 border-b-[1px] border-[#b1b2b4]">
+                <div className="bg-white fixed top-0 left-0 right-0 flex flex-wrap items-center justify-between h-[80px] px-2 border-b-[1px] border-[#b1b2b4]">
                     <div className="flex items-center cursor-pointer">
-                        <Image src="/images/logo.png" width={70} height={70} priority alt="logo" />
-                        <h1 className="font-bold">
+                        <Image src="/images/logo.png" width={60} height={60} priority alt="logo" />
+                        <h2 className="font-bold">
                             {'Daddy Pay'}
-                        </h1>
+                        </h2>
                     </div>
                     <div className="flex-col md:flex-row list-none items-center hidden md:flex">
                         <UserDropdown />

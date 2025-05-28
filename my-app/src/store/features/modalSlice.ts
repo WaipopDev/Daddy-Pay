@@ -10,7 +10,7 @@ interface AlertState {
 const initialState: AlertState = {
     alert: {
         show      : false,
-        title     : 'แจ้งเตือน',
+        title     : '',
         message   : '',
         redirectTo: ''
     },
