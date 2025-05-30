@@ -52,7 +52,8 @@ export async function POST(_request: Request) {
 
         const response = await axios.post(`${process.env.API_URL}/api/v1/shop-info`, apiFormData, {
             headers: {
-                'Authorization': `Bearer ${token}` // Ensure you have the correct token
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
             }
         });
 
@@ -70,4 +71,5 @@ export async function POST(_request: Request) {
         console.log("🚀 ~ POST ~ errorMessage:", err)
         return NextResponse.json({ message: errorMessage || 'Internal Server Error' }, { status: 401 });
     }
+       
 } 

@@ -9,6 +9,7 @@ import "./globals.css";
 import "@/styles/main.scss";
 import ModalAlert from "@/components/Modals/ModalAlert";
 import ProcessLoad from "@/components/Modals/ProcessLoad";
+import { AxiosInterceptorProvider } from "@/utils/AxiosInterceptorProvider";
 
 const myFont = localFont({
     src: [
@@ -41,9 +42,11 @@ export default function RootLayout({
                 <body
                     className={myFont.className}
                 >
-                    {children}
-                    <ModalAlert />
-                    <ProcessLoad />
+                    <AxiosInterceptorProvider>
+                        {children}
+                        <ModalAlert />
+                        <ProcessLoad />
+                    </AxiosInterceptorProvider>
                 </body>
             </html>
         </StoreProvider>

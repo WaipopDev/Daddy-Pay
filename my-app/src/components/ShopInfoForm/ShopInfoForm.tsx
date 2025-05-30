@@ -70,8 +70,8 @@ const ShopInfoForm = () => {
                     name="shopStatus"
                     required
                     items={[
-                        { label: lang['global_active'], value: 'Active' },
-                        { label: lang['global_inactive'], value: 'Inactive' }
+                        { label: lang['global_active'], value: 'active' },
+                        { label: lang['global_inactive'], value: 'inactive' }
                     ]}
                 />
                 <InputForm

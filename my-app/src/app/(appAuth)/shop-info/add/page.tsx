@@ -51,7 +51,10 @@ const ShopInfoAddPage = () => {
         
         try {
             await axios.post('/api/shop-info', formData);
-
+            dispatch(openModalAlert({
+                message: lang['global_add_success_message'],
+                callbackPath: '/shop-info'
+            }));
         } catch (error) {
             handleError(error);
             // Error handling - form stays on page, no reload

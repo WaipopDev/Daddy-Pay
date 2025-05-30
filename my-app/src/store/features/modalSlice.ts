@@ -9,10 +9,11 @@ interface AlertState {
 
 const initialState: AlertState = {
     alert: {
-        show      : false,
-        title     : '',
-        message   : '',
-        redirectTo: ''
+        show        : false,
+        title       : '',
+        message     : '',
+        redirectTo  : '',
+        callbackPath: '',
     },
     process: false
 };

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { LRUCache } from 'lru-cache'
 const options = {
     max: 5000, // maximum number of items that can be stored in the cache
-    ttl: 1000 * 60 * 30 // 30 minutes
+    ttl: 1000 * 60 * 10 // 10 minutes
 }
 const cache = new LRUCache(options)
 
@@ -26,9 +26,9 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(loginUrl);
     }
 
-    let userData = cache.get('token');
+    let userData = cache.get('x-user-data-cache')
     // console.log("🚀 ~ middleware ~ userData:", userData)
-
+    let newToken = token;
     if (!userData) {
         try {
             const res = await axios.get(`${process.env.API_URL}/api/v1/admin/me`, {
@@ -36,10 +36,15 @@ export async function middleware(req: NextRequest) {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            const xNewToken = res.headers['X-New-Token'];
+            const xTokenRefreshed = res.headers['X-Token-Refreshed'];
+            if (xTokenRefreshed === 'true' && xNewToken) {
+                newToken = xNewToken;
+                console.log('Token refreshed automatically');
+            }
             userData = res.data;
             if (userData) {
-                cache.set('token', userData);
-
+                cache.set('x-user-data-cache', userData);
             }
         } catch (err) {
             // console.log("🚀 ~ middleware ~ err:", err)
@@ -64,6 +69,7 @@ export async function middleware(req: NextRequest) {
     }
 
     if (userData) {
+        response.cookies.set('token', newToken, { path: '/', httpOnly: true })
         response.headers.set(
             'x-user-data',
             Buffer.from(JSON.stringify(userData), 'utf-8').toString('base64')
