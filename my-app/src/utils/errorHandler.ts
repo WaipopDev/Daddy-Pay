@@ -6,6 +6,24 @@ export interface ErrorHandlerOptions {
   customMessage?: string;
 }
 
+// Define the Alert type locally to avoid circular dependencies
+interface Alert {
+  show?: boolean;
+  title?: string | null;
+  message: string | null;
+  redirectTo?: string | null;
+  callbackPath?: string | null;
+}
+
+// Define the Redux action creator type
+interface ActionCreatorWithPayload<P, T extends string> {
+  (payload: P): {
+    payload: P;
+    type: T;
+  };
+  type: T;
+}
+
 export const getErrorMessage = (error: unknown, options: ErrorHandlerOptions = {}): string => {
   const { customMessage } = options;
   
@@ -27,7 +45,7 @@ export const getErrorMessage = (error: unknown, options: ErrorHandlerOptions = {
 export const handleError = (
   error: unknown, 
   dispatch: (action: { type: string; payload?: unknown }) => void, 
-  openModalAlert: (payload: { message: string; title: string }) => { type: string; payload: { message: string; title: string } }, 
+  openModalAlert: ActionCreatorWithPayload<Alert, "modal/openModalAlert">, 
   options: ErrorHandlerOptions = {}
 ): string => {
   const { showAlert = true, logToConsole = true } = options;
