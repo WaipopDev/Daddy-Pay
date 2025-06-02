@@ -89,7 +89,7 @@ const ProgramInfoPage = () => {
     useEffect(() => {
         fetchData();
         fetchMachineListData();
-    }, [fetchData]);
+    }, [fetchData, fetchMachineListData]);
 
     const handleOpenMachine = () => {
         setShowModal(true);

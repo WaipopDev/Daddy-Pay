@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 // import { useAppDispatch, useAppSelector } from '@/store/hook';
 // import { closeModalAlert } from '@/store/features/modalSlice';
-import ButtonCancel from '../Button/ButtonCancel';
 import { useAppSelector } from '@/store/hook';
 
 interface ModalActionDeleteProps {
