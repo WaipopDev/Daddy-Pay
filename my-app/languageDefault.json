@@ -17,6 +17,7 @@
     "button_add": "Add",
     "button_delete": "Delete",
     "button_edit": "Edit",
+    "button_add_machine": "Add Machine",
 
     "page_shop_info_shop_info":"Shop Information",
     "page_shop_info_shop_name":"Shop Name",
@@ -43,6 +44,14 @@
     "page_shop_info_subscription_status":"Subscription Status",
     "page_shop_info_contact_number":"Contact Number",
 
+    "page_machine_info_machine_info":"Machine Information",
+    "page_machine_info_machine_type":"Machine Type", 
+    "page_machine_info_brand":"Brand",
+    "page_machine_info_model":"Model",
+    "page_machine_info_description":"Description",
+    "page_machine_info_picture":"Picture",
+    "page_machine_info_add_machine":"Adding machine information",
+
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",
     "global_delete_success_message":"Deleted successfully.",
@@ -61,6 +70,7 @@
     "global_search":"Search",
     "global_active":"Active",
     "global_inactive":"Inactive",
-    "global_action":"Action"
+    "global_action":"Action",
+    "global_no_data":"No data available"
 
 }

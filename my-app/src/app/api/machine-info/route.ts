@@ -13,45 +13,28 @@ export async function POST(_request: Request) {
         }
         const formData = await _request.formData();
         // ดึงค่าจาก FormData
-        const shopCode = formData.get('shopCode') as string;
-        const shopName = formData.get('shopName') as string;
-        const shopStatus = formData.get('shopStatus') as string;
-        const shopUploadFile = formData.get('shopUploadFile') as File;
-        const shopSystemName = formData.get('shopSystemName') as string;
-        const shopBankAccount = formData.get('shopBankAccount') as string;
-        const shopBankAccountNumber = formData.get('shopBankAccountNumber') as string;
-        const shopBankName = formData.get('shopBankName') as string;
-        const shopBankBranch = formData.get('shopBankBranch') as string;
+        const machineType = formData.get('machineType') as string;
+        const machineBrand = formData.get('machineBrand') as string;
+        const machineModel = formData.get('machineModel') as string;
+        const machineDescription = formData.get('machineDescription') as string;
+        const machinePicture = formData.get('machinePicture') as File;
 
-        if (!shopCode || !shopName || !shopStatus || !shopUploadFile || !shopSystemName || !shopBankAccount || !shopBankAccountNumber || !shopBankName || !shopBankBranch) {
+        if (!machineType || !machineBrand || !machineModel || !machineDescription || !machinePicture) {
             return NextResponse.json({ message: 'All fields are required' }, { status: 400 });
         }
 
         // Validate file
-        if (!shopUploadFile || shopUploadFile.size === 0) {
+        if (!machinePicture || machinePicture.size === 0) {
             return NextResponse.json({ message: 'Invalid or empty file' }, { status: 400 });
         }
         const apiFormData = new FormData();
-        apiFormData.append('shopCode', shopCode);
-        apiFormData.append('shopName', shopName);
-        apiFormData.append('shopAddress', formData.get('shopAddress') as string || '');
-        apiFormData.append('shopContactInfo', formData.get('shopContactInfo') as string || '');
-        apiFormData.append('shopMobilePhone', formData.get('shopMobilePhone') as string || '');
-        apiFormData.append('shopEmail', formData.get('shopEmail') as string || '');
-        apiFormData.append('shopLatitude', formData.get('shopLatitude') as string || '');
-        apiFormData.append('shopLongitude', formData.get('shopLongitude') as string || '');
-        apiFormData.append('shopStatus', shopStatus);
-        apiFormData.append('shopSystemName', shopSystemName);
-        apiFormData.append('shopUploadFile', shopUploadFile);  // File data
-        apiFormData.append('shopTaxName', formData.get('shopTaxName') as string || '');
-        apiFormData.append('shopTaxId', formData.get('shopTaxId') as string || '');
-        apiFormData.append('shopTaxAddress', formData.get('shopTaxAddress') as string || '');
-        apiFormData.append('shopBankAccount', shopBankAccount);
-        apiFormData.append('shopBankAccountNumber', shopBankAccountNumber);
-        apiFormData.append('shopBankName', shopBankName);
-        apiFormData.append('shopBankBranch', shopBankBranch);
+        apiFormData.append('machineType', machineType);
+        apiFormData.append('machineBrand', machineBrand);
+        apiFormData.append('machineModel', machineModel);
+        apiFormData.append('machineDescription', machineDescription);
+        apiFormData.append('machinePictureFile', machinePicture);
 
-        const response = await axios.post(`${process.env.API_URL}/api/v1/shop-info`, apiFormData, {
+        const response = await axios.post(`${process.env.API_URL}/api/v1/machine-info`, apiFormData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
@@ -60,12 +43,12 @@ export async function POST(_request: Request) {
 
         if (response.status === 200) {
             return await createResponseWithHeaders(
-                { message: 'Shop information updated successfully' }, 
+                { message: 'Machine information updated successfully' }, 
                 response, 
                 200
             );
         } else {
-            return NextResponse.json({ message: 'Failed to update shop information' }, { status: 401 });
+            return NextResponse.json({ message: 'Failed to update machine information' }, { status: 401 });
         }
     } catch (error) {
 
@@ -91,15 +74,12 @@ export async function GET(req: NextRequest) {
         }
         const url = new URL(req.url);
         const page = url.searchParams.get('page') || '1';
-        // const limit    = url.searchParams.get('limit') || '10';
-        // const column   = url.searchParams.get('column') || 'shopName';
-        // const sort     = url.searchParams.get('sort') || 'ASC';
-        const response = await axios.get(`${process.env.API_URL}/api/v1/shop-info?page=${page}&limit=10&column=shopName&sort=ASC`, {
+        const response = await axios.get(`${process.env.API_URL}/api/v1/machine-info?page=${page}&limit=10&column=machineType&sort=ASC`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-      
+ 
         
         return await createResponseWithHeaders(response.data, response);
     } catch (error) {
