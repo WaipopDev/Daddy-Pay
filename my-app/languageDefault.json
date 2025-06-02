@@ -44,6 +44,7 @@
     "page_shop_info_expiration_date":"Expiration Date",
     "page_shop_info_subscription_status":"Subscription Status",
     "page_shop_info_contact_number":"Contact Number",
+    "page_shop_info_deleting":"Deleting shop information",
 
     "page_machine_info_machine_info":"Machine Information",
     "page_machine_info_machine_type":"Machine Type", 
@@ -52,16 +53,19 @@
     "page_machine_info_description":"Description",
     "page_machine_info_picture":"Picture",
     "page_machine_info_add_machine":"Adding machine information",
+    "page_machine_info_deleting":"Deleting machine information",
 
     "page_program_info_program_info":"Program Information",
     "page_program_info_program_code":"Program Code",
     "page_program_info_description":"Description",
     "page_program_info_add_program":"Adding program information",
+    "page_program_info_deleting":"Deleting program information",
 
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",
     "global_delete_success_message":"Deleted successfully.",
 
+    "global_delete_confirmation":"Are you sure you want to delete?",
     "global_error":"Error",
     "global_success":"Success",
     "global_warning":"Warning",

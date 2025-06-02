@@ -11,9 +11,10 @@ import axios from 'axios';
 import { openModalAlert } from '@/store/features/modalSlice';
 import { useErrorHandler } from '@/store/useErrorHandler';
 import Image from 'next/image';
+import ModalActionDelete from '@/components/Modals/ModalActionDelete';
 
 interface ItemDataProps {
-    id: number;
+    id: string;
     machineKey: string;
     machineType: string;
     machineBrand: string;
@@ -35,6 +36,7 @@ const MachineInfoPage = () => {
     const [item, setItem] = useState<ItemDataProps[] | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [validated, setValidated] = useState(false);
+    const [showModalDelete, setShowModalDelete] = useState({ isShow: false, id: '' });
 
 
     const fetchData = useCallback(async (pageNumber: number = 1, search: string = '') => {
@@ -100,6 +102,18 @@ const MachineInfoPage = () => {
         }
     }
 
+    const handleDeleteMachine = async (id: string) => {
+        try {
+            const response = await axios.delete(`/api/machine-info?machineId=${id}`);
+            if (response.status === 200) {
+                setShowModalDelete({ isShow: false, id: '' });
+                fetchData(page.page); // Refresh the data after deletion
+            }
+        } catch (error) {
+            console.error("Error deleting machine:", error);
+        }
+    };
+
     return (
         <main className="bg-white p-2">
             <div className="flex border-b border-gray-300 pb-2">
@@ -136,7 +150,7 @@ const MachineInfoPage = () => {
                                 <td><div className="flex justify-center">{item.machinePicturePath && <Image src={item.machinePicturePath} alt={item.machineType} width={40} height={40} />}</div></td>
                                 <td>
                                     <Button variant="warning" size="sm" onClick={() => router.push(`/machine-info/edit/${item.id}`)}><i className="fa-solid fa-pen-to-square"></i></Button>
-                                    <Button variant="danger" size="sm" className="ml-2" onClick={() => console.log(`Delete machine with ID: ${item.id}`)}><i className="fa-solid fa-trash"></i></Button>
+                                    <Button variant="danger" size="sm" className="ml-2" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}><i className="fa-solid fa-trash"></i></Button>
                                 </td>
                             </tr>
                         )) : (
@@ -196,6 +210,14 @@ const MachineInfoPage = () => {
                     </Col>
                 </Form>
             </ModalForm>
+            <ModalActionDelete
+                show={showModalDelete.isShow}
+                handleClose={() => setShowModalDelete({ isShow: false, id: '' })}
+                title={lang['page_machine_info_deleting']}
+                text={lang['global_delete_confirmation']}
+                id={showModalDelete.id}
+                handleConfirm={(id) => handleDeleteMachine(id)}
+             />
         </main>
     )
 }

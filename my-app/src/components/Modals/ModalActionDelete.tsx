@@ -5,34 +5,38 @@ import Modal from 'react-bootstrap/Modal';
 // import { useAppDispatch, useAppSelector } from '@/store/hook';
 // import { closeModalAlert } from '@/store/features/modalSlice';
 import ButtonCancel from '../Button/ButtonCancel';
+import { useAppSelector } from '@/store/hook';
 
 interface ModalActionDeleteProps {
     show: boolean;
     handleClose: () => void;
-    name: string;
-    id: number;
-    handleConfirm: (id: number) => void;
+    title: string;
+    text?: string;
+    id: string;
+    handleConfirm: (id: string) => void;
 }
 const ModalActionDelete = ({
     show,
     handleClose,
-    name,
+    title,
+    text,
     id,
     handleConfirm,
 }: ModalActionDeleteProps) => {
+    const lang = useAppSelector(state => state.lang) as { [key: string]: string };
     return (
         <Modal show={show} centered onHide={() => handleClose()}>
             <Modal.Header className="py-2" closeButton>
-                <Modal.Title>ยืนยันการลบข้อมูล</Modal.Title>
+                <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p>คุณต้องการลบข้อมูล {name}</p>
+                <p>{text}</p>
             </Modal.Body>
             <Modal.Footer>
-                <ButtonCancel handleCancel={handleClose} />
                 <Button variant="danger" onClick={() => handleConfirm(id)}>
-                    <i className="fa-solid fa-trash-can"></i> ลบข้อมูล
+                    <i className="fa-solid fa-trash-can pr-2"></i>{lang['button_delete']}
                 </Button>
+                <Button variant="secondary" onClick={() => handleClose()}><i className="fa-solid fa-xmark pr-2"></i>{lang['button_cancel']}</Button>
             </Modal.Footer>
         </Modal>
     )

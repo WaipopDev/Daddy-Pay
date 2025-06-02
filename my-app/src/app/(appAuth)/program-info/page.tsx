@@ -12,14 +12,15 @@ import InputForm from '@/components/FormGroup/inputForm';
 import DropdownForm from '@/components/FormGroup/dropdownForm';
 import _ from 'lodash';
 import validateRequiredFields from '@/utils/validateRequiredFields';
+import ModalActionDelete from '@/components/Modals/ModalActionDelete';
 
 interface ItemDataProps {
-    id: number;
+    id: string;
     programKey: string;
     programName: string;
     programDescription: string;
     machineInfo: {
-        id: number;
+        id: string;
         machineKey: string;
         machineType: string;
         machineBrand: string;
@@ -32,7 +33,7 @@ interface ItemDataProps {
 }
 
 interface MachineDataProps {
-    id: number;
+    id: string;
     machineKey: string;
     machineType: string;
     machineBrand: string;
@@ -52,6 +53,7 @@ const ProgramInfoPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [validated, setValidated] = useState(false);
     const [activeMachineType, setActiveMachineType] = useState('');
+    const [showModalDelete, setShowModalDelete] = useState({ isShow: false, id: '' });
 
 
     const fetchData = useCallback(async (pageNumber: number = 1, search: string = '') => {
@@ -148,6 +150,19 @@ const ProgramInfoPage = () => {
             formRef.current.reset();
         }
     }
+
+    const handleDeleteProgram = async (id: string) => {
+        try {
+            const response = await axios.delete(`/api/program-info?programId=${id}`);
+            if (response.status === 200) {
+                setShowModalDelete({ isShow: false, id: '' });
+                fetchData(page.page); // Refresh the data after deletion
+            }
+        } catch (error) {
+            console.error("Error deleting program:", error);
+        }
+    };
+
     return (
         <main className="bg-white p-2">
             <div className="flex border-b border-gray-300 pb-2">
@@ -183,7 +198,7 @@ const ProgramInfoPage = () => {
                               
                                 <td>
                                     <Button variant="warning" size="sm" onClick={() => router.push(`/machine-info/edit/${item.id}`)}><i className="fa-solid fa-pen-to-square"></i></Button>
-                                    <Button variant="danger" size="sm" className="ml-2" onClick={() => console.log(`Delete machine with ID: ${item.id}`)}><i className="fa-solid fa-trash"></i></Button>
+                                    <Button variant="danger" size="sm" className="ml-2" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}><i className="fa-solid fa-trash"></i></Button>
                                 </td>
                             </tr>
                         )) : (
@@ -242,6 +257,14 @@ const ProgramInfoPage = () => {
                     </Col>
                 </Form>
             </ModalForm>
+            <ModalActionDelete
+                show={showModalDelete.isShow}
+                handleClose={() => setShowModalDelete({ isShow: false, id: '' })}
+                title={lang['page_program_info_deleting']}
+                text={lang['global_delete_confirmation']}
+                id={showModalDelete.id}
+                handleConfirm={(id) => handleDeleteProgram(id)}
+             />
         </main>
     )
 }

@@ -5,6 +5,7 @@ import { Button, Col } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import TableComponent from "@/components/Table/Table";
 import axios from "axios";
+import ModalActionDelete from "@/components/Modals/ModalActionDelete";
 
 interface ItemDataProps {
     id: string;
@@ -21,6 +22,8 @@ const ShopInfoPage = () => {
     
     const [page, setPage] = useState({ page: 1, totalPages: 1 });
     const [item, setItem] = useState<ItemDataProps[] | null>(null);
+    const [showModalDelete, setShowModalDelete] = useState({ isShow: false, id: '' });
+    // const [selectedItem, setSelectedItem] = useState<ItemDataProps | null>(null);
 
     const fetchData = useCallback(async (pageNumber: number = 1,search: string = '') => {
         try {
@@ -30,7 +33,6 @@ const ShopInfoPage = () => {
                 },
             });
             if(response.status === 200) {
-                console.log("🚀 ~ fetchData ~ response:", response.data);
                 setItem(response.data.items);
                 setPage({ page: response.data.meta.currentPage, totalPages: response.data.meta.totalPages });
             }
@@ -47,6 +49,18 @@ const ShopInfoPage = () => {
         // Logic to add a new shop
         console.log("Add new shop clicked");
         router.push('/shop-info/add');
+    };
+
+    const handleDeleteShop = async (id: string) => {
+        try {
+            const response = await axios.delete(`/api/shop-info?shopId=${id}`);
+            if (response.status === 200) {
+                setShowModalDelete({ isShow: false, id: '' });
+                fetchData(page.page); // Refresh the data after deletion
+            }
+        } catch (error) {
+            console.error("Error deleting shop:", error);
+        }
     };
 
     return (
@@ -93,7 +107,7 @@ const ShopInfoPage = () => {
                                 <td>{item.shopMobilePhone}</td>
                                 <td>
                                     <Button variant="warning" size="sm" onClick={() => router.push(`/shop-info/edit/${item.id}`)}><i className="fa-solid fa-pen-to-square"></i></Button>
-                                    <Button variant="danger" size="sm" className="ml-2" onClick={() => console.log(`Delete shop with ID: ${item.id}`)}><i className="fa-solid fa-trash"></i></Button>
+                                    <Button variant="danger" size="sm" className="ml-2" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}><i className="fa-solid fa-trash"></i></Button>
                                 </td>
                             </tr>
                         ))
@@ -105,6 +119,14 @@ const ShopInfoPage = () => {
                     }
                 </TableComponent>
             </Suspense>
+            <ModalActionDelete
+                show={showModalDelete.isShow}
+                handleClose={() => setShowModalDelete({ isShow: false, id: '' })}
+                title={lang['page_shop_info_deleting']}
+                text={lang['global_delete_confirmation']}
+                id={showModalDelete.id}
+                handleConfirm={(id) => handleDeleteShop(id)}
+             />
         </main>
     )
 }
