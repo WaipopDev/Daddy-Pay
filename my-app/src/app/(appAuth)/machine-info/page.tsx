@@ -11,7 +11,6 @@ import axios from 'axios';
 import { openModalAlert } from '@/store/features/modalSlice';
 import { useErrorHandler } from '@/store/useErrorHandler';
 import Image from 'next/image';
-import PageNoData from '@/components/PageNoData'
 
 interface ItemDataProps {
     id: number;
