@@ -61,7 +61,7 @@ export async function forwardHeaders(backendResponse: AxiosResponse, nextRespons
  * @param status - HTTP status code (default: 200)
  */
 export async function createResponseWithHeaders(
-    data: any, 
+    data: unknown, 
     backendResponse: AxiosResponse, 
     status: number = 200
 ): Promise<NextResponse> {

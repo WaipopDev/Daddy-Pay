@@ -47,7 +47,7 @@ export async function middleware(req: NextRequest) {
                 cache.set('x-user-data-cache', userData);
             }
         } catch (err) {
-            // console.log("🚀 ~ middleware ~ err:", err)
+            console.log("🚀 ~ middleware ~ err:", err)
             const url = req.nextUrl.clone();
             url.pathname = '/login';
             url.searchParams.set('error', 'token');

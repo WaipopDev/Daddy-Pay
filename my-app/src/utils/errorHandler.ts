@@ -26,8 +26,8 @@ export const getErrorMessage = (error: unknown, options: ErrorHandlerOptions = {
 
 export const handleError = (
   error: unknown, 
-  dispatch: any, 
-  openModalAlert: any, 
+  dispatch: (action: { type: string; payload?: unknown }) => void, 
+  openModalAlert: (payload: { message: string; title: string }) => { type: string; payload: { message: string; title: string } }, 
   options: ErrorHandlerOptions = {}
 ): string => {
   const { showAlert = true, logToConsole = true } = options;

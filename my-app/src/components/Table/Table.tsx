@@ -1,6 +1,6 @@
 import React from 'react'
 import Table from 'react-bootstrap/Table';
-import Pagination from 'react-bootstrap/Pagination';
+
 import CustomPagination from './CustomPagination';
 interface TableProps {
     head: string[];

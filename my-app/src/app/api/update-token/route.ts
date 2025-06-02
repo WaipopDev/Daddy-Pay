@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from "next/server";
-import { AxiosError } from 'axios';
+
 import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
