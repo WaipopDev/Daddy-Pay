@@ -1,7 +1,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import axios, { AxiosError } from 'axios';
-import { handleTokenExpiration } from "@/utils/errorHandler";
+import { handleTokenExpiration } from "@/utils/serverErrorHandler";
 import { createResponseWithHeaders } from "@/utils/headerUtils";
 
 export async function GET(req: NextRequest) {

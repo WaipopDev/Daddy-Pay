@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios, { AxiosError } from 'axios';
 import { cookies } from "next/headers";
-import { handleTokenExpiration } from "@/utils/errorHandler";
+import { handleTokenExpiration } from "@/utils/serverErrorHandler";
 import { createResponseWithHeaders, forwardHeaders } from "@/utils/headerUtils";
 
 export async function POST(_request: Request) {
