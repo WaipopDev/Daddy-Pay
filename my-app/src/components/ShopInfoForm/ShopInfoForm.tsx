@@ -66,7 +66,7 @@ const ShopInfoForm = () => {
             <Row className="pt-2">
                 <DropdownForm
                     label={lang['global_status']}
-                    placeholder={lang['global_status']}
+                    defaultValue="active"
                     name="shopStatus"
                     required
                     items={[

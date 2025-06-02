@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 interface DropdownFormProps {
     placeholder?: string;
     value?: string;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (e: string) => void;
     label?: string;
     required?: boolean;
     disabled?: boolean;
@@ -14,11 +14,13 @@ interface DropdownFormProps {
     items?: { label: string; value: string }[];
 }
 
-const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, disabled = false, defaultValue, name, items }) => {
-    const [status, setStatus] = useState(defaultValue || "active");
+const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, disabled = false, defaultValue, name, items, onChange }) => {
     
-    const handleStatusChange = (newStatus: string) => {
-        setStatus(newStatus);
+    const [value, setValue] = useState(defaultValue || "");
+
+    const handleValueChange = (newValue: string) => {
+        setValue(newValue);
+        onChange?.(newValue);
     };
 
     return (
@@ -29,7 +31,7 @@ const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, dis
                     <Form.Control
                         type="hidden"
                         name={name}
-                        value={status}
+                        value={value}
                         required={required}
                         disabled={disabled}
                     />
@@ -41,12 +43,12 @@ const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, dis
                             })}
                             disabled={disabled}
                         >
-                            <p className="px-2 w-full text-left text-sm">{ items && items.find(item => item.value === status)?.label}</p>
+                            <p className="px-2 w-full text-left text-sm">{ items && (items.find(item => item.value === value)?.label || '...')}</p>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             {
                                 items && items.map((item, index) => (
-                                    <Dropdown.Item key={index} onClick={() => handleStatusChange(item.value)}>
+                                    <Dropdown.Item key={index} onClick={() => handleValueChange(item.value)}>
                                         {item.label}
                                     </Dropdown.Item>
                                 ))

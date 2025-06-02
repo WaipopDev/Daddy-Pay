@@ -7,6 +7,7 @@ import { makeStore, AppStore } from '@/store/store'
 import Cookies from 'js-cookie'
 import { setLang } from '@/store/features/langSlice';
 import axios from 'axios';
+import languageDefault from '../../languageDefault.json';
 // import { setPrefix, setPermission } from '@/store/features/masterSlice'
 
 interface Props {
@@ -30,8 +31,11 @@ export const StoreProvider = ({ children }: Props) => {
                 const langCode = Cookies.get('lang') || 'en'
                 const langData = await axios.get(`/api/lang?langCode=${langCode}`)
                 if (langData.data) {
-                    store.dispatch(setLang(langData.data))
+                    // store.dispatch(setLang(langData.data))
                 }
+         
+                store.dispatch(setLang(languageDefault))
+                
             }
         } catch (error) {
             console.log("🚀 ~ getPrefix ~ error:", error)

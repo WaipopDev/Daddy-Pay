@@ -11,46 +11,35 @@ export async function POST(_request: Request) {
         if (!token) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
-        const formData = await _request.formData();
-        // ดึงค่าจาก FormData
-        const machineType = formData.get('machineType') as string;
-        const machineBrand = formData.get('machineBrand') as string;
-        const machineModel = formData.get('machineModel') as string;
-        const machineDescription = formData.get('machineDescription') as string;
-        const machinePicture = formData.get('machinePicture') as File;
-
-        if (!machineType || !machineBrand || !machineModel) {
+        const body = await _request.json();
+        const { machineType, machineBrand, programName, programDescription } = body;
+        if (!machineType || !machineBrand || !programName) {
             return NextResponse.json({ message: 'All fields are required' }, { status: 400 });
         }
+        
+        const params = {
+            machineId: machineBrand,
+            programName,
+            programDescription
+        }
 
-        // Validate file
-        // if (!machinePicture || machinePicture.size === 0) {
-        //     return NextResponse.json({ message: 'Invalid or empty file' }, { status: 400 });
-        // }
-        const apiFormData = new FormData();
-        apiFormData.append('machineType', machineType);
-        apiFormData.append('machineBrand', machineBrand);
-        apiFormData.append('machineModel', machineModel);
-        apiFormData.append('machineDescription', machineDescription);
-        apiFormData.append('machinePictureFile', machinePicture);
-
-        const response = await axios.post(`${process.env.API_URL}/api/v1/machine-info`, apiFormData, {
+        const response = await axios.post(`${process.env.API_URL}/api/v1/program-info`, params, {
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data'
+                'Authorization': `Bearer ${token}`
             }
         });
 
         if (response.status === 200) {
             return await createResponseWithHeaders(
-                { message: 'Machine information updated successfully' }, 
+                { message: 'Program information updated successfully' }, 
                 response, 
                 200
             );
         } else {
-            return NextResponse.json({ message: 'Failed to update machine information' }, { status: 401 });
+            return NextResponse.json({ message: 'Failed to update program information' }, { status: 401 });
         }
     } catch (error) {
+    console.log("🚀 ~ POST ~ error:", error)
 
         const err = error as AxiosError;
         
@@ -74,7 +63,7 @@ export async function GET(req: NextRequest) {
         }
         const url = new URL(req.url);
         const page = url.searchParams.get('page') || '1';
-        const response = await axios.get(`${process.env.API_URL}/api/v1/machine-info?page=${page}&limit=10&column=machineType&sort=ASC`, {
+        const response = await axios.get(`${process.env.API_URL}/api/v1/program-info?page=${page}&limit=10&column=programName&sort=ASC`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

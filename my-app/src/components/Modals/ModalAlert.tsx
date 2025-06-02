@@ -28,7 +28,7 @@ const ModalAlert = () => {
                     <Modal.Title>{lang['global_alert']}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p>{message}</p>
+                    {message && <p dangerouslySetInnerHTML={{ __html: message }}></p>}
                 </Modal.Body>
 
             </Modal>

@@ -18,6 +18,7 @@
     "button_delete": "Delete",
     "button_edit": "Edit",
     "button_add_machine": "Add Machine",
+    "button_add_program": "Add Program",
 
     "page_shop_info_shop_info":"Shop Information",
     "page_shop_info_shop_name":"Shop Name",
@@ -52,6 +53,11 @@
     "page_machine_info_picture":"Picture",
     "page_machine_info_add_machine":"Adding machine information",
 
+    "page_program_info_program_info":"Program Information",
+    "page_program_info_program_code":"Program Code",
+    "page_program_info_description":"Description",
+    "page_program_info_add_program":"Adding program information",
+
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",
     "global_delete_success_message":"Deleted successfully.",
@@ -71,6 +77,7 @@
     "global_active":"Active",
     "global_inactive":"Inactive",
     "global_action":"Action",
-    "global_no_data":"No data available"
+    "global_no_data":"No data available",
+    "global_required_fields":"Required fields"
 
 }
