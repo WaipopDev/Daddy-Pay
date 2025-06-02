@@ -45,7 +45,6 @@ const MachineInfoPage = () => {
                 },
             });
             if (response.status === 200) {
-                console.log("🚀 ~ fetchData ~ response:", response.data);
                 setItem(response.data.items);
                 setPage({ page: response.data.meta.currentPage, totalPages: response.data.meta.totalPages });
             }
@@ -134,7 +133,7 @@ const MachineInfoPage = () => {
                                 <td>{item.machineBrand}</td>
                                 <td>{item.machineModel}</td>
                                 <td>{item.machineDescription}</td>
-                                <td className="flex justify-center"><Image src={item.machinePicturePath} alt={item.machineType} width={40} height={40} /></td>
+                                <td><div className="flex justify-center">{item.machinePicturePath && <Image src={item.machinePicturePath} alt={item.machineType} width={40} height={40} />}</div></td>
                                 <td>
                                     <Button variant="warning" size="sm" onClick={() => router.push(`/machine-info/edit/${item.id}`)}><i className="fa-solid fa-pen-to-square"></i></Button>
                                     <Button variant="danger" size="sm" className="ml-2" onClick={() => console.log(`Delete machine with ID: ${item.id}`)}><i className="fa-solid fa-trash"></i></Button>

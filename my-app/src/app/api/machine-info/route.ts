@@ -19,7 +19,7 @@ export async function POST(_request: Request) {
         const machineDescription = formData.get('machineDescription') as string;
         const machinePicture = formData.get('machinePicture') as File;
 
-        if (!machineType || !machineBrand || !machineModel || !machineDescription || !machinePicture) {
+        if (!machineType || !machineBrand || !machineModel) {
             return NextResponse.json({ message: 'All fields are required' }, { status: 400 });
         }
 
