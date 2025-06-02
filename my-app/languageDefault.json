@@ -37,7 +37,12 @@
     "page_shop_info_bank_account":"Account Name",
     "page_shop_info_bank_account_number":"Account No.",
     "page_shop_info_bank_branch":"Bank Branch",
-    
+    "page_shop_info_online_payment_status":"Online Payment Status",
+    "page_shop_info_registration_date":"Registration Date",
+    "page_shop_info_expiration_date":"Expiration Date",
+    "page_shop_info_subscription_status":"Subscription Status",
+    "page_shop_info_contact_number":"Contact Number",
+
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",
     "global_delete_success_message":"Deleted successfully.",
@@ -55,6 +60,7 @@
     "global_delete_confirm":"Are you sure you want to delete this item?",
     "global_search":"Search",
     "global_active":"Active",
-    "global_inactive":"Inactive"
+    "global_inactive":"Inactive",
+    "global_action":"Action"
 
 }

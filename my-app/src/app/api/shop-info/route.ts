@@ -1,7 +1,8 @@
-
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import axios, { AxiosError } from 'axios';
 import { cookies } from "next/headers";
+import { handleTokenExpiration } from "@/utils/errorHandler";
+import { createResponseWithHeaders, forwardHeaders } from "@/utils/headerUtils";
 
 export async function POST(_request: Request) {
     try {
@@ -11,7 +12,7 @@ export async function POST(_request: Request) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
         const formData = await _request.formData();
-                // ดึงค่าจาก FormData
+        // ดึงค่าจาก FormData
         const shopCode = formData.get('shopCode') as string;
         const shopName = formData.get('shopName') as string;
         const shopStatus = formData.get('shopStatus') as string;
@@ -58,18 +59,60 @@ export async function POST(_request: Request) {
         });
 
         if (response.status === 200) {
-
-            const res = NextResponse.json({ message: 'Shop information updated successfully' }, { status: 200 });
-            return res;
+            return await createResponseWithHeaders(
+                { message: 'Shop information updated successfully' }, 
+                response, 
+                200
+            );
         } else {
             return NextResponse.json({ message: 'Failed to update shop information' }, { status: 401 });
         }
     } catch (error) {
-     
+
         const err = error as AxiosError;
+        
+        // Check for token expiration in POST method
+        if (err.response?.headers && err.response.headers['x-token-expired']) {
+            console.log('Token expired detected in POST, initiating logout process');
+            return await handleTokenExpiration();
+        }
+        
         const errorMessage = (err.response?.data as { message?: string })?.message || 'Internal Server Error';
-        console.log("🚀 ~ POST ~ errorMessage:", err)
         return NextResponse.json({ message: errorMessage || 'Internal Server Error' }, { status: 401 });
     }
-       
-} 
+
+}
+
+export async function GET(req: NextRequest) {
+    try {
+        const token = req.cookies.get('token')?.value;
+        if (!token) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        }
+        const url = new URL(req.url);
+        const page = url.searchParams.get('page') || '1';
+        // const limit    = url.searchParams.get('limit') || '10';
+        // const column   = url.searchParams.get('column') || 'shopName';
+        // const sort     = url.searchParams.get('sort') || 'ASC';
+        const response = await axios.get(`${process.env.API_URL}/api/v1/shop-info?page=${page}&limit=10&column=shopName&sort=ASC`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log('response', response.headers)
+        
+        return await createResponseWithHeaders(response.data, response);
+    } catch (error) {
+        const err = error as AxiosError;
+        
+        // Check for token expiration in POST method
+        if (err.response?.headers && err.response.headers['x-token-expired']) {
+            console.log('Token expired detected in POST, initiating logout process');
+            return await handleTokenExpiration();
+        }
+        
+        const errorMessage = (err.response?.data as { message?: string })?.message || 'Internal Server Error';
+
+        return NextResponse.json({ message: errorMessage || 'Internal Server Error' }, { status: 401 });
+    }
+}

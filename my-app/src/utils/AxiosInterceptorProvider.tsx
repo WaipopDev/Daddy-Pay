@@ -7,8 +7,9 @@ export const AxiosInterceptorProvider = ({ children }: { children: React.ReactNo
     useEffect(() => {
         const interceptor = axios.interceptors.response.use(
            async (response) => {
-                const newToken = response.headers['X-New-Token'];
-                const tokenRefreshed = response.headers['X-Token-Refreshed'];
+            // console.log('response.headers', response.headers)
+                const newToken = response.headers['x-new-token'];
+                const tokenRefreshed = response.headers['x-token-refreshed'];
 
                 if (tokenRefreshed === 'true' && newToken) {
                     // Example: update cookie via JS or call API route to set cookie
