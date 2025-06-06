@@ -7,10 +7,9 @@ import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react
 import { Button, Col, Form } from 'react-bootstrap';
 import ModalForm from '@/components/Modals/ModalForm';
 import InputForm from '@/components/FormGroup/inputForm';
-import UploadFileForm from '@/components/FormGroup/uploadFileForm';
 import axios from 'axios';
 import { openModalAlert } from '@/store/features/modalSlice';
-import Image from 'next/image';
+
 import ModalActionDelete from '@/components/Modals/ModalActionDelete';
 import _ from 'lodash';
 import DropdownForm from '@/components/FormGroup/dropdownForm';
