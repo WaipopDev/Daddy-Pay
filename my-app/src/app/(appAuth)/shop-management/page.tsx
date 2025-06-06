@@ -58,7 +58,7 @@ const ShopManagementPage = () => {
     const [itemMachine, setItemMachine] = useState<MachineDataProps[][] | null>(null);
     const [itemShop, setItemShop] = useState<{id:string, shopName:string}[] | []>([]);
     const [activeMachineType, setActiveMachineType] = useState('');
-    const [activeShopType, setActiveShopType] = useState('');
+    // const [activeShopType, setActiveShopType] = useState('');
     // console.log("🚀 ~ ShopManagementPage ~ activeMachineType:", itemShop)
 
     const fetchData = useCallback(async (pageNumber: number = 1, search: string = '') => {
@@ -261,7 +261,7 @@ const ShopManagementPage = () => {
                                 label: shop.shopName,
                                 value: shop.id
                             })) : []}
-                            onChange={(value) => setActiveShopType(value)}
+                            // onChange={(value) => setActiveShopType(value)}
                         />
                     </Col>
                     <Col className="mb-2">
