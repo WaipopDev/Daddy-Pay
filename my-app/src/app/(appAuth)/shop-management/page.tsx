@@ -257,7 +257,7 @@ const ShopManagementPage = () => {
                             label={lang['page_shop_management_shop']}
                             name="shopId"
                             required
-                            items={itemShop ? _.map(itemShop, (shop, index) => ({
+                            items={itemShop ? _.map(itemShop, (shop) => ({
                                 label: shop.shopName,
                                 value: shop.id
                             })) : []}
