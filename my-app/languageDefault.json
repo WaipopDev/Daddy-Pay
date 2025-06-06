@@ -61,6 +61,15 @@
     "page_program_info_add_program":"Adding program information",
     "page_program_info_deleting":"Deleting program information",
 
+    "page_shop_management_add":"Manage Machine",
+    "page_shop_management_adding":"Adding machine in the shop",
+    "page_shop_management_shop":"Shop",
+    "page_shop_management_machine_name":"Machine Name",
+    "page_shop_management_machine_id":"Machine ID",
+    "page_shop_management_iot_id":"IoT Device ID",
+    "page_shop_management_interval_time":"Interval Get Date",
+    "page_shop_management_shop_name":"Shop Name",
+
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",
     "global_delete_success_message":"Deleted successfully.",
