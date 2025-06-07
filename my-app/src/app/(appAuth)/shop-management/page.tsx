@@ -69,7 +69,6 @@ const ShopManagementPage = () => {
                 },
             });
             if (response.status === 200) {
-                console.log('response.data', response.data.items)
                 setItem(response.data.items);
                 setPage({ page: response.data.meta.currentPage, totalPages: response.data.meta.totalPages });
             }
@@ -233,8 +232,9 @@ const ShopManagementPage = () => {
                                 <td>{item.machineInfo.machineType}</td>
                                 <td><div className="flex justify-center">{item.shopManagementStatus}</div></td>
                                 <td>
-                                    <Button variant="warning" size="sm" onClick={() => router.push(`/machine-info/edit/${item.id}`)}><i className="fa-solid fa-pen-to-square"></i></Button>
+                                    <Button variant="warning" size="sm" onClick={() => router.push(`/shop-management/edit/${item.id}`)}><i className="fa-solid fa-pen-to-square"></i></Button>
                                     <Button variant="danger" size="sm" className="ml-2" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}><i className="fa-solid fa-trash"></i></Button>
+                                    <Button variant="info" size="sm" className="ml-2" onClick={() => router.push(`/shop-management/program/${item.id}`)}><i className="fa-solid fa-gear"></i></Button>
                                 </td>
                             </tr>
                         )) : (

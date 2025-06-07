@@ -21,6 +21,27 @@
     }
 }
 
+.nav-dropdown-lang {
+    .btn-primary {
+        background-color: #ffffff;
+        color: #000;
+        border: 1px solid #2f5ca4;
+    
+        &:hover {
+            background-color: #2f5ca4;
+            color: #fff;
+        }
+        &:active {
+            background-color: #2f5ca4;
+            color: #fff;
+        }
+        &:focus {
+            background-color: #2f5ca4;
+            color: #fff;
+        }
+    }
+}
+
 input.form-control {
     height: 35px;
 }

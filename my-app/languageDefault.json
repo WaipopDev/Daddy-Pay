@@ -19,6 +19,7 @@
     "button_edit": "Edit",
     "button_add_machine": "Add Machine",
     "button_add_program": "Add Program",
+    "button_back": "Back",
 
     "page_shop_info_shop_info":"Shop Information",
     "page_shop_info_shop_name":"Shop Name",
@@ -69,6 +70,14 @@
     "page_shop_management_iot_id":"IoT Device ID",
     "page_shop_management_interval_time":"Interval Get Date",
     "page_shop_management_shop_name":"Shop Name",
+    "page_shop_management_program":"Program",
+    "page_shop_management_price":"Price (THB)",
+    "page_shop_management_operation_time":"Operation Time",
+    "page_shop_management_operation_time_mins":"Operation Time (Mins)",
+    "page_shop_management_manage_program":"Manage Program",
+    "page_shop_management_no_program":"This Machine Type has no program list.",
+    "page_shop_management_adding_program_price":"Adding program & price",
+    "page_shop_management_deleting_program_price":"Deleting program & price",
 
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",
@@ -91,6 +100,8 @@
     "global_inactive":"Inactive",
     "global_action":"Action",
     "global_no_data":"No data available",
-    "global_required_fields":"Required fields"
+    "global_required_fields":"Required fields",
+    "global_minutes":"mins",
+    "global_price":"Price"
 
 }
