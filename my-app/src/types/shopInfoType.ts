@@ -19,3 +19,36 @@ export interface ItemShopInfoDataProps {
     shopBankBranch       : string;
     shopAddress          : string;
 }
+
+
+export interface ShopModalDeleteState {
+    isShow: boolean;
+    id: string;
+}
+
+export interface ShopTableRowProps {
+    item: ShopInfoItemDataProps;
+    index: number;
+    currentPage: number;
+    lang: { [key: string]: string };
+    onEdit: (id: string) => void;
+    onDelete: (id: string) => void;
+}
+
+export interface ShopInfoItemDataProps {
+    id: string;
+    shopCode: string;
+    shopName: string;
+    shopStatus: string;
+    shopContactInfo: string;
+    shopMobilePhone: string;
+}
+
+// API Response Types
+export interface ShopInfoApiResponse {
+    items: ShopInfoItemDataProps[];
+    meta: {
+        currentPage: number;
+        totalPages: number;
+    };
+}

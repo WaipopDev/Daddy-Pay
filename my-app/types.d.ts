@@ -55,3 +55,8 @@ type MasterData = {
     prefix: PrefixProps[];
     permission: PermissionProps[];
 }
+
+type PageState = {
+    page: number;
+    totalPages: number;
+}

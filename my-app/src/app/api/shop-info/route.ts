@@ -123,29 +123,34 @@ export async function DELETE(req: NextRequest) {
         if (!token) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
+
         const url = new URL(req.url);
         const shopId = url.searchParams.get('shopId');
         if (!shopId) {
             return NextResponse.json({ message: 'Shop ID is required' }, { status: 400 });
         }
+
         const response = await axios.delete(`${process.env.API_URL}/api/v1/shop-info/${shopId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
         
-        return await createResponseWithHeaders(response.data, response);
+        return await createResponseWithHeaders(
+            { message: 'Shop deleted successfully' },
+            response,
+            200
+        );
     } catch (error) {
         const err = error as AxiosError;
         
-        // Check for token expiration in POST method
         if (err.response?.headers && err.response.headers['x-token-expired']) {
-            console.log('Token expired detected in POST, initiating logout process');
+            console.log('Token expired detected in DELETE, initiating logout process');
             return await handleTokenExpiration();
         }
         
         const errorMessage = (err.response?.data as { message?: string })?.message || 'Internal Server Error';
-        return NextResponse.json({ message: errorMessage || 'Internal Server Error' }, { status: 401 });
+        return NextResponse.json({ message: errorMessage }, { status: err.response?.status || 500 });
     }
 }
 
@@ -169,7 +174,6 @@ export async function PATCH(req: NextRequest) {
         formData.forEach((value, key) => {
             apiFormData.append(key, value);
         });
-
         const response = await axios.patch(`${process.env.API_URL}/api/v1/shop-info/${shopId}`, apiFormData, {
             headers: {
                 'Authorization': `Bearer ${token}`,

@@ -29,16 +29,24 @@ export const StoreProvider = ({ children }: Props) => {
        
             if (!hasLang) {
                 const langCode = Cookies.get('lang') || 'en'
-                const langData = await axios.get(`/api/lang?langCode=${langCode}`)
-                if (langData.data) {
-                    // store.dispatch(setLang(langData.data))
+                try {
+                    const langData = await axios.get(`/api/lang?langCode=${langCode}`)
+                    // if (langData.data) {
+                    //     store.dispatch(setLang(langData.data))
+                    // } else {
+                        store.dispatch(setLang(languageDefault))
+                    // }
+                } catch (apiError) {
+                    console.error("Failed to fetch language from API:", apiError)
+                    store.dispatch(setLang(languageDefault))
                 }
-         
-                store.dispatch(setLang(languageDefault))
-                
             }
         } catch (error) {
-            console.log("🚀 ~ getPrefix ~ error:", error)
+            console.error("Error in getLangFromAPI:", error)
+            // Fallback to default language if there's an error
+            if (storeRef.current) {
+                storeRef.current.dispatch(setLang(languageDefault))
+            }
         }
     }, [])
 

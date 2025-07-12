@@ -7,11 +7,16 @@ import UploadFileForm from "../FormGroup/uploadFileForm";
 import { ItemShopInfoDataProps } from "@/types/shopInfoType";
 import Image from "next/image";
 
-const ShopInfoForm: React.FC<{ item?: ItemShopInfoDataProps | null, action?: string }> = ({ item = null, action = 'add' }) => {
+interface ShopInfoFormProps {
+    item?: ItemShopInfoDataProps | null;
+    action?: 'add' | 'edit';
+}
+
+const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add' }) => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
 
-    return (
-        <div className="text-sm">
+    const renderShopInfoSection = () => (
+        <>
             <div className="flex border-b border-gray-300">
                 <p className="bg-[#F2F2F2] p-2 font-bold">{lang['page_shop_info_shop_info']}</p>
             </div>
@@ -21,14 +26,14 @@ const ShopInfoForm: React.FC<{ item?: ItemShopInfoDataProps | null, action?: str
                     placeholder={lang['page_shop_info_shop_code']}
                     name="shopCode"
                     required
-                    defaultValue={item ? item.shopCode : ''}
+                    defaultValue={item?.shopCode || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_shop_name']}
                     placeholder={lang['page_shop_info_shop_name']}
                     name="shopName"
                     required
-                    defaultValue={item ? item.shopName : ''}
+                    defaultValue={item?.shopName || ''}
                 />
             </Row>
             <Row className="pt-2">
@@ -36,13 +41,13 @@ const ShopInfoForm: React.FC<{ item?: ItemShopInfoDataProps | null, action?: str
                     label={lang['page_shop_info_shop_address']}
                     placeholder={lang['page_shop_info_shop_address']}
                     name="shopAddress"
-                    defaultValue={item ? item.shopAddress : ''}
+                    defaultValue={item?.shopAddress || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_contact_info']}
                     placeholder={lang['page_shop_info_contact_info']}
                     name="shopContactInfo"
-                    defaultValue={item ? item.shopContactInfo : ''}
+                    defaultValue={item?.shopContactInfo || ''}
                 />
             </Row>
             <Row className="pt-2">
@@ -50,13 +55,13 @@ const ShopInfoForm: React.FC<{ item?: ItemShopInfoDataProps | null, action?: str
                     label={lang['page_shop_info_mobile_phone']}
                     placeholder={lang['page_shop_info_mobile_phone']}
                     name="shopMobilePhone"
-                    defaultValue={item ? item.shopMobilePhone : ''}
+                    defaultValue={item?.shopMobilePhone || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_email']}
                     placeholder={lang['page_shop_info_email']}
                     name="shopEmail"
-                    defaultValue={item ? item.shopEmail : ''}
+                    defaultValue={item?.shopEmail || ''}
                 />
             </Row>
             <Row className="pt-2">
@@ -64,19 +69,19 @@ const ShopInfoForm: React.FC<{ item?: ItemShopInfoDataProps | null, action?: str
                     label={lang['page_shop_info_latitude']}
                     placeholder={lang['page_shop_info_latitude']}
                     name="shopLatitude"
-                    defaultValue={item ? item.shopLatitude : ''}
+                    defaultValue={item?.shopLatitude || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_longitude']}
                     placeholder={lang['page_shop_info_longitude']}
                     name="shopLongitude"
-                    defaultValue={item ? item.shopLongitude : ''}
+                    defaultValue={item?.shopLongitude || ''}
                 />
             </Row>
             <Row className="pt-2">
                 <DropdownForm
                     label={lang['global_status']}
-                    defaultValue={item ? item.shopStatus : 'active'}
+                    defaultValue={item?.shopStatus || 'active'}
                     name="shopStatus"
                     required
                     items={[
@@ -89,7 +94,7 @@ const ShopInfoForm: React.FC<{ item?: ItemShopInfoDataProps | null, action?: str
                     placeholder={lang['page_shop_info_system_name']}
                     name="shopSystemName"
                     required
-                    defaultValue={item ? item.shopSystemName : ''}
+                    defaultValue={item?.shopSystemName || ''}
                 />
             </Row>
             <Row className="pt-2">
@@ -98,17 +103,27 @@ const ShopInfoForm: React.FC<{ item?: ItemShopInfoDataProps | null, action?: str
                         label={lang['global_logo']}
                         placeholder={lang['global_logo']}
                         name="shopUploadFile"
-                        required
+                        required={action === 'add'}
                     />
                 </div>
-                {
-                    action === 'edit' && item && item.shopUploadFile && (
-                        <div className="col-6">
-                            {item && item.shopUploadFile && <Image src={item.shopUploadFile} alt="Shop Logo" width={100} height={100} style={{ width: 'auto', height: 'auto' }} priority />}
-                        </div>
-                    )
-                }
+                {action === 'edit' && item?.shopUploadFile && (
+                    <div className="col-6">
+                        <Image 
+                            src={item.shopUploadFile} 
+                            alt="Shop Logo" 
+                            width={100} 
+                            height={100} 
+                            style={{ width: 'auto', height: 'auto' }} 
+                            priority 
+                        />
+                    </div>
+                )}
             </Row>
+        </>
+    );
+
+    const renderTaxInvoiceSection = () => (
+        <>
             <div className="flex border-b border-gray-300 pt-1">
                 <p className="bg-[#F2F2F2] p-2 font-bold">{lang['page_shop_info_tax_invoice']}</p>
             </div>
@@ -117,13 +132,13 @@ const ShopInfoForm: React.FC<{ item?: ItemShopInfoDataProps | null, action?: str
                     label={lang['page_shop_info_tax_name']}
                     placeholder={lang['page_shop_info_tax_name']}
                     name="shopTaxName"
-                    defaultValue={item ? item.shopTaxName : ''}
+                    defaultValue={item?.shopTaxName || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_tax_id']}
                     placeholder={lang['page_shop_info_tax_id']}
                     name="shopTaxId"
-                    defaultValue={item ? item.shopTaxId : ''}
+                    defaultValue={item?.shopTaxId || ''}
                 />
             </Row>
             <Row className="pt-2">
@@ -132,10 +147,15 @@ const ShopInfoForm: React.FC<{ item?: ItemShopInfoDataProps | null, action?: str
                         label={lang['page_shop_info_tax_address']}
                         placeholder={lang['page_shop_info_tax_address']}
                         name="shopTaxAddress"
-                        defaultValue={item ? item.shopTaxAddress : ''}
+                        defaultValue={item?.shopTaxAddress || ''}
                     />
                 </div>
             </Row>
+        </>
+    );
+
+    const renderBankInfoSection = () => (
+        <>
             <div className="flex border-b border-gray-300 pt-1">
                 <p className="bg-[#F2F2F2] p-2 font-bold">{lang['page_shop_info_bank_information']}</p>
             </div>
@@ -145,14 +165,14 @@ const ShopInfoForm: React.FC<{ item?: ItemShopInfoDataProps | null, action?: str
                     placeholder={lang['page_shop_info_bank_account']}
                     name="shopBankAccount"
                     required
-                    defaultValue={item ? item.shopBankAccount : ''}
+                    defaultValue={item?.shopBankAccount || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_bank_account_number']}
                     placeholder={lang['page_shop_info_bank_account_number']}
                     name="shopBankAccountNumber"
                     required
-                    defaultValue={item ? item.shopBankAccountNumber : ''}
+                    defaultValue={item?.shopBankAccountNumber || ''}
                 />
             </Row>
             <Row className="pt-2">
@@ -161,18 +181,26 @@ const ShopInfoForm: React.FC<{ item?: ItemShopInfoDataProps | null, action?: str
                     placeholder={lang['page_shop_info_bank_name']}
                     name="shopBankName"
                     required
-                    defaultValue={item ? item.shopBankName : ''}
+                    defaultValue={item?.shopBankName || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_bank_branch']}
                     placeholder={lang['page_shop_info_bank_branch']}
                     name="shopBankBranch"
                     required
-                    defaultValue={item ? item.shopBankBranch : ''}
+                    defaultValue={item?.shopBankBranch || ''}
                 />
             </Row>
-        </div>
-    )
-}
+        </>
+    );
 
-export default ShopInfoForm
+    return (
+        <div className="text-sm">
+            {renderShopInfoSection()}
+            {renderTaxInvoiceSection()}
+            {renderBankInfoSection()}
+        </div>
+    );
+};
+
+export default ShopInfoForm;

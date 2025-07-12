@@ -13,17 +13,7 @@ import { useErrorHandler } from '@/store/useErrorHandler';
 import Image from 'next/image';
 import ModalActionDelete from '@/components/Modals/ModalActionDelete';
 
-interface ItemDataProps {
-    id: string;
-    machineKey: string;
-    machineType: string;
-    machineBrand: string;
-    machineModel: string;
-    machineDescription: string;
-    machinePicturePath: string;
-    createdAt: string;
-    updatedAt: string;
-}
+
 
 const MachineInfoPage = () => {
     const dispatch = useAppDispatch();
@@ -221,5 +211,5 @@ const MachineInfoPage = () => {
         </main>
     )
 }
-                               
+MachineInfoPage.displayName = 'MachineInfoPage'                        
 export default MachineInfoPage
