@@ -79,6 +79,24 @@
     "page_shop_management_adding_program_price":"Adding program & price",
     "page_shop_management_deleting_program_price":"Deleting program & price",
 
+    "filter_report_shop":"Shop",
+    "filter_report_payment_method":"Payment Method",
+    "filter_report_program":"Program",
+    "filter_report_machine_name":"Machine Name",
+    "filter_report_select_date":"Select Date",
+
+    "page_report_branch_income":"Branch Income Report",
+    "page_report_branch_income_total_income":"Total Income",
+    "page_report_branch_income_transaction_date":"Transaction Date",
+    "page_report_branch_income_transaction_id":"Transaction ID",
+    "page_report_branch_income_transaction_iot":"IoT Transaction ID Ref",
+    "page_report_branch_income_shop_name":"Shop Name",
+    "page_report_branch_income_machine_type":"Machine Type",
+    "page_report_branch_income_machine_name":"Machine Name",
+    "page_report_branch_income_program_name":"Program",
+    "page_report_branch_income_price_type":"Payment Method",
+    "page_report_branch_income_price":"Amount (THB)",
+
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",
     "global_delete_success_message":"Deleted successfully.",
@@ -102,6 +120,9 @@
     "global_no_data":"No data available",
     "global_required_fields":"Required fields",
     "global_minutes":"mins",
-    "global_price":"Price"
+    "global_price":"Price",
+    "global_select":"Select",
+    "global_error_date":"Please select date",
+    "global_baht":"Baht"
 
 }

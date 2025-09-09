@@ -10,7 +10,7 @@ const MachineTableRow: React.FC<MachineTableRowProps> = ({
     item, 
     index, 
     currentPage, 
-    lang, 
+    // lang, 
     onEdit, 
     onDelete 
 }) => {

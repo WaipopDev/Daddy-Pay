@@ -14,7 +14,7 @@ interface DropdownFormProps {
     items?: { label: string; value: string }[];
 }
 
-const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, disabled = false, defaultValue, name, items, onChange }) => {
+const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, disabled = false, defaultValue, name, items, onChange, placeholder = '...'}) => {
     
     const [value, setValue] = useState(defaultValue || "");
 
@@ -43,7 +43,7 @@ const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, dis
                             })}
                             disabled={disabled}
                         >
-                            <p className="px-2 w-full text-left text-sm">{ items && (items.find(item => item.value === value)?.label || '...')}</p>
+                            <p className="px-2 w-full text-left text-sm">{ items && (items.find(item => item.value === value)?.label || placeholder)}</p>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             {

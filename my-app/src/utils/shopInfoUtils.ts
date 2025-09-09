@@ -27,9 +27,9 @@ export const getShopInfoTableHeaders = (lang: { [key: string]: string }): string
 /**
  * Validates if shop data is valid
  */
-export const isValidShopData = (items: any[]): items is ShopInfoItemDataProps[] => {
-    return Array.isArray(items) && items.length > 0;
-};
+// export const isValidShopData = (items: any[]): items is ShopInfoItemDataProps[] => {
+//     return Array.isArray(items) && items.length > 0;
+// };
 
 /**
  * Formats shop status for display

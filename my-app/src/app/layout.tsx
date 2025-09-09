@@ -5,6 +5,7 @@ import { StoreProvider } from "./StoreProvider";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import "react-datepicker/dist/react-datepicker.css";
 import "./globals.css";
 import "@/styles/main.scss";
 import ModalAlert from "@/components/Modals/ModalAlert";

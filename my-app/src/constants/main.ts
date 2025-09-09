@@ -6,3 +6,10 @@ export const PAGINATION_CONFIG = {
 } as const;
 
 
+export const PAYMENT_METHOD = [
+    {id:'coin',name:'Coin'}, 
+    {id:'point',name:'Point'}, 
+    {id:'prompt_pay',name:'Prompt Pay'}, 
+    {id:'member_card',name:'Member Card'}, 
+    {id:'force',name:'Force'}
+] as const;

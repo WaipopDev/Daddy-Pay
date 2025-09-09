@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Col, Row } from 'react-bootstrap';
-import ShopSearchBar from './ShopSearchBar';
+import { Button, Col } from 'react-bootstrap';
+// import ShopSearchBar from './ShopSearchBar';
 
 interface ShopInfoHeaderProps {
     onAddShop: () => void;

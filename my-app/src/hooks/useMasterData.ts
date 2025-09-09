@@ -1,0 +1,50 @@
+import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
+
+export const useMasterShopList = () => {
+    const [itemShop, setItemShop] = useState<{id:string, shopName:string}[] | []>([]);
+    const fetchShopListData = useCallback(async () => {
+        try {
+            const response = await axios.get('/api/shop-info/list');
+            if (response.status === 200) {
+                
+                setItemShop(response.data);
+                // const groupByType = _.groupBy(response.data, 'machineType');
+                // const orderedByType = _.orderBy(groupByType, ['machineType'], ['asc']);
+                // setItemMachine(orderedByType);
+            }
+        } catch (error) {
+            console.error("Error fetching shop list:", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchShopListData();
+    }, [fetchShopListData]);
+
+    return {
+        itemShop,
+    }
+}
+
+export const useMasterMachineList = () => {
+    const [itemMachine, setItemMachine] = useState<{id:string, machineName:string}[] | []>([]);
+    const fetchMachineListData = useCallback(async () => {
+        try {
+            const response = await axios.get('/api/machine-info/list');
+            if (response.status === 200) {
+                setItemMachine(response.data);
+            }
+        } catch (error) {
+            console.error("Error fetching machine list:", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchMachineListData();
+    }, [fetchMachineListData]);
+
+    return {
+        itemMachine,
+    }
+}

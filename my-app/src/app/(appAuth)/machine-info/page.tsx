@@ -12,6 +12,7 @@ import { openModalAlert } from '@/store/features/modalSlice';
 import { useErrorHandler } from '@/store/useErrorHandler';
 import Image from 'next/image';
 import ModalActionDelete from '@/components/Modals/ModalActionDelete';
+import { ItemMachineInfoDataProps } from '@/types/machineInfoType';
 
 
 
@@ -23,7 +24,7 @@ const MachineInfoPage = () => {
     const { handleError } = useErrorHandler();
 
     const [page, setPage] = useState({ page: 1, totalPages: 1 });
-    const [item, setItem] = useState<ItemDataProps[] | null>(null);
+    const [item, setItem] = useState<ItemMachineInfoDataProps[] | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [validated, setValidated] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState({ isShow: false, id: '' });
@@ -130,7 +131,7 @@ const MachineInfoPage = () => {
                     handleActive={(number: number) => fetchData(number)}
                 >
                     {
-                        item && (item.length ? item.map((item: ItemDataProps, index: number) => (
+                        item && (item.length ? item.map((item: ItemMachineInfoDataProps, index: number) => (
                             <tr key={index}>
                                 <td>{(page.page - 1) * 10 + index + 1}</td>
                                 <td>{item.machineType}</td>

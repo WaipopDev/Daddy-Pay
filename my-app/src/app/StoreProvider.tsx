@@ -31,6 +31,7 @@ export const StoreProvider = ({ children }: Props) => {
                 const langCode = Cookies.get('lang') || 'en'
                 try {
                     const langData = await axios.get(`/api/lang?langCode=${langCode}`)
+                    console.log('langData', langData)
                     // if (langData.data) {
                     //     store.dispatch(setLang(langData.data))
                     // } else {
