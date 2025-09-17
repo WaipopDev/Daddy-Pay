@@ -8,11 +8,12 @@ interface TableProps {
     totalPages: number;
     children: React.ReactNode;
     handleActive: (number: number) => void;
+    activePage?: boolean;
 }
 
 
 
-const TableComponent = ({ head, page, totalPages, handleActive, children }: TableProps) => {
+const TableComponent = ({ head, page, totalPages, handleActive, children, activePage = true }: TableProps) => {
     return (
         <>
             <Table striped bordered hover>
@@ -29,13 +30,15 @@ const TableComponent = ({ head, page, totalPages, handleActive, children }: Tabl
                     {children}
                 </tbody>
             </Table>
-            <div className="d-flex justify-content-end">
-                <CustomPagination
-                    currentPage={page}
-                    totalPages={totalPages}
-                    onPageChange={handleActive}
-                />
-            </div>
+            {activePage && (
+                <div className="d-flex justify-content-end">
+                    <CustomPagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={handleActive}
+                    />
+                </div>
+            )}
         </>
     )
 }

@@ -13,7 +13,7 @@ const DatePickerRange: FC<Props> = (props) => {
     const handleChange = (date: [Date | null, Date | null]) => {
         onChange([date[0], date[1]]);
     }
-    const CustomInput = forwardRef<HTMLInputElement, { onClick?: () => void; value: string }>((props) => {
+    const CustomInput = forwardRef<HTMLInputElement, { onClick?: () => void; value: string }>((props, ref) => {
         const { onClick, value } = props
         const sp = value ? value.split(' - ') : [];
         const start = sp[0] ? moment(sp[0],'MM/DD/YYYY').format('DD-MM-YYYY') : '';
@@ -21,7 +21,7 @@ const DatePickerRange: FC<Props> = (props) => {
         const valueDisplay = start || end ? `${start} - ${end}` : '';
         // console.log("🚀 ~ value:", value)
         return (
-            <div onClick={onClick} className="rounded-lg border-gray-300 form-control items-center flex px-2 cursor-pointer h-[35px]">
+            <div ref={ref} onClick={onClick} className="rounded-lg border-gray-300 form-control items-center flex px-2 cursor-pointer h-[35px]">
                 <i className="fas fa-calendar-day pr-3 text-gray-500"></i>{valueDisplay}
             </div>
         )

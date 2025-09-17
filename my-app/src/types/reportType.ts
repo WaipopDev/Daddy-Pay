@@ -19,3 +19,17 @@ export interface ReportBranchIncomeItemDataProps {
         shopManagementName: string;
     }
 }
+
+export interface ReportBankPaymentItemDataProps {
+    createdAt: string;
+    transactionId: string;
+    merchantId: string;
+    programName: string;
+    reference1: string;
+    reference2: string;
+    shopManagementName: string;
+    shopName:string;
+    txnAmount:string;
+    txnNo:string;
+    machineType: string;
+}

@@ -96,6 +96,8 @@
     "page_report_branch_income_program_name":"Program",
     "page_report_branch_income_price_type":"Payment Method",
     "page_report_branch_income_price":"Amount (THB)",
+    "page_report_bank_payment_ref_1":"Ref 1",
+    "page_report_bank_payment_ref_2":"Ref 2",
 
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",
