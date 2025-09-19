@@ -89,6 +89,7 @@
     "page_report_branch_income_total_income":"Total Income",
     "page_report_branch_income_transaction_date":"Transaction Date",
     "page_report_branch_income_transaction_id":"Transaction ID",
+    "page_report_branch_income_transaction_bank_ref":"Bank Transaction ID Ref",
     "page_report_branch_income_transaction_iot":"IoT Transaction ID Ref",
     "page_report_branch_income_shop_name":"Shop Name",
     "page_report_branch_income_machine_type":"Machine Type",

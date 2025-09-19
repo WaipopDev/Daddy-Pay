@@ -36,8 +36,8 @@ const BranchIncomePage = () => {
                     <TableComponent
                         head={['#', 
                             lang['page_report_branch_income_transaction_date'], 
-                            lang['page_report_branch_income_transaction_id'],
                             lang['page_report_branch_income_transaction_iot'],
+                            lang['page_report_branch_income_transaction_bank_ref'],
                             lang['page_report_branch_income_shop_name'],
                             lang['page_report_branch_income_machine_type'],
                             lang['page_report_branch_income_machine_name'],
@@ -53,8 +53,8 @@ const BranchIncomePage = () => {
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>{moment(item.createdAt).format('DD-MM-YYYY HH:mm:ss')}</td>
-                                <td>{item.transactionId}</td>
                                 <td>{item.transactionIot}</td>
+                                <td>{item.transactionId}</td>
                                 <td>{item.shopInfo.shopName}</td>
                                 <td>{item.machineInfo.machineType}</td>
                                 <td>{item.shopManagement.shopManagementName}</td>
