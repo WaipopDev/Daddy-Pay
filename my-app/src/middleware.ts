@@ -16,6 +16,15 @@ export async function middleware(req: NextRequest) {
     const publicPages = ['/login', '/logout'];
 
     // Allow public pages to load without redirection
+    if (req.nextUrl.pathname === '/login') {
+        console.log('req.nextUrl.pathname', req.nextUrl.pathname)
+        cache.delete('x-user-data-cache');
+        const response = NextResponse.next();
+        response.cookies.set('token', '', { path: '/', expires: new Date(0) });
+        response.headers.delete('x-user-data');
+        console.log('cache.get(', cache.get('x-user-data-cache'))
+        return response;
+    }
     if (publicPages.includes(req.nextUrl.pathname)) {
         return NextResponse.next();
     }
@@ -27,7 +36,6 @@ export async function middleware(req: NextRequest) {
     }
 
     let userData = cache.get('x-user-data-cache')
-    // console.log("🚀 ~ middleware ~ userData:", userData)
     let newToken = token;
     if (!userData) {
         try {
@@ -36,6 +44,7 @@ export async function middleware(req: NextRequest) {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            // console.log('res', res)
             const xNewToken = res.headers['X-New-Token'];
             const xTokenRefreshed = res.headers['X-Token-Refreshed'];
             if (xTokenRefreshed === 'true' && xNewToken) {
@@ -54,6 +63,7 @@ export async function middleware(req: NextRequest) {
             url.searchParams.set('v', `${new Date().getTime()}`);
             const response = NextResponse.redirect(url);
             response.cookies.set('token', '', { path: '/', expires: new Date(0) });
+            cache.delete('x-user-data-cache');
             
             return response;
         }

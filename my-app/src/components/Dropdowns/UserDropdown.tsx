@@ -1,6 +1,5 @@
 import React from "react";
 import { useDispatch } from 'react-redux';
-import { useRouter } from 'next/navigation';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import { setProcess } from "@/store/features/modalSlice";
@@ -10,17 +9,16 @@ import { useAppSelector } from "@/store/hook";
 
 
 const UserDropdown = () => {
-    const router = useRouter();
     const dispatch = useDispatch();
     const user     = useAppSelector(state => state.user)
-
 
     const handleLogout = async () => {
         try {
             dispatch(setProcess(true))
             dispatch(clearPropsUser())
             await axios.get('/api/logout');
-            router.push('/login');
+            // 
+            window.location.href = '/login';
             dispatch(setProcess(false))
         } catch (error) {
             console.log("🚀 ~ logout ~ error:", error)

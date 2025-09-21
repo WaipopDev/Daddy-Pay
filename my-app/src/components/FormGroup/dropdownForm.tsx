@@ -12,9 +12,11 @@ interface DropdownFormProps {
     defaultValue?: string;
     name?: string;
     items?: { label: string; value: string }[];
+    isInvalid?: boolean;
+    errorMessage?: string;
 }
 
-const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, disabled = false, defaultValue, name, items, onChange, placeholder = '...'}) => {
+const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, disabled = false, defaultValue, name, items, onChange, placeholder = '...', isInvalid, errorMessage}) => {
     
     const [value, setValue] = useState(defaultValue || "");
 
@@ -34,6 +36,7 @@ const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, dis
                         value={value}
                         required={required}
                         disabled={disabled}
+                        isInvalid={isInvalid}
                     />
                     <Dropdown className="nav-dropdown-w">
                         <Dropdown.Toggle 
@@ -56,6 +59,7 @@ const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, dis
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
+                {isInvalid && <Form.Control.Feedback type="invalid">{errorMessage}</Form.Control.Feedback>}
             </Form.Group>
         </Col>
     );

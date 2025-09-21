@@ -23,7 +23,13 @@ const ModalAlert = () => {
 
     return (
         <>
-            <Modal show={show} centered onHide={() => handleClose()}>
+            <Modal 
+                show={show} 
+                centered 
+                onHide={() => handleClose()}
+                style={{ zIndex: 9999 }}
+                className="modal-alert-custom"
+            >
                 <Modal.Header className="py-2" closeButton>
                     <Modal.Title>{lang['global_alert']}</Modal.Title>
                 </Modal.Header>

@@ -11,56 +11,64 @@ const menuItems = [
     icon  : 'fa-solid fa-chart-pie',
     path  : "/dashboard",
     active: true,
-    key   : "menu_dashboard"
+    key   : "menu_dashboard",
+    role: ['admin', 'user', 'super-admin']
   },
   {
     title: "Report",
     icon: 'fa-solid fa-file-contract',
     path: "/report",
     active: false,
-    key: "menu_report"
+    key: "menu_report",
+    role: ['admin', 'user', 'super-admin']
   },
   {
     title: "Shop Management",
     icon:'fa-solid fa-warehouse',
     path: "/shop-management",
     active: false,
-    key: "menu_shop_management"
+    key: "menu_shop_management",
+    role: ['super-admin']
   },
   {
     title: "Shop Info",
     icon:'fa-solid fa-shop',
     path: "/shop-info",
     active: false,
-    key: "menu_shop"
+    key: "menu_shop",
+    role: ['super-admin']
   },
   {
     title: "Machine Info",
     icon:'fas fa-tv',
     path: "/machine-info",
     active: false,
-    key: "menu_machine"
+    key: "menu_machine",
+    role: ['super-admin']
   },
   {
     title: "Program Info",
     icon:'fa-solid fa-gear',
     path: "/program-info",
     active: false,
-    key: "menu_program"
+    key: "menu_program",
+    role: ['super-admin']
   },
   {
     title: "User Management",
     icon:'fa-solid fa-user',
     path: "/user-management",
     active: false,
-    key: "menu_user"
+    key: "menu_user",
+    role: ['super-admin']
   },
   {
     title: "Setting Language",
     icon: 'fa-solid fa-language',
     path: "/language-settings",
     active: false,
-    key: "menu_set_language"
+    key: "menu_set_language",
+    role: ['super-admin']
   }
 ];
 

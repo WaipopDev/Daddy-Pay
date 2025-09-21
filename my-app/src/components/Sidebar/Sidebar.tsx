@@ -15,12 +15,18 @@ interface MenuItems {
     path  : string;
     active: boolean;
     key   : string;
+    role  : string[];
 }
 
 
 const Sidebar: React.FC<MenuItems[]> = (menuItems) => {
     const pathname = usePathname();
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
+    const user = useAppSelector(state => state.user)
+    if(!user.role) return null
+    if(user.role) {
+        menuItems = _.filter(menuItems, item => item.role.includes(user.role))
+    }
     return (
         <>
             <div className="position-fixed w-[14rem] h-[calc(100vh-80px)] p-2 bg-[#F9F9F9] border-r border-gray-200 shadow-lg">
