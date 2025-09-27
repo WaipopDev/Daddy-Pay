@@ -122,6 +122,13 @@
     "page_report_bank_payment_ref_1":"Ref 1",
     "page_report_bank_payment_ref_2":"Ref 2",
 
+    "page_dashboard_sales_report":"Sales Report",
+    "page_dashboard_sales_report_total_sales_by_day":"Sales by day (THB)",
+    "page_dashboard_sales_report_total_sales_by_week":"Sales by week (THB)",
+    "page_dashboard_sales_report_total_sales_by_month":"Sales by month (THB)",
+    "page_dashboard_sales_report_available_machine":"Number of Machines Available",
+    "page_dashboard_sales_report_under_maintenance_machine":"Number of Under Maintenance",
+
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",
     "global_delete_success_message":"Deleted successfully.",

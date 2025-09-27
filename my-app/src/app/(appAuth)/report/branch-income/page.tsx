@@ -1,7 +1,7 @@
 'use client';
-import React, { Suspense } from 'react'
+import React, { Suspense, useState } from 'react'
 import { useAppSelector } from '@/store/hook';
-import { useReportData } from '@/hooks/useReportData';
+import { SearchParams, useReportData } from '@/hooks/useReportData';
 import TableComponent from '@/components/Table/Table';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { Button } from 'react-bootstrap';
@@ -9,14 +9,23 @@ import { useRouter } from 'next/navigation';
 import FilterReport from '@/components/Filter/FilterReport';
 import { PAYMENT_METHOD } from '@/constants/main';
 import moment from 'moment';
+import { noIndex } from '@/utils/main';
 
 const BranchIncomePage = () => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string };
     const router = useRouter();
     const { items, page, fetchData, summary } = useReportData();
+    const [search, setSearch] = useState<SearchParams>({});
 
     const handleBack = () => {
         router.back();
+    }
+    const handleFetchData = (pageNumber: number, search: SearchParams) => {
+        setSearch(search);
+        fetchData(pageNumber, search);
+    }
+    const handleFetchPageData = (pageNumber: number) => {
+        fetchData(pageNumber, search);
     }
     return (
         <div className="bg-white p-2">
@@ -25,7 +34,7 @@ const BranchIncomePage = () => {
                 {lang['button_back']}
             </Button>
 
-            <FilterReport reportName="branch-income" fetchData={fetchData} />
+            <FilterReport reportName="branch-income" fetchData={handleFetchData} />
             <div className="pb-2">
                 <p className="font-bold">{lang['page_report_branch_income']}</p>
                 <p>{lang['page_report_branch_income_total_income']} : {summary || 0} {lang['global_baht']}</p>
@@ -47,11 +56,11 @@ const BranchIncomePage = () => {
                         ]}
                         page={page.page}
                         totalPages={page.totalPages}
-                        handleActive={(number: number) => fetchData(number)}
+                        handleActive={(number: number) => handleFetchPageData(number)}
                     >
                         {items && items.length > 0 && items.map((item, index) => (
                             <tr key={index}>
-                                <td>{index + 1}</td>
+                                <td>{noIndex(page.page, index, 50)}</td>
                                 <td>{moment(item.createdAt).format('DD-MM-YYYY HH:mm:ss')}</td>
                                 <td>{item.transactionIot}</td>
                                 <td>{item.transactionId}</td>
@@ -61,9 +70,6 @@ const BranchIncomePage = () => {
                                 <td>{item.programInfo.programName}</td>
                                 <td>{PAYMENT_METHOD.find(i => i.id === item.priceType)?.name || '-'}</td>
                                 <td>{item.price}</td>
-                                
-                                
-                                
                             </tr>
                         ))}
                     </TableComponent>

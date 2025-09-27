@@ -1,12 +1,27 @@
+'use client';
 import React from 'react'
-import PageNoData from '@/components/PageNoData'
+import { Tab, Tabs } from 'react-bootstrap';
+import { useAppSelector } from '@/store/hook';
+import { SalesReport } from '@/components/Dashboard';
 
 const DashboardPage = () => {
-  return (
-    <div>
-      <PageNoData />
-    </div>
-  )
+    const lang = useAppSelector(state => state.lang) as { [key: string]: string }
+   
+    return (
+        <main className="bg-white p-2">
+            <Tabs
+                className="mb-3"
+                defaultActiveKey="sales_report"
+            >
+                <Tab
+                    eventKey="sales_report"
+                    title={lang['page_dashboard_sales_report']}
+                >
+                    <SalesReport />
+                </Tab>
+            </Tabs>
+        </main>
+    )
 }
 
 export default DashboardPage
