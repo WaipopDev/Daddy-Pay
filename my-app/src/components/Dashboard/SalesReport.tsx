@@ -7,7 +7,6 @@ const SalesReport = () => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string };
     
     const { totalSales, totalMachine } = useDashboardData();
-console.log('totalMachine', totalMachine)
     return (
         <div>
             <div className="flex justify-between text-white">

@@ -128,6 +128,10 @@
     "page_dashboard_sales_report_total_sales_by_month":"Sales by month (THB)",
     "page_dashboard_sales_report_available_machine":"Number of Machines Available",
     "page_dashboard_sales_report_under_maintenance_machine":"Number of Under Maintenance",
+    "page_dashboard_sales_report_graph_by_day":"Sales by day",
+    "page_dashboard_sales_report_graph_by_week":"Sales by day of the week",
+    "page_dashboard_sales_report_graph_by_month":"Sales by day of the month",
+    "page_dashboard_sales_report_graph_by_year":"Sales by month of the year",
 
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",

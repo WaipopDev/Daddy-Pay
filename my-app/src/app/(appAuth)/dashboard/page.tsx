@@ -2,7 +2,7 @@
 import React from 'react'
 import { Tab, Tabs } from 'react-bootstrap';
 import { useAppSelector } from '@/store/hook';
-import { SalesReport } from '@/components/Dashboard';
+import { SalesReport, GraphReport } from '@/components/Dashboard';
 
 const DashboardPage = () => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
@@ -18,6 +18,7 @@ const DashboardPage = () => {
                     title={lang['page_dashboard_sales_report']}
                 >
                     <SalesReport />
+                    <GraphReport lang={lang} />
                 </Tab>
             </Tabs>
         </main>

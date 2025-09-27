@@ -37,3 +37,23 @@ export const useDashboardData = () => {
         totalMachine,
     }
 }
+
+export const useDashboardGraphData = () => {
+    const [graphData, setGraphData] = useState({
+        graphDataByDay: null,
+        graphDataByWeek: null,
+        graphDataByMonth: null,
+        graphDataByYear: null,
+    });
+    const fetchGraphData = useCallback(async (branchId: string) => {
+        const response = await axios.get(`${DASHBOARD_API_ENDPOINTS.GRAPH_DATA}?branchId=${branchId}`);
+        if(response.status === 200){
+            setGraphData(response.data);
+        }
+    }, []);
+
+    return {
+        graphData,
+        fetchGraphData,
+    }
+}
