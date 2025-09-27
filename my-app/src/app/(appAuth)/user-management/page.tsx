@@ -106,7 +106,7 @@ const UserManagementPage = () => {
     const handleUpdateUserForm = async () => {
         const form = formRef.current;
         if (!form) return;
-
+      
         setValidated(true);
         if (form.checkValidity() === false) {
             return;
@@ -115,12 +115,10 @@ const UserManagementPage = () => {
         const userData = {
             username: form['username'].value,
             email   : form['email'].value,
-            password: form['password'].value,
             role    : (form['role'] as unknown as HTMLSelectElement).value || '',
             shopIds: Array.from((form['shopIds'] as NodeListOf<HTMLInputElement>)).filter(input => input.checked).map(input => input.value)
 
         };
-    
         // Check custom validation (password not required for edit)
         const validationErrors = validateUserForm(userData, lang, true);
         if (Object.keys(validationErrors).length > 0) {

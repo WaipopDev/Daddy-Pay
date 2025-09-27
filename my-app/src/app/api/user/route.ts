@@ -159,7 +159,6 @@ export async function PATCH(req: NextRequest) {
             role: string;
             updatedBy: string;
             shopIds: string[];
-            password?: string;
         } = {
             username: username,
             email: email,
@@ -168,10 +167,7 @@ export async function PATCH(req: NextRequest) {
             shopIds: shopIds
         };
 
-        // Only include password if it's provided (for edit mode)
-        if (password && password.trim()) {
-            userData.password = password;
-        }
+    
 
         const response = await axios.patch(`${process.env.API_URL}/api/v1/user/${id}`, userData, {
             headers: {

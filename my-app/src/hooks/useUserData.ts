@@ -68,3 +68,25 @@ export const useUserData = (): UseUserDataReturn => {
         refreshCurrentPage,
     };
 }
+
+export const useShopInfoList = (): { itemShop: {id:string, shopName:string}[] | [] } => {
+    const [itemShop, setItemShop] = useState<{id:string, shopName:string}[] | []>([]);
+    const fetchShopListData = useCallback(async () => {
+        try {
+            const response = await axios.get(USER_API_ENDPOINTS.SHOP_LIST);
+            if (response.status === 200) {
+                setItemShop(response.data);
+            }
+        } catch (error) {
+            console.error("Error fetching shop list:", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchShopListData();
+    }, [fetchShopListData]);
+
+    return {
+        itemShop,
+    }
+}

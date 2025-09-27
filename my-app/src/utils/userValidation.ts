@@ -3,7 +3,7 @@ import { USER_ROLES } from '@/constants/user';
 export interface UserFormData {
     username  : string;
     email     : string;
-    password  : string;
+    password ?: string;
     role      : string;
     shopIds   : string[];
     createdBy?: string;
@@ -46,7 +46,7 @@ export const validateUserForm = (
 
     // Password validation (only required for add mode, optional for edit mode)
     if (!isEditMode) {
-        if (!formData.password.trim()) {
+        if (!formData.password?.trim()) {
             errors.password = lang['validation_password_required'] || 'Password is required';
         } else if (formData.password.length < 6) {
             errors.password = lang['validation_password_min_length'] || 'Password must be at least 6 characters';
@@ -57,7 +57,7 @@ export const validateUserForm = (
         }
     } else {
         // For edit mode, only validate password if it's provided
-        if (formData.password.trim()) {
+        if (formData.password?.trim()) {
             if (formData.password.length < 6) {
                 errors.password = lang['validation_password_min_length'] || 'Password must be at least 6 characters';
             } else if (formData.password.length > 100) {

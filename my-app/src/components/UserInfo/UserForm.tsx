@@ -4,8 +4,9 @@ import InputForm from '@/components/FormGroup/inputForm';
 import DropdownForm from '@/components/FormGroup/dropdownForm';
 // import { validateUserForm } from '@/utils/userValidation';
 import { USER_ROLES } from '@/constants/user';
-import { useShopData } from '@/hooks/useShopData';
+// import { useShopData } from '@/hooks/useShopData';
 import { UserDataItemDataProps } from '@/types/userType';
+import { useShopInfoList } from '@/hooks/useUserData';
 
 interface UserFormProps {
     formRef: React.RefObject<HTMLFormElement>;
@@ -43,7 +44,8 @@ const UserForm: React.FC<UserFormProps> = ({
     });
     // const [errors, setErrors] = useState<Partial<UserFormData>>({});
 
-    const { items: shops } = useShopData();
+    // const { items: shops } = useShopData();
+    const { itemShop:shops } = useShopInfoList();
 
     const roleOptions = [
         { value: USER_ROLES.USER, label: lang['page_user_role_user'] || 'User' },
@@ -58,7 +60,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 email: editData.email || '',
                 password: '', // Don't pre-fill password for security
                 role: editData.role || USER_ROLES.USER,
-                shopIds: [] // Will be populated from API response if needed
+                shopIds: editData.permissions.map(permission => permission.shopId) || []
             });
         }
     }, [isEditMode, editData]);
@@ -78,8 +80,6 @@ const UserForm: React.FC<UserFormProps> = ({
                 : prev.shopIds.filter(id => id !== shopId)
         }));
     };
-
-console.log('shops', shops)
 
     return (
         <Form noValidate validated={validated} ref={formRef}>
@@ -155,7 +155,7 @@ console.log('shops', shops)
                                         id={`shop-${shop.id}`}
                                         name="shopIds"
                                         value={shop.id}
-                                        label={`${index + 1}.) ${shop.shopName} (${shop.shopCode})`}
+                                        label={`${index + 1}.) ${shop.shopName}`}
                                         checked={ formData.shopIds.includes(shop.id)}
                                         onChange={(e) => handleShopChange(shop.id, e.target.checked)}
                                         className="mb-2"

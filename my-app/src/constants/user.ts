@@ -10,6 +10,7 @@ export const USER_API_ENDPOINTS = {
     BASE: '/api/user',
     GET_BY_ID: (id: string) => `/api/user/by/${id}`,
     DELETE: (userId: string) => `/api/user?userId=${userId}`,
+    SHOP_LIST: '/api/shop-info/list-user',
 } as const;
 
 // Status values

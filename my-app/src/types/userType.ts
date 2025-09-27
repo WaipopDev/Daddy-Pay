@@ -7,6 +7,9 @@ export interface UserDataItemDataProps {
     subscribe: boolean;
     isVerified: boolean;
     isAdminLevel: number;
+    permissions: {
+        shopId: string;
+    }[];
 }
 
 export interface UserModalDeleteState {
