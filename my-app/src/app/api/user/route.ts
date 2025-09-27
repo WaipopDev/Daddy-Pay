@@ -144,7 +144,7 @@ export async function PATCH(req: NextRequest) {
         const id = formData.id as string;
         const username = formData.username as string;
         const email = formData.email as string;
-        const password = formData.password as string;
+        // const password = formData.password as string;
         const role = formData.role as string;
         const shopIds = formData.shopIds as string[];
         const updatedBy = formData.updatedBy as string;
