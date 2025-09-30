@@ -1,19 +1,14 @@
 'use client';
 import TableComponent from '@/components/Table/Table';
-import { useAppDispatch, useAppSelector } from '@/store/hook';
-import { useErrorHandler } from '@/store/useErrorHandler';
+import { useAppSelector } from '@/store/hook';
 import { useRouter } from 'next/navigation';
-import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react'
-import { Button, Col, Form } from 'react-bootstrap';
-import ModalForm from '@/components/Modals/ModalForm';
-import InputForm from '@/components/FormGroup/inputForm';
+import React, { Suspense, useCallback, useEffect, useState } from 'react'
+import { Button, Col } from 'react-bootstrap';
 import axios from 'axios';
-import { openModalAlert } from '@/store/features/modalSlice';
 
 import ModalActionDelete from '@/components/Modals/ModalActionDelete';
+import { ShopManagementAdd, ShopManagementEdit } from '@/components/ShopManagement';
 import _ from 'lodash';
-import DropdownForm from '@/components/FormGroup/dropdownForm';
-import validateRequiredFields from '@/utils/validateRequiredFields';
 
 interface ItemDataProps {
     id: string;
@@ -44,20 +39,16 @@ interface MachineDataProps {
 }
 
 const ShopManagementPage = () => {
-    const dispatch = useAppDispatch();
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
     const router = useRouter();
-    const formRef = useRef<HTMLFormElement>(null);
-    const { handleError } = useErrorHandler();
 
     const [page, setPage] = useState({ page: 1, totalPages: 1 });
     const [item, setItem] = useState<ItemDataProps[] | null>(null);
     const [showModal, setShowModal] = useState(false);
-    const [validated, setValidated] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editId, setEditId] = useState('');
     const [showModalDelete, setShowModalDelete] = useState({ isShow: false, id: '' });
     const [itemMachine, setItemMachine] = useState<MachineDataProps[][] | null>(null);
-    const [itemShop, setItemShop] = useState<{id:string, shopName:string}[] | []>([]);
-    const [activeMachineType, setActiveMachineType] = useState('');
     // const [activeShopType, setActiveShopType] = useState('');
     // console.log("🚀 ~ ShopManagementPage ~ activeMachineType:", itemShop)
 
@@ -77,110 +68,34 @@ const ShopManagementPage = () => {
         }
     }, []);
 
-    const fetchShopListData = useCallback(async () => {
-        try {
-            const response = await axios.get('/api/shop-info/list');
-            if (response.status === 200) {
-                
-                setItemShop(response.data);
-                // const groupByType = _.groupBy(response.data, 'machineType');
-                // const orderedByType = _.orderBy(groupByType, ['machineType'], ['asc']);
-                // setItemMachine(orderedByType);
-            }
-        } catch (error) {
-            console.error("Error fetching shop list:", error);
-        }
-    }, []);
+    
 
-    const fetchMachineListData = useCallback(async () => {
-        try {
-            const response = await axios.get('/api/machine-info/list');
-            if (response.status === 200) {
-                const groupByType = _.groupBy(response.data, 'machineType');
-                const orderedByType = _.orderBy(groupByType, ['machineType'], ['asc']);
-                setItemMachine(orderedByType);
-            }
-        } catch (error) {
-            console.error("Error fetching machine list:", error);
-        }
-    }, []);
+    
 
     useEffect(() => {
         fetchData();
-        fetchShopListData();
-        fetchMachineListData();
-    }, [fetchData, fetchShopListData, fetchMachineListData]);
+    }, [fetchData]);
 
     const handleOpenMachine = () => {
         setShowModal(true);
     }
 
-    const handleSaveShopManagement = async () => {
-        const form = formRef.current;
-        if (!form) return;
-
-        setValidated(true);
-
-        if (form.checkValidity() === false) {
-            return;
-        }
-
-        try {
-
-            const shopId              = form['shopId'].value;
-            const machineType         = form['machineType'].value;
-            const machineModel        = form['machineModel'].value;
-            const machineName         = form['machineName'].value;
-            const machineID           = form['machineID'].value;
-            const machineIotId        = form['machineIotId'].value;
-            const machineIntervalTime = form['machineIntervalTime'].value;
-
-            const message = validateRequiredFields([
-                { value: shopId, label: lang['page_shop_management_shop'] },
-                { value: machineType, label: lang['page_machine_info_machine_type'] },
-                { value: machineModel, label: lang['page_machine_info_model'] },
-                { value: machineName, label: lang['page_shop_management_machine_name'] },
-                { value: machineID, label: lang['page_shop_management_machine_id'] },
-                { value: machineIotId, label: lang['page_shop_management_iot_id'] },
-                { value: machineIntervalTime, label: lang['page_shop_management_interval_time'] }
-            ]);
-            if (message) {
-                dispatch(openModalAlert({ message: `${lang['global_required_fields']}<br/>${message}` }));
-                return;
-            }
-            const param = {
-                shopId,
-                machineType: itemMachine ? itemMachine[Number(machineType)][0].machineType : '',
-                machineModel,
-                machineName,
-                machineID,
-                machineIotId,
-                machineIntervalTime
-            }
-
-            await axios.post('/api/shop-management', param);
-
-            setValidated(false);
-            setShowModal(false);
-            form.reset();
-
-            fetchData(page.page);
-
-            dispatch(openModalAlert({
-                message: lang['global_add_success_message']
-            }));
-        } catch (error) {
-            console.error('Error saving machine data:', error);
-            handleError(error);
-        }
-    }
-
     const handleCloseModal = () => {
         setShowModal(false);
-        setValidated(false);
-        if (formRef.current) {
-            formRef.current.reset();
-        }
+    }
+
+    const handleOpenEditModal = (id: string) => {
+        setEditId(id);
+        setShowEditModal(true);
+    }
+
+    const handleCloseEditModal = () => {
+        setShowEditModal(false);
+        setEditId('');
+    }
+
+    const handleSuccess = () => {
+        fetchData(page.page);
     }
 
     const handleDeleteMachine = async (id: string) => {
@@ -232,7 +147,7 @@ const ShopManagementPage = () => {
                                 <td>{item.machineInfo.machineType}</td>
                                 <td><div className="flex justify-center">{item.shopManagementStatus}</div></td>
                                 <td>
-                                    <Button variant="warning" size="sm" onClick={() => router.push(`/shop-management/edit/${item.id}`)}><i className="fa-solid fa-pen-to-square"></i></Button>
+                                    <Button variant="warning" size="sm" onClick={() => handleOpenEditModal(item.id)}><i className="fa-solid fa-pen-to-square"></i></Button>
                                     <Button variant="danger" size="sm" className="ml-2" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}><i className="fa-solid fa-trash"></i></Button>
                                     <Button variant="info" size="sm" className="ml-2" onClick={() => router.push(`/shop-management/program/${item.id}`)}><i className="fa-solid fa-gear"></i></Button>
                                 </td>
@@ -245,85 +160,17 @@ const ShopManagementPage = () => {
                     }
                 </TableComponent>
             </Suspense>
-            <ModalForm
+            <ShopManagementAdd
                 show={showModal}
-                handleClose={() => handleCloseModal()}
-                title={lang['page_shop_management_adding']}
-                handleSave={() => handleSaveShopManagement()}
-            >
-                <Form noValidate validated={validated} ref={formRef} >
-                    <Col className="mb-2">
-                        <DropdownForm
-                            label={lang['page_shop_management_shop']}
-                            name="shopId"
-                            required
-                            items={itemShop ? _.map(itemShop, (shop) => ({
-                                label: shop.shopName,
-                                value: shop.id
-                            })) : []}
-                            // onChange={(value) => setActiveShopType(value)}
-                        />
-                    </Col>
-                    <Col className="mb-2">
-                        <DropdownForm
-                            label={lang['page_machine_info_machine_type']}
-                            name="machineType"
-                            required
-                            items={itemMachine ? _.map(itemMachine, (machine, index) => ({
-                                label: machine[0].machineType,
-                                value: index.toString()
-                            })) : []}
-                            onChange={(value) => setActiveMachineType(value)}
-                        />
-                    </Col>
-                    <Col className="mb-2">
-                        <DropdownForm
-                            label={lang['page_machine_info_model']}
-                            name="machineModel"
-                            required
-                            items={itemMachine && activeMachineType ? itemMachine[Number(activeMachineType)].map(machine => ({
-                                label: machine.machineModel,
-                                value: machine.id.toString()
-                            })) : []}
-                            disabled={!activeMachineType}
-                        />
-                    </Col>
-                    <Col className="mb-2">
-                        <InputForm
-                            label={lang['page_shop_management_machine_name']}
-                            placeholder={lang['page_shop_management_machine_name']}
-                            name="machineName"
-                            required
-                        />
-                    </Col>
-                    <Col className="mb-2">
-                        <InputForm
-                            label={lang['page_shop_management_machine_id']}
-                            placeholder={lang['page_shop_management_machine_id']}
-                            name="machineID"
-                            required
-                        />
-                    </Col>
-                    <Col className="mb-2">
-                        <InputForm
-                            label={lang['page_shop_management_iot_id']}
-                            placeholder={lang['page_shop_management_iot_id']}
-                            name="machineIotId"
-                            required
-
-                        />
-                    </Col>
-                    <Col className="mb-2">
-                        <InputForm
-                            label={lang['page_shop_management_interval_time']}
-                            placeholder={lang['page_shop_management_interval_time']}
-                            name="machineIntervalTime"
-                            required
-
-                        />
-                    </Col>
-                </Form>
-            </ModalForm>
+                handleClose={handleCloseModal}
+                onSuccess={handleSuccess}
+            />
+            <ShopManagementEdit
+                show={showEditModal}
+                handleClose={handleCloseEditModal}
+                onSuccess={handleSuccess}
+                editId={editId}
+            />
             <ModalActionDelete
                 show={showModalDelete.isShow}
                 handleClose={() => setShowModalDelete({ isShow: false, id: '' })}

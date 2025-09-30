@@ -15,7 +15,8 @@ const ShopTableRow: React.FC<ShopTableRowProps> = ({
     currentPage, 
     lang, 
     onEdit, 
-    onDelete 
+    onDelete,
+    onEditBank
 }) => {
     const rowNumber = getRowNumber(index, currentPage, PAGINATION_CONFIG.ITEMS_PER_PAGE);
     const statusDisplay = formatShopStatus(item.shopStatus, lang);
@@ -37,9 +38,18 @@ const ShopTableRow: React.FC<ShopTableRowProps> = ({
             <td>{item.shopContactInfo}</td>
             <td>{item.shopMobilePhone}</td>
             <td>
+                <Button
+                    variant="info"
+                    size="sm"
+                    onClick={() => onEditBank(item.id)}
+                    title={lang['button_edit_bank']}
+                >
+                    <i className="fa-solid fa-bank" aria-hidden="true"></i>
+                </Button>
                 <Button 
                     variant="warning" 
                     size="sm" 
+                    className="ml-2" 
                     onClick={() => onEdit(item.id)}
                     title={lang['button_edit']}
                 >

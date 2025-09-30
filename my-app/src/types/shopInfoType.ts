@@ -33,6 +33,7 @@ export interface ShopTableRowProps {
     lang: { [key: string]: string };
     onEdit: (id: string) => void;
     onDelete: (id: string) => void;
+    onEditBank: (id: string) => void;
 }
 
 export interface ShopInfoItemDataProps {
@@ -44,6 +45,13 @@ export interface ShopInfoItemDataProps {
     shopMobilePhone: string;
 }
 
+export interface BankFormDataProps {
+    consumerId: string;
+    consumerSecret: string;
+    partnerId: string;
+    merchantId: string;
+    partnerSecret: string;
+}
 // API Response Types
 export interface ShopInfoApiResponse {
     items: ShopInfoItemDataProps[];

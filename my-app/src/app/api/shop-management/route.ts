@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
         }
         const url = new URL(req.url);
         const page = url.searchParams.get('page') || '1';
-        const response = await axios.get(`${process.env.API_URL}/api/v1/shop-management?page=${page}&limit=10&column=shopManagementName&sort=ASC`, {
+        const response = await axios.get(`${process.env.API_URL}/api/v1/shop-management?page=${page}&limit=50&column=shopManagementName&sort=ASC`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
-import { 
-    ShopInfoItemDataProps
+import {
+    ShopInfoItemDataProps,
+    BankFormDataProps
 } from '@/types/shopInfoType';
 import { SHOP_INFO_API_ENDPOINTS } from '@/constants/shopInfo';
 import { PAGINATION_CONFIG } from '@/constants/main';
@@ -49,13 +50,13 @@ export const useShopData = (): UseShopDataReturn => {
                     },
                 }
             );
-            
+
             if (response.status === 200) {
                 setState({
                     item: response.data.items,
-                    page: { 
-                        page: response.data.meta.currentPage, 
-                        totalPages: response.data.meta.totalPages 
+                    page: {
+                        page: response.data.meta.currentPage,
+                        totalPages: response.data.meta.totalPages
                     },
                     isLoading: false,
                     error: null
@@ -68,6 +69,7 @@ export const useShopData = (): UseShopDataReturn => {
             setState((prevState) => ({ ...prevState, isLoading: false }));
         }
     }, []);
+    
 
     const refreshCurrentPage = useCallback(async () => {
         await fetchData(state.page.page);
@@ -78,10 +80,10 @@ export const useShopData = (): UseShopDataReturn => {
     }, [fetchData]);
 
     return {
-        items    : state.item,
-        page     : state.page,
+        items: state.item,
+        page: state.page,
         isLoading: state.isLoading,
-        error    : state.error,
+        error: state.error,
         fetchData,
         refreshCurrentPage,
     };

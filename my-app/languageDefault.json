@@ -21,6 +21,14 @@
     "button_add_program": "Add Program",
     "button_add_user": "Add User",
     "button_back": "Back",
+    "button_edit_bank": "Edit Bank",
+    "button_save_bank": "Save Bank Info",
+    "modal_bank_title": "Bank Information",
+    "form_consumer_id": "Consumer ID",
+    "form_consumer_secret": "Consumer Secret",
+    "form_partner_id": "Partner ID",
+    "form_merchant_id": "Merchant ID",
+    "form_partner_secret": "Partner Secret",
 
     "page_shop_info_shop_info":"Shop Information",
     "page_shop_info_shop_name":"Shop Name",
@@ -65,6 +73,7 @@
 
     "page_shop_management_add":"Manage Machine",
     "page_shop_management_adding":"Adding machine in the shop",
+    "page_shop_management_editing":"Editing machine in the shop",
     "page_shop_management_shop":"Shop",
     "page_shop_management_machine_name":"Machine Name",
     "page_shop_management_machine_id":"Machine ID",

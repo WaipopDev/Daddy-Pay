@@ -61,3 +61,39 @@ input.form-control {
 .react-datepicker-wrapper {
     width: 100%;
 }
+
+// Table horizontal scroll support
+.table-responsive-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    
+    table {
+        min-width: 100%;
+        white-space: nowrap;
+        
+        th, td {
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+    }
+}
+
+// Custom scrollbar styling for table wrapper
+.table-responsive-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-responsive-wrapper::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+    
+    &:hover {
+        background: #a8a8a8;
+    }
+}

@@ -15,21 +15,23 @@ interface TableProps {
 
 const TableComponent = ({ head, page, totalPages, handleActive, children, activePage = true }: TableProps) => {
     return (
-        <>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        {
-                            head.map((item: string, index: number) => (
-                                <th key={index} className="text-sm">{item}</th>
-                            ))
-                        }
-                    </tr>
-                </thead>
-                <tbody className="text-sm">
-                    {children}
-                </tbody>
-            </Table>
+        <div>
+            <div className="table-responsive-wrapper">
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            {
+                                head.map((item: string, index: number) => (
+                                    <th key={index} className="text-sm">{item}</th>
+                                ))
+                            }
+                        </tr>
+                    </thead>
+                    <tbody className="text-sm">
+                        {children}
+                    </tbody>
+                </Table>
+            </div>
             {activePage && (
                 <div className="d-flex justify-content-end">
                     <CustomPagination
@@ -39,7 +41,7 @@ const TableComponent = ({ head, page, totalPages, handleActive, children, active
                     />
                 </div>
             )}
-        </>
+        </div>
     )
 }
 

@@ -6,7 +6,6 @@ import GraphDataByBarChart from './GraphDataByBarChart'
 
 const GraphReport = ({lang}: {lang: { [key: string]: string }}) => {
     const { graphData, fetchGraphData } = useDashboardGraphData();
-    console.log('graphData', graphData)
     const [valueShop, setValueShop] = useState('');
     useEffect(() => {
         if(valueShop){

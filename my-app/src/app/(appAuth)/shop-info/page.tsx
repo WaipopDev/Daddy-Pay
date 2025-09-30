@@ -3,6 +3,7 @@ import React, { Suspense } from "react";
 import { useAppSelector } from "@/store/hook";
 import TableComponent from "@/components/Table/Table";
 import ModalActionDelete from "@/components/Modals/ModalActionDelete";
+import ModalActionBank from "@/components/Modals/ModalActionBank";
 
 // Custom hooks
 import { useShopData } from "@/hooks/useShopData";
@@ -25,17 +26,27 @@ const ShopInfoPage = () => {
     const { items, page, isLoading, fetchData } = useShopData();
     const {
         showModalDelete,
+        showModalBank,
         // isDeleting,
         handleAddShop,
         handleEditShop,
         handleDeleteShop,
         handleShowDeleteModal,
         handleCloseDeleteModal,
+        handleShowBankModal,
+        handleCloseBankModal,
+        handleSaveBank,
     } = useShopOperations({
         onDeleteSuccess: async () => {
             await fetchData(page.page);
+        },
+        onBankSaveSuccess: async () => {
+            await fetchData(page.page);
         }
     });
+    const handleEditBank = (id: string) => {
+        handleShowBankModal(id);
+    }
 
     // Get table headers
     const tableHeaders = getShopInfoTableHeaders(lang);
@@ -64,6 +75,7 @@ const ShopInfoPage = () => {
                             onEdit={handleEditShop}
                             onDelete={handleShowDeleteModal}
                             isLoading={isLoading}
+                            onEditBank={handleEditBank}
                         />
                     </TableComponent>
                 </Suspense>
@@ -75,6 +87,15 @@ const ShopInfoPage = () => {
                     text={lang['global_delete_confirmation']}
                     id={showModalDelete.id}
                     handleConfirm={handleDeleteShop}
+                />
+
+                <ModalActionBank
+                    show={showModalBank.isShow}
+                    handleClose={handleCloseBankModal}
+                    title={lang['modal_bank_title']}
+                    shopId={showModalBank.shopId}
+                    onSave={handleSaveBank}
+                    initialData={showModalBank.initialData}
                 />
             </ErrorBoundary>
         </main>
