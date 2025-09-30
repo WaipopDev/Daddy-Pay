@@ -1,14 +1,14 @@
 'use client';
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { Button, Col, Form } from 'react-bootstrap';
+import { Col, Form } from 'react-bootstrap';
 import ModalForm from '@/components/Modals/ModalForm';
 import InputForm from '@/components/FormGroup/inputForm';
 import DropdownForm from '@/components/FormGroup/dropdownForm';
 import axios from 'axios';
-import { openModalAlert } from '@/store/features/modalSlice';
+// import { openModalAlert } from '@/store/features/modalSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { useErrorHandler } from '@/store/useErrorHandler';
-import validateRequiredFields from '@/utils/validateRequiredFields';
+// import validateRequiredFields from '@/utils/validateRequiredFields';
 import _ from 'lodash';
 
 interface MachineDataProps {
@@ -42,14 +42,14 @@ interface ShopManagementDataProps {
 interface ShopManagementEditProps {
     show: boolean;
     handleClose: () => void;
-    onSuccess: () => void;
+    // onSuccess: () => void;
     editId: string;
 }
 
 const ShopManagementEdit: React.FC<ShopManagementEditProps> = ({
     show,
     handleClose,
-    onSuccess,
+    // onSuccess,
     editId
 }) => {
     const dispatch = useAppDispatch();

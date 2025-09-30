@@ -30,13 +30,13 @@ interface ItemDataProps {
     }
 }
 
-interface MachineDataProps {
-    id: string;
-    machineKey: string;
-    machineType: string;
-    machineBrand: string;
-    machineModel: string;
-}
+// interface MachineDataProps {
+//     id: string;
+//     machineKey: string;
+//     machineType: string;
+//     machineBrand: string;
+//     machineModel: string;
+// }
 
 const ShopManagementPage = () => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
@@ -48,7 +48,7 @@ const ShopManagementPage = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [editId, setEditId] = useState('');
     const [showModalDelete, setShowModalDelete] = useState({ isShow: false, id: '' });
-    const [itemMachine, setItemMachine] = useState<MachineDataProps[][] | null>(null);
+    // const [itemMachine, setItemMachine] = useState<MachineDataProps[][] | null>(null);
     // const [activeShopType, setActiveShopType] = useState('');
     // console.log("🚀 ~ ShopManagementPage ~ activeMachineType:", itemShop)
 
@@ -168,7 +168,7 @@ const ShopManagementPage = () => {
             <ShopManagementEdit
                 show={showEditModal}
                 handleClose={handleCloseEditModal}
-                onSuccess={handleSuccess}
+                // onSuccess={handleSuccess}
                 editId={editId}
             />
             <ModalActionDelete
