@@ -1,8 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import {
-    ShopInfoItemDataProps,
-    BankFormDataProps
+    ShopInfoItemDataProps
 } from '@/types/shopInfoType';
 import { SHOP_INFO_API_ENDPOINTS } from '@/constants/shopInfo';
 import { PAGINATION_CONFIG } from '@/constants/main';

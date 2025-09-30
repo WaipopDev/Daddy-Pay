@@ -8,7 +8,6 @@ import axios from 'axios';
 
 import ModalActionDelete from '@/components/Modals/ModalActionDelete';
 import { ShopManagementAdd, ShopManagementEdit } from '@/components/ShopManagement';
-import _ from 'lodash';
 
 interface ItemDataProps {
     id: string;
