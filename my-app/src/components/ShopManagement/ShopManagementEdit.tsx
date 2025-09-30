@@ -6,7 +6,7 @@ import InputForm from '@/components/FormGroup/inputForm';
 import DropdownForm from '@/components/FormGroup/dropdownForm';
 import axios from 'axios';
 // import { openModalAlert } from '@/store/features/modalSlice';
-import { useAppDispatch, useAppSelector } from '@/store/hook';
+import {  useAppSelector } from '@/store/hook';
 import { useErrorHandler } from '@/store/useErrorHandler';
 // import validateRequiredFields from '@/utils/validateRequiredFields';
 import _ from 'lodash';
@@ -52,7 +52,7 @@ const ShopManagementEdit: React.FC<ShopManagementEditProps> = ({
     // onSuccess,
     editId
 }) => {
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
     const lang = useAppSelector(state => state.lang) as { [key: string]: string };
     const { handleError } = useErrorHandler();
     const formRef = useRef<HTMLFormElement>(null);
