@@ -139,6 +139,7 @@ export const useShopOperations = ({
     const handleSaveBank = useCallback(async (shopId: string, bankData: BankFormData) => {
         try {
             setIsSavingBank(true);
+            bankData.bankActiveName = 'KBANK';
             const response = await axios.post(`/api/shop-info/bank/${shopId}`, bankData);
             
             if (response.status === 200) {
