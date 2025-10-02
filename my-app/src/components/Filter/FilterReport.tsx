@@ -37,8 +37,8 @@ const FilterReport = ({ reportName, fetchData }: FilterReportProps) => {
             const form = e.currentTarget;
             const formData = new FormData(form);
             const data = {
-                branchId: valueShop,
-                paymentType: valuePaymentMethod,
+                branchId: valueShop === 'all' ? '' : valueShop,
+                paymentType: valuePaymentMethod === 'all' ? '' : valuePaymentMethod,
                 machineName: formData.get('machineName'),
                 programName: formData.get('programName'),
                 startDate: moment(dateValue[0]).format('YYYY-MM-DD'),

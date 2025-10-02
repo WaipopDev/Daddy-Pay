@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import _ from "lodash";
 
 export const useMasterShopList = () => {
     const [itemShop, setItemShop] = useState<{id:string, shopName:string}[] | []>([]);
@@ -7,8 +8,9 @@ export const useMasterShopList = () => {
         try {
             const response = await axios.get('/api/shop-info/list');
             if (response.status === 200) {
-                
-                setItemShop(response.data);
+                const orderedByType = _.orderBy(response.data, ['shopName'], ['asc']);
+                orderedByType.unshift({id:'all', shopName:'All'});
+                setItemShop(orderedByType);
                 // const groupByType = _.groupBy(response.data, 'machineType');
                 // const orderedByType = _.orderBy(groupByType, ['machineType'], ['asc']);
                 // setItemMachine(orderedByType);

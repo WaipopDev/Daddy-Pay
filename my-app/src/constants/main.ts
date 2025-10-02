@@ -7,6 +7,7 @@ export const PAGINATION_CONFIG = {
 
 
 export const PAYMENT_METHOD = [
+    {id:'all',name:'All'},
     {id:'coin',name:'Coin'}, 
     // {id:'point',name:'Point'}, 
     {id:'prompt_pay',name:'Prompt Pay'}, 
