@@ -159,7 +159,7 @@ const UserManagementPage = () => {
     };
 
     return (
-        <main className="bg-white p-2" role="main">
+        <main className="bg-white p-2 md:p-4" role="main">
             <ErrorBoundary>
                 <UserInfoHeader 
                     onAddUser={handleAddUser}

@@ -241,41 +241,41 @@ const ShopManagementProgramPage = () => {
         }
     };
     return (
-        <main className="bg-white p-2">
-            <Button variant="secondary" onClick={handleBack} className="mb-3">
+        <main className="bg-white p-2 md:p-4">
+            <Button variant="secondary" onClick={handleBack} className="mb-3 w-full md:w-auto">
                 <i className="fa-solid fa-arrow-left pr-2"></i>
                 {lang['button_back']}
             </Button>
             {
                 item && (
                     <div className="px-2">
-                        <div className="flex pb-2">
-                            <p className="w-1/4 font-bold">{lang['page_shop_management_shop']} :</p>
-                            <p>{item.shopInfo.shopName}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 pb-2 mb-2">
+                            <p className="font-bold text-sm md:text-base">{lang['page_shop_management_shop']} :</p>
+                            <p className="text-sm md:text-base md:col-span-3">{item.shopInfo.shopName}</p>
                         </div>
-                        <div className="flex pb-2">
-                            <p className="w-1/4 font-bold">{lang['page_machine_info_machine_type']} :</p>
-                            <p>{item.machineInfo.machineType}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 pb-2 mb-2">
+                            <p className="font-bold text-sm md:text-base">{lang['page_machine_info_machine_type']} :</p>
+                            <p className="text-sm md:text-base md:col-span-3">{item.machineInfo.machineType}</p>
                         </div>
-                        <div className="flex pb-2">
-                            <p className="w-1/4 font-bold">{lang['page_machine_info_model']} :</p>
-                            <p>{item.machineInfo.machineModel}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 pb-2 mb-2">
+                            <p className="font-bold text-sm md:text-base">{lang['page_machine_info_model']} :</p>
+                            <p className="text-sm md:text-base md:col-span-3">{item.machineInfo.machineModel}</p>
                         </div>
-                        <div className="flex pb-2">
-                            <p className="w-1/4 font-bold">{lang['page_shop_management_machine_name']} :</p>
-                            <p>{item.shopManagementName}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 pb-2 mb-2">
+                            <p className="font-bold text-sm md:text-base">{lang['page_shop_management_machine_name']} :</p>
+                            <p className="text-sm md:text-base md:col-span-3">{item.shopManagementName}</p>
                         </div>
-                        <div className="flex pb-2">
-                            <p className="w-1/4 font-bold">{lang['page_shop_management_machine_id']} :</p>
-                            <p>{item.shopManagementMachineID}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 pb-2 mb-2">
+                            <p className="font-bold text-sm md:text-base">{lang['page_shop_management_machine_id']} :</p>
+                            <p className="text-sm md:text-base md:col-span-3">{item.shopManagementMachineID}</p>
                         </div>
-                        <div className="flex pb-2">
-                            <p className="w-1/4 font-bold">{lang['page_shop_management_iot_id']} :</p>
-                            <p>{item.shopManagementIotID}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 pb-2 mb-2">
+                            <p className="font-bold text-sm md:text-base">{lang['page_shop_management_iot_id']} :</p>
+                            <p className="text-sm md:text-base md:col-span-3">{item.shopManagementIotID}</p>
                         </div>
-                        <div className="flex pb-2">
-                            <p className="w-1/4 font-bold">{lang['page_shop_management_interval_time']} :</p>
-                            <p>{item.shopManagementIntervalTime} {lang['page_shop_management_second']} {lang['global_minutes']}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 pb-2 mb-4">
+                            <p className="font-bold text-sm md:text-base">{lang['page_shop_management_interval_time']} :</p>
+                            <p className="text-sm md:text-base md:col-span-3">{item.shopManagementIntervalTime} {lang['page_shop_management_second']} {lang['global_minutes']}</p>
                         </div>
                         <Tabs
                             className="mb-3"
@@ -286,43 +286,49 @@ const ShopManagementProgramPage = () => {
                                 eventKey="program"
                                 title={lang['page_shop_management_program']}
                             >
-                                <Table striped bordered hover>
-                                    <thead>
-                                        <tr>
-                                            <th>{lang['page_program_info_program_code']}</th>
-                                            <th>{lang['page_program_info_description']}</th>
-                                            <th>{lang['page_shop_management_price']}</th>
-                                            <th>{lang['page_shop_management_operation_time_mins']}</th>
-                                            <th>{lang['global_action']}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            itemProgram && itemProgram.length > 0 ? (
-                                               itemProgram.map((item, index) => (
-                                                    <tr key={index}>
-                                                        <td>{item.programInfo.programName}</td>
-                                                        <td>{item.programInfo.programDescription}</td>
-                                                        <td>{item.machineProgramPrice}</td>
-                                                        <td>{item.machineProgramOperationTime}</td>
-                                                        <td>
-                                                            <Button variant="danger" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}>
-                                                                <i className="fa-solid fa-trash"></i>
-                                                            </Button>
-                                                        </td>
+                                <div className="table-responsive-wrapper">
+                                    <Table striped bordered hover>
+                                        <thead>
+                                            <tr>
+                                                <th className="text-sm md:text-base">{lang['page_program_info_program_code']}</th>
+                                                <th className="text-sm md:text-base">{lang['page_program_info_description']}</th>
+                                                <th className="text-sm md:text-base">{lang['page_shop_management_price']}</th>
+                                                <th className="text-sm md:text-base">{lang['page_shop_management_operation_time_mins']}</th>
+                                                <th className="text-sm md:text-base">{lang['global_action']}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                itemProgram && itemProgram.length > 0 ? (
+                                                   itemProgram.map((item, index) => (
+                                                        <tr key={index}>
+                                                            <td className="text-xs md:text-sm">{item.programInfo.programName}</td>
+                                                            <td className="text-xs md:text-sm">{item.programInfo.programDescription}</td>
+                                                            <td className="text-xs md:text-sm text-right">{item.machineProgramPrice}</td>
+                                                            <td className="text-xs md:text-sm text-center">{item.machineProgramOperationTime}</td>
+                                                            <td>
+                                                                <div className="flex justify-center">
+                                                                    <Button variant="danger" size="sm" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}>
+                                                                        <i className="fa-solid fa-trash"></i>
+                                                                    </Button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan={5} className="text-center text-xs md:text-sm">No data available</td>
                                                     </tr>
-                                                ))
-                                            ) : (
-                                                <tr>
-                                                    <td colSpan={5}>No data available</td>
-                                                </tr>
-                                            )
-                                        }
-                                    </tbody>
-                                </Table>
+                                                )
+                                            }
+                                        </tbody>
+                                    </Table>
+                                </div>
                             </Tab>
                         </Tabs>
-                        <Button variant="primary" onClick={() => handleOpenAddProgram()}><i className="fa-solid fa-plus pr-2"></i>{lang['page_shop_management_manage_program']}</Button>
+                        <Button variant="primary" onClick={() => handleOpenAddProgram()} className="w-full md:w-auto mt-4">
+                            <i className="fa-solid fa-plus pr-2"></i>{lang['page_shop_management_manage_program']}
+                        </Button>
                         <ModalForm
                             show={showModal}
                             handleClose={() => handleCloseModal()}

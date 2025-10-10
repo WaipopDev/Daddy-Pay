@@ -68,12 +68,16 @@ const ShopInfoAddPage = () => {
         router.push('/shop-info');
     };
     return (
-        <main className="bg-white p-2">
+        <main className="bg-white p-2 md:p-4">
              <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                <div className="flex  pb-2">
+                <div className="flex flex-col md:flex-row pb-2 mb-4 gap-2">
                     <Col className="flex justify-end">
-                        <Button variant="primary" type="submit"><i className="fa-solid fa-floppy-disk pr-2"></i>{lang['button_save']}</Button>
-                        <Button variant="secondary" onClick={() => handleCancel()} className="ml-2"><i className="fa-solid fa-xmark pr-2"></i>{lang['button_cancel']}</Button>
+                        <Button variant="primary" type="submit" className="w-full md:w-auto">
+                            <i className="fa-solid fa-floppy-disk pr-2"></i>{lang['button_save']}
+                        </Button>
+                        <Button variant="secondary" onClick={() => handleCancel()} className="w-full md:w-auto ml-0 md:ml-2">
+                            <i className="fa-solid fa-xmark pr-2"></i>{lang['button_cancel']}
+                        </Button>
                     </Col>
                 </div>
                 <ShopInfoForm />

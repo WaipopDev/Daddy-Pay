@@ -164,13 +164,15 @@ const ProgramInfoPage = () => {
     };
 
     return (
-        <main className="bg-white p-2">
-            <div className="flex border-b border-gray-300 pb-2">
+        <main className="bg-white p-2 md:p-4">
+            <div className="flex border-b border-gray-300 pb-2 mb-4">
                 <Col className="flex justify-start">
 
                 </Col>
                 <Col className="flex justify-end">
-                    <Button variant="primary" onClick={() => handleOpenMachine()}><i className="fa-solid fa-plus pr-2"></i>{lang['button_add_program']}</Button>
+                    <Button variant="primary" onClick={() => handleOpenMachine()} className="w-full md:w-auto">
+                        <i className="fa-solid fa-plus pr-2"></i>{lang['button_add_program']}
+                    </Button>
                 </Col>
             </div>
             <Suspense fallback={<p>Loading feed...</p>}>
@@ -190,20 +192,26 @@ const ProgramInfoPage = () => {
                     {
                         item && (item.length ? item.map((item: ItemDataProps, index: number) => ( 
                             <tr key={index}>
-                                <td>{(page.page - 1) * 10 + index + 1}</td>
-                                <td>{item.programName}</td>
-                                <td>{item.programDescription}</td>
-                                <td>{item.machineInfo?.machineType}</td>
-                                <td>{item.machineInfo?.machineBrand}</td>
+                                <td className="text-center">{(page.page - 1) * 10 + index + 1}</td>
+                                <td className="text-xs md:text-sm">{item.programName}</td>
+                                <td className="text-xs md:text-sm">{item.programDescription}</td>
+                                <td className="text-xs md:text-sm">{item.machineInfo?.machineType}</td>
+                                <td className="text-xs md:text-sm">{item.machineInfo?.machineBrand}</td>
                               
                                 <td>
-                                    <Button variant="warning" size="sm" onClick={() => router.push(`/machine-info/edit/${item.id}`)}><i className="fa-solid fa-pen-to-square"></i></Button>
-                                    <Button variant="danger" size="sm" className="ml-2" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}><i className="fa-solid fa-trash"></i></Button>
+                                    <div className="flex gap-1 justify-center">
+                                        <Button variant="warning" size="sm" onClick={() => router.push(`/machine-info/edit/${item.id}`)}>
+                                            <i className="fa-solid fa-pen-to-square"></i>
+                                        </Button>
+                                        <Button variant="danger" size="sm" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}>
+                                            <i className="fa-solid fa-trash"></i>
+                                        </Button>
+                                    </div>
                                 </td>
                             </tr>
                         )) : (
                             <tr>
-                                <td colSpan={6} className="text-center">{lang['global_no_data']}</td>
+                                <td colSpan={6} className="text-center text-xs md:text-sm">{lang['global_no_data']}</td>
                             </tr>
                         ))
                     }

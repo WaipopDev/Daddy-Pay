@@ -47,9 +47,11 @@ const LanguageSettingsPage = () => {
     }, [getLanguageAll]);
 
     return (
-        <main className="bg-white p-3">
-            <div className="flex justify-end pb-2">
-                <Button variant="primary"><i className="fa-solid fa-plus pr-2"></i>{lang['button_add_language']}</Button>
+        <main className="bg-white p-2 md:p-4">
+            <div className="flex justify-end pb-2 mb-4">
+                <Button variant="primary" className="w-full md:w-auto">
+                    <i className="fa-solid fa-plus pr-2"></i>{lang['button_add_language']}
+                </Button>
             </div>
             {
                 langList && (
@@ -65,34 +67,36 @@ const LanguageSettingsPage = () => {
                                     eventKey={key}
                                     title={langItem}
                                 >
-                                    <div className="flex justify-end pb-2">
-                                        <Button variant="primary">{lang['button_edit_language']}</Button>
-                                        <Button variant="danger" className="ml-3">{lang['button_delete_language']}</Button>
+                                    <div className="flex flex-col md:flex-row justify-end pb-2 mb-4 gap-2">
+                                        <Button variant="primary" className="w-full md:w-auto">{lang['button_edit_language']}</Button>
+                                        <Button variant="danger" className="w-full md:w-auto">{lang['button_delete_language']}</Button>
                                     </div>
-                                    <Table striped bordered hover>
-                                        <thead>
-                                            <tr>
-                                                <th>Key</th>
-                                                <th>Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                langActive && Object.keys(langActive).length > 0 ? (
-                                                    Object.entries(langActive).map(([key, value]) => (
-                                                        <tr key={key}>
-                                                            <td>{key}</td>
-                                                            <td>{value}</td>
+                                    <div className="table-responsive-wrapper">
+                                        <Table striped bordered hover>
+                                            <thead>
+                                                <tr>
+                                                    <th className="text-sm md:text-base">Key</th>
+                                                    <th className="text-sm md:text-base">Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    langActive && Object.keys(langActive).length > 0 ? (
+                                                        Object.entries(langActive).map(([key, value]) => (
+                                                            <tr key={key}>
+                                                                <td className="text-xs md:text-sm font-medium">{key}</td>
+                                                                <td className="text-xs md:text-sm">{value}</td>
+                                                            </tr>
+                                                        ))
+                                                    ) : (
+                                                        <tr>
+                                                            <td colSpan={2} className="text-center text-xs md:text-sm">No data available</td>
                                                         </tr>
-                                                    ))
-                                                ) : (
-                                                    <tr>
-                                                        <td colSpan={2}>No data available</td>
-                                                    </tr>
-                                                )
-                                            }
-                                        </tbody>
-                                    </Table>
+                                                    )
+                                                }
+                                            </tbody>
+                                        </Table>
+                                    </div>
                                 </Tab>
                             ))
                         }

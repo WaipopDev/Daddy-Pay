@@ -12,7 +12,7 @@ import { SearchParams } from '@/hooks/useReportData';
 
 interface FilterReportProps {
     reportName: string;
-    fetchData: (pageNumber: number, search: SearchParams) => void;
+    fetchData: (pageNumber: number, search: SearchParams) => Promise<void>;
 }
 
 const FilterReport = ({ reportName, fetchData }: FilterReportProps) => {
@@ -55,60 +55,78 @@ const FilterReport = ({ reportName, fetchData }: FilterReportProps) => {
     return (
         <div className="row pb-3">
             <Col md={10}>
-                <Form className="flex gap-2" onSubmit={handleSearch}>
-                    <Form.Group className="basis-1/4">
-                        <Form.Label>{lang['filter_report_shop']}</Form.Label>
-                        <Dropdown className="nav-dropdown-w">
-                            <Dropdown.Toggle
-                                className={cn(`flex items-center w-full px-2 py-2 rounded-md h-[35px]`)}
+                <Form onSubmit={handleSearch}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-4">
+                        <Form.Group className="w-full">
+                            <Form.Label className="text-sm md:text-base">{lang['filter_report_shop']}</Form.Label>
+                            <Dropdown className="nav-dropdown-w">
+                                <Dropdown.Toggle
+                                    className={cn(`flex items-center w-full px-2 py-2 rounded-md h-[35px] text-sm`)}
+                                >
+                                    <p className="px-2 w-full text-left text-xs md:text-sm">{valueShop ? itemShop.find(item => item.id === valueShop)?.shopName : lang['global_select']}</p>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    {
+                                        itemShop && itemShop.map((item, index) => (
+                                            <Dropdown.Item key={index} onClick={() => setValueShop(item.id)} active={valueShop === item.id}>
+                                                {item.shopName}
+                                            </Dropdown.Item>
+                                        ))
+                                    }
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Form.Group>
+                        <Form.Group className="w-full">
+                            <Form.Label className="text-sm md:text-base">{lang['filter_report_payment_method']}</Form.Label>
+                            <Dropdown className="nav-dropdown-w">
+                                <Dropdown.Toggle
+                                    className={cn(`flex items-center w-full px-2 py-2 rounded-md h-[35px] text-sm`)}
+                                >
+                                    <p className="px-2 w-full text-left text-xs md:text-sm">{valuePaymentMethod ? PAYMENT_METHOD.find(item => item.id === valuePaymentMethod)?.name : lang['global_select']}</p>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    {
+                                        PAYMENT_METHOD.map((item, index) => (
+                                            <Dropdown.Item key={index} onClick={() => setValuePaymentMethod(item.id)} active={valuePaymentMethod === item.id}>
+                                                {item.name}
+                                            </Dropdown.Item>
+                                        ))
+                                    }
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Form.Group>
+                        <Form.Group className="w-full">
+                            <Form.Label className="text-sm md:text-base">{lang['filter_report_machine_name']}</Form.Label>
+                            <Form.Control 
+                                type="text" 
+                                placeholder={lang['filter_report_machine_name']} 
+                                name="machineName" 
+                                className="text-sm"
+                            />
+                        </Form.Group>
+                        <Form.Group className="w-full">
+                            <Form.Label className="text-sm md:text-base">{lang['filter_report_program']}</Form.Label>
+                            <Form.Control 
+                                type="text" 
+                                placeholder={lang['filter_report_program']} 
+                                name="programName" 
+                                className="text-sm"
+                            />
+                        </Form.Group>
+                        <Form.Group className="w-full md:col-span-2">
+                            <Form.Label className="text-sm md:text-base">{lang['filter_report_select_date']}</Form.Label>
+                            <DatePickerRange dateValue={dateValue} onChange={setDateValue} />
+                        </Form.Group>
+                        <Form.Group className="w-full flex items-end">
+                            <Button 
+                                variant="primary" 
+                                type="submit" 
+                                className="w-full md:w-auto text-sm"
                             >
-                                <p className="px-2 w-full text-left text-sm">{valueShop ? itemShop.find(item => item.id === valueShop)?.shopName : lang['global_select']}</p>
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                {
-                                    itemShop && itemShop.map((item, index) => (
-                                        <Dropdown.Item key={index} onClick={() => setValueShop(item.id)} active={valueShop === item.id}>
-                                            {item.shopName}
-                                        </Dropdown.Item>
-                                    ))
-                                }
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </Form.Group>
-                    <Form.Group className="basis-1/4">
-                        <Form.Label>{lang['filter_report_payment_method']}</Form.Label>
-                        <Dropdown className="nav-dropdown-w">
-                            <Dropdown.Toggle
-                                className={cn(`flex items-center w-full px-2 py-2 rounded-md h-[35px]`)}
-                            >
-                                <p className="px-2 w-full text-left text-sm">{valuePaymentMethod ? PAYMENT_METHOD.find(item => item.id === valuePaymentMethod)?.name : lang['global_select']}</p>
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                {
-                                    PAYMENT_METHOD.map((item, index) => (
-                                        <Dropdown.Item key={index} onClick={() => setValuePaymentMethod(item.id)} active={valuePaymentMethod === item.id}>
-                                            {item.name}
-                                        </Dropdown.Item>
-                                    ))
-                                }
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </Form.Group>
-                    <Form.Group className="basis-1/4">
-                        <Form.Label>{lang['filter_report_machine_name']}</Form.Label>
-                        <Form.Control type="text" placeholder={lang['filter_report_machine_name']} name="machineName" />
-                    </Form.Group>
-                    <Form.Group className="basis-1/4">
-                        <Form.Label>{lang['filter_report_program']}</Form.Label>
-                        <Form.Control type="text" placeholder={lang['filter_report_program']} name="programName" />
-                    </Form.Group>
-                    <Form.Group className="basis-2/4">
-                        <Form.Label>{lang['filter_report_select_date']}</Form.Label>
-                        <DatePickerRange dateValue={dateValue} onChange={setDateValue} />
-                    </Form.Group>
-                    <Form.Group className="basis-1/4 flex items-end">
-                        <Button variant="primary" type="submit"><i className="fa-solid fa-search mr-2"></i>{lang['global_search']}</Button>
-                    </Form.Group>
+                                <i className="fa-solid fa-search mr-2"></i>{lang['global_search']}
+                            </Button>
+                        </Form.Group>
+                    </div>
                 </Form>
             </Col>
             <Col md={2}></Col>

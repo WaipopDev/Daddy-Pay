@@ -44,6 +44,8 @@ export const useDashboardGraphData = () => {
         graphDataByWeek: null,
         graphDataByMonth: null,
         graphDataByYear: null,
+        branchTotalMachine: null,
+        branchTotalSale: null
     });
     const fetchGraphData = useCallback(async (branchId: string) => {
         const response = await axios.get(`${DASHBOARD_API_ENDPOINTS.GRAPH_DATA}?branchId=${branchId}`);

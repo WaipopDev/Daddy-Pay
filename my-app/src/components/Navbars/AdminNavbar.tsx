@@ -15,7 +15,12 @@ interface LanguageProp {
    [key: string]: string;
 }
 
-const AdminNavbar: React.FC = () => {
+interface AdminNavbarProps {
+    onMenuToggle?: () => void;
+    isMenuOpen?: boolean;
+}
+
+const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle, isMenuOpen }) => {
     // const router = useRouter();
     // const pathname = usePathname();
     const dispatch = useAppDispatch()
@@ -69,14 +74,27 @@ const AdminNavbar: React.FC = () => {
     return (
         <>
             {/* Navbar */}
-            <nav className="w-full position-fixed items-center  z-10">
+            <nav className="w-full position-fixed items-center z-10">
                 <div className="bg-white fixed top-0 left-0 right-0 flex flex-wrap items-center justify-between h-[80px] px-2 border-b-[1px] border-[#b1b2b4]">
-                    <div className="flex items-center cursor-pointer">
-                        <Image src="/images/logo.png" width={60} height={60} priority alt="logo" />
-                        <h2 className="font-bold">
-                            {'Daddy Pay'}
-                        </h2>
+                    <div className="flex items-center">
+                        {/* Mobile hamburger menu button */}
+                        <button
+                            onClick={onMenuToggle}
+                            className="md:hidden flex items-center justify-center w-10 h-10 mr-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                            aria-label="Toggle menu"
+                        >
+                            <i className={`fa-solid ${isMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
+                        </button>
+                        
+                        <div className="flex items-center cursor-pointer">
+                            <Image src="/images/logo.png" width={60} height={60} priority alt="logo" />
+                            <h2 className="font-bold">
+                                {'Daddy Pay'}
+                            </h2>
+                        </div>
                     </div>
+                    
+                    {/* Desktop menu */}
                     <div className="flex-col md:flex-row list-none items-center hidden md:flex">
                         <Dropdown className="nav-dropdown-lang mr-2">
                             <Dropdown.Toggle className="flex items-center w-full cursor-pointer px-3 py-2 lg:min-w-[180px] rounded-md">
@@ -91,6 +109,11 @@ const AdminNavbar: React.FC = () => {
                                 ))}
                             </Dropdown.Menu>
                         </Dropdown>
+                        <UserDropdown />
+                    </div>
+                    
+                    {/* Mobile menu - only show user dropdown on mobile */}
+                    <div className="md:hidden">
                         <UserDropdown />
                     </div>
                 </div>

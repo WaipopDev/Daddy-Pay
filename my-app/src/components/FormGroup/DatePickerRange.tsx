@@ -41,6 +41,8 @@ const DatePickerRange: FC<Props> = (props) => {
                     selectsRange
                     startDate={dateValue ? dateValue[0] : null}
                     endDate={dateValue ? dateValue[1] : null}
+                    popperClassName="react-datepicker-popper"
+                    portalId="datepicker-portal"
                 />
             </div>
         </div>

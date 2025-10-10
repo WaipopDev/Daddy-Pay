@@ -1,6 +1,8 @@
+'use client'
 import AdminNavbar from "@/components/Navbars/AdminNavbar"
 import HeaderBar from "@/components/Navbars/HeaderBar"
 import Sidebar from "@/components/Sidebar/Sidebar"
+import { useState } from 'react'
 // import { cookies } from 'next/headers'
 // import { getLangData } from '@/lib/getLangData'
 
@@ -72,11 +74,21 @@ const menuItems = [
   }
 ];
 
-export default  async function AppAuthLayout({
+export default function AppAuthLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen)
+    }
+    
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false)
+    }
+    
     // const cookieStore = await cookies()
     // const langCode = cookieStore.get('lang')?.value || 'en'
     // const token = cookieStore.get('token')?.value || ''
@@ -88,11 +100,24 @@ export default  async function AppAuthLayout({
     // console.log("🚀 ~ langCode:", langCode)
     return (
         <section className="bg-[#ECEEF6] min-h-screen">
-            <AdminNavbar />
+            <AdminNavbar onMenuToggle={toggleMobileMenu} isMenuOpen={isMobileMenuOpen} />
+            
+            {/* Mobile overlay */}
+            {isMobileMenuOpen && (
+                <div 
+                    className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
+                    onClick={closeMobileMenu}
+                />
+            )}
+            
             <div className="flex pt-[80px]">
-                <Sidebar {...menuItems} />
+                <Sidebar 
+                    {...menuItems} 
+                    isMobileOpen={isMobileMenuOpen}
+                    onMobileClose={closeMobileMenu}
+                />
                 
-                <div className="pl-[14rem] w-full">
+                <div className="md:pl-[14rem] w-full transition-all duration-300">
                     <div className="p-2">
                         <HeaderBar {...menuItems} />
                         {children}

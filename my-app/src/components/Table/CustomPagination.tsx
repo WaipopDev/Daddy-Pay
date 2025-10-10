@@ -81,11 +81,19 @@ const CustomPagination = ({ currentPage, totalPages, onPageChange }: PaginationP
     };
 
     return (
-        <Pagination>
+        <Pagination className="pagination-sm">
             {/* <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} /> */}
-            <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+            <Pagination.Prev 
+                onClick={() => handlePageChange(currentPage - 1)} 
+                disabled={currentPage === 1}
+                className="text-xs md:text-sm"
+            />
             {renderPaginationItems()}
-            <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+            <Pagination.Next 
+                onClick={() => handlePageChange(currentPage + 1)} 
+                disabled={currentPage === totalPages}
+                className="text-xs md:text-sm"
+            />
             {/* <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} /> */}
         </Pagination>
     );

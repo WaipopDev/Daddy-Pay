@@ -110,13 +110,15 @@ const ShopManagementPage = () => {
     };
 
     return (
-        <main className="bg-white p-2">
-            <div className="flex border-b border-gray-300 pb-2">
+        <main className="bg-white p-2 md:p-4">
+            <div className="flex border-b border-gray-300 pb-2 mb-4">
                 <Col className="flex justify-start">
 
                 </Col>
                 <Col className="flex justify-end">
-                    <Button variant="primary" onClick={() => handleOpenMachine()}><i className="fa-solid fa-plus pr-2"></i>{lang['page_shop_management_add']}</Button>
+                    <Button variant="primary" onClick={() => handleOpenMachine()} className="w-full md:w-auto">
+                        <i className="fa-solid fa-plus pr-2"></i>{lang['page_shop_management_add']}
+                    </Button>
                 </Col>
             </div>
             <Suspense fallback={<p>Loading feed...</p>}>
@@ -138,22 +140,30 @@ const ShopManagementPage = () => {
                     {
                         item && (item.length ? item.map((item: ItemDataProps, index: number) => (
                             <tr key={index}>
-                                <td>{(page.page - 1) * 10 + index + 1}</td>
-                                <td>{item.shopInfo.shopName}</td>
-                                <td>{item.shopManagementName}</td>
-                                <td>{item.shopManagementMachineID}</td>
-                                <td>{item.shopManagementIotID}</td>
-                                <td>{item.machineInfo.machineType}</td>
-                                <td><div className="flex justify-center">{item.shopManagementStatus}</div></td>
+                                <td className="text-center">{(page.page - 1) * 10 + index + 1}</td>
+                                <td className="text-xs md:text-sm">{item.shopInfo.shopName}</td>
+                                <td className="text-xs md:text-sm">{item.shopManagementName}</td>
+                                <td className="text-xs md:text-sm">{item.shopManagementMachineID}</td>
+                                <td className="text-xs md:text-sm">{item.shopManagementIotID}</td>
+                                <td className="text-xs md:text-sm">{item.machineInfo.machineType}</td>
+                                <td><div className="flex justify-center text-xs md:text-sm">{item.shopManagementStatus}</div></td>
                                 <td>
-                                    <Button variant="warning" size="sm" onClick={() => handleOpenEditModal(item.id)}><i className="fa-solid fa-pen-to-square"></i></Button>
-                                    <Button variant="danger" size="sm" className="ml-2" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}><i className="fa-solid fa-trash"></i></Button>
-                                    <Button variant="info" size="sm" className="ml-2" onClick={() => router.push(`/shop-management/program/${item.id}`)}><i className="fa-solid fa-gear"></i></Button>
+                                    <div className="flex gap-1 justify-center">
+                                        <Button variant="warning" size="sm" onClick={() => handleOpenEditModal(item.id)}>
+                                            <i className="fa-solid fa-pen-to-square"></i>
+                                        </Button>
+                                        <Button variant="danger" size="sm" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}>
+                                            <i className="fa-solid fa-trash"></i>
+                                        </Button>
+                                        <Button variant="info" size="sm" onClick={() => router.push(`/shop-management/program/${item.id}`)}>
+                                            <i className="fa-solid fa-gear"></i>
+                                        </Button>
+                                    </div>
                                 </td>
                             </tr>
                         )) : (
                             <tr>
-                                <td colSpan={8} className="text-center">{lang['global_no_data']}</td>
+                                <td colSpan={8} className="text-center text-xs md:text-sm">{lang['global_no_data']}</td>
                             </tr>
                         ))
                     }

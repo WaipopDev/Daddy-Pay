@@ -97,3 +97,248 @@ input.form-control {
         background: #a8a8a8;
     }
 }
+
+// Mobile responsive styles
+@media (max-width: 768px) {
+    // Mobile hamburger menu styles
+    .mobile-menu-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+        
+        &:focus {
+            outline: 2px solid #2f5ca4;
+            outline-offset: 2px;
+        }
+    }
+    
+    // Mobile sidebar overlay
+    .mobile-sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 20;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        
+        &.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+    
+    // Mobile sidebar styles
+    .mobile-sidebar {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        width: 14rem;
+        height: calc(100vh - 80px);
+        background-color: #F9F9F9;
+        border-right: 1px solid #e5e7eb;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        z-index: 30;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        
+        &.open {
+            transform: translateX(0);
+        }
+    }
+    
+    // Mobile content area adjustments
+    .mobile-content {
+        padding-left: 0 !important;
+        transition: all 0.3s ease;
+    }
+    
+    // Mobile table responsiveness
+    .table-responsive-mobile {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        
+        table {
+            min-width: 600px; // Ensure table has minimum width for mobile scrolling
+        }
+    }
+    
+    // Mobile form adjustments
+    .mobile-form {
+        .form-control {
+            font-size: 16px; // Prevent zoom on iOS
+        }
+        
+        .btn {
+            min-height: 44px; // Touch-friendly button size
+        }
+    }
+    
+    // Mobile navigation adjustments
+    .mobile-nav {
+        .navbar-brand {
+            font-size: 1.1rem;
+        }
+        
+        .nav-item {
+            margin: 0.25rem 0;
+        }
+    }
+}
+
+// Tablet responsive styles
+@media (min-width: 769px) and (max-width: 1024px) {
+    .tablet-sidebar {
+        width: 12rem;
+    }
+    
+    .tablet-content {
+        padding-left: 12rem;
+    }
+}
+
+// Mobile-first responsive utilities
+.mobile-hidden {
+    @media (max-width: 768px) {
+        display: none !important;
+    }
+}
+
+.mobile-only {
+    @media (min-width: 769px) {
+        display: none !important;
+    }
+}
+
+.desktop-only {
+    @media (max-width: 768px) {
+        display: none !important;
+    }
+}
+
+// Global z-index fixes for DatePicker and Dropdowns
+.react-datepicker {
+    z-index: 1000 !important;
+}
+
+.react-datepicker__portal {
+    z-index: 1000 !important;
+}
+
+.react-datepicker-popper {
+    z-index: 1000 !important;
+}
+
+.dropdown-menu {
+    z-index: 1000 !important;
+}
+
+// Ensure table headers don't interfere with dropdowns
+.table-responsive-wrapper {
+    th {
+        z-index: 5 !important;
+    }
+}
+
+// DatePicker popper specific styling
+.react-datepicker-popper {
+    z-index: 1000 !important;
+    
+    .react-datepicker {
+        z-index: 1000 !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+    }
+}
+
+// Mobile pagination styles
+@media (max-width: 768px) {
+    .pagination {
+        .page-link {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            line-height: 1.25;
+        }
+        
+        .page-item {
+            margin: 0 0.125rem;
+        }
+    }
+    
+    // Mobile table improvements
+    .table-responsive-wrapper {
+        border-radius: 0.375rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        
+        table {
+            margin-bottom: 0;
+            
+            th, td {
+                padding: 0.5rem 0.25rem;
+                border-color: #e5e7eb;
+            }
+            
+            th {
+                background-color: #f9fafb;
+                font-weight: 600;
+                position: sticky;
+                top: 0;
+                z-index: 5;
+            }
+        }
+    }
+    
+    // Mobile form improvements
+    .form-control {
+        font-size: 16px; // Prevent zoom on iOS
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .btn {
+        min-height: 44px; // Touch-friendly button size
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    // Mobile dropdown improvements
+    .dropdown-menu {
+        max-height: 200px;
+        overflow-y: auto;
+        border-radius: 0.375rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+    
+    .dropdown-item {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    // DatePicker z-index fix
+    .react-datepicker {
+        z-index: 1000 !important;
+    }
+    
+    .react-datepicker__portal {
+        z-index: 1000 !important;
+    }
+    
+    .react-datepicker-popper {
+        z-index: 1000 !important;
+    }
+}

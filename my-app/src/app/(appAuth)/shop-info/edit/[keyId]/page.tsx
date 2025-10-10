@@ -26,13 +26,14 @@ interface ActionButtonsProps {
 
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({ isLoading, onCancel, lang }) => (
-    <div className="flex pb-2">
+    <div className="flex flex-col md:flex-row pb-2 mb-4 gap-2">
         <Col className="flex justify-end">
             <Button 
                 variant="primary" 
                 type="submit"
                 disabled={isLoading}
                 aria-label={lang['button_save']}
+                className="w-full md:w-auto"
             >
                 <i className="fa-solid fa-floppy-disk pr-2" aria-hidden="true"></i>
                 {lang['button_save']}
@@ -40,7 +41,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ isLoading, onCancel, lang
             <Button 
                 variant="secondary" 
                 onClick={onCancel} 
-                className="ml-2"
+                className="w-full md:w-auto ml-0 md:ml-2"
                 disabled={isLoading}
                 aria-label={lang['button_cancel']}
             >
@@ -171,7 +172,7 @@ const ShopInfoEditPage = () => {
     }
 
     return (
-        <main className="bg-white p-2" role="main">
+        <main className="bg-white p-2 md:p-4" role="main">
             <Form 
                 noValidate 
                 validated={validated} 

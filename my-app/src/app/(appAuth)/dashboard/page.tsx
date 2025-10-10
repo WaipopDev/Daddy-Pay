@@ -8,7 +8,7 @@ const DashboardPage = () => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
    
     return (
-        <main className="bg-white p-2">
+        <main className="bg-white p-2 md:p-4">
             <Tabs
                 className="mb-3"
                 defaultActiveKey="sales_report"
@@ -17,8 +17,10 @@ const DashboardPage = () => {
                     eventKey="sales_report"
                     title={lang['page_dashboard_sales_report']}
                 >
-                    <SalesReport />
-                    <GraphReport lang={lang} />
+                    <div className="space-y-4 md:space-y-6">
+                        <SalesReport />
+                        <GraphReport lang={lang} />
+                    </div>
                 </Tab>
             </Tabs>
         </main>
