@@ -53,7 +53,7 @@ export async function middleware(req: NextRequest) {
             }
             userData = res.data;
             if (userData) {
-                cache.set('x-user-data-cache', userData);
+                cache.set('x-user-data-cache', JSON.stringify(userData), { ttl: 1000 * 60 * 10 });
             }
         } catch (err) {
             console.log("🚀 ~ middleware ~ err:", err)
