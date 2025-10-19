@@ -67,8 +67,9 @@ export async function middleware(req: NextRequest) {
             
             return response;
         }
+    }else{
+        userData = JSON.parse(userData as string);
     }
-
     const response = NextResponse.next();
     response.headers.set('x-user-lang', lang);
     if (!req.cookies.get('lang')) {
