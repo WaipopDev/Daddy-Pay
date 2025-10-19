@@ -69,46 +69,67 @@ const LoginForm = () => {
     return (
         <main className="main-login">
             <Container>
-                <div className="flex flex-col justify-center items-center h-screen">
-                    <Row>
-                        <Col className="flex justify-center items-center ">
+                <div className="flex flex-col justify-center items-center min-h-screen px-4">
+                    <Row className="w-full">
+                        <Col className="flex justify-center items-center">
                             <div className="flex flex-col justify-center items-center">
-                                <Image src="/images/logo.png" width={250} height={250} priority alt="logo" />
-                                <h1 className="text-4xl font-bold">Sign in to Daddy Pay</h1>
+                                <Image 
+                                    src="/images/logo.png" 
+                                    width={250} 
+                                    height={250} 
+                                    priority 
+                                    alt="logo"
+                                    className="w-32 h-32 md:w-60 md:h-60"
+                                />
+                                <h1 className="text-2xl md:text-4xl font-bold text-center mt-4">Sign in to Daddy Pay</h1>
                             </div>
                         </Col>
                     </Row>
-                    <Row>
-                        <div className="shadow-lg my-5 w-[35em] bg-white">
-                            <div className="p-4">
+                    <Row className="w-full">
+                        <Col className="flex justify-center">
+                            <div className="shadow-lg my-5 w-full max-w-md bg-white rounded-lg">
+                                <div className="p-6">
 
-                                <Form onSubmit={(e) => handdleSubmit(e)} noValidate validated={validated}>
-                                    <Form.Group className="mb-3" controlId="formBasicEmail">
-                                        <Form.Label className="text-xl">Username</Form.Label>
-                                        <InputGroup className="mb-3">
-                                            <InputGroup.Text id="basic-addon1"><i className="fa-solid fa-user"></i></InputGroup.Text>
-                                            <Form.Control type="text" placeholder="Username" name="user" required />
-                                        </InputGroup>
+                                    <Form onSubmit={(e) => handdleSubmit(e)} noValidate validated={validated}>
+                                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                                            <Form.Label className="text-lg md:text-xl">Username</Form.Label>
+                                            <InputGroup className="mb-3">
+                                                <InputGroup.Text id="basic-addon1"><i className="fa-solid fa-user"></i></InputGroup.Text>
+                                                <Form.Control 
+                                                    type="text" 
+                                                    placeholder="Username" 
+                                                    name="user" 
+                                                    required 
+                                                    className="text-base"
+                                                />
+                                            </InputGroup>
 
-                                    </Form.Group>
-                                    <Form.Group className="mb-3" controlId="formBasicPassword">
-                                        <Form.Label className="text-xl">Password</Form.Label>
-                                        <InputGroup className="mb-3">
-                                            <InputGroup.Text id="basic-addon1"><i className="fa-solid fa-unlock-keyhole"></i></InputGroup.Text>
-                                            <Form.Control type="password" placeholder="Password" name="password" required />
-                                        </InputGroup>
-                                    </Form.Group>
-                                    <Form.Group className="flex justify-center">
-                                        <ButtonSubmit isProcess={isProcess} title="Sign in" />
-                                    </Form.Group>
-                                </Form>
-                                <div className="flex justify-center mt-3">
-                                    <Link href="/forgot-password" className="text-center text-blue-500 hover:text-blue-700">
-                                        <p className="text-xl">Forgot Password?</p>
-                                    </Link>
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="formBasicPassword">
+                                            <Form.Label className="text-lg md:text-xl">Password</Form.Label>
+                                            <InputGroup className="mb-3">
+                                                <InputGroup.Text id="basic-addon1"><i className="fa-solid fa-unlock-keyhole"></i></InputGroup.Text>
+                                                <Form.Control 
+                                                    type="password" 
+                                                    placeholder="Password" 
+                                                    name="password" 
+                                                    required 
+                                                    className="text-base"
+                                                />
+                                            </InputGroup>
+                                        </Form.Group>
+                                        <Form.Group className="flex justify-center">
+                                            <ButtonSubmit isProcess={isProcess} title="Sign in" />
+                                        </Form.Group>
+                                    </Form>
+                                    <div className="flex justify-center mt-3">
+                                        <Link href="/forgot-password" className="text-center text-blue-500 hover:text-blue-700">
+                                            <p className="text-lg md:text-xl">Forgot Password?</p>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </Col>
                     </Row>
                 </div>
             </Container>

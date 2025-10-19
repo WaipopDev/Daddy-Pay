@@ -341,4 +341,17 @@ input.form-control {
     .react-datepicker-popper {
         z-index: 1000 !important;
     }
+    
+    // Mobile LoginForm styles - minimal CSS for iOS compatibility
+    .main-login {
+        // Prevent iOS zoom on input focus
+        input.form-control {
+            font-size: 16px !important;
+        }
+        
+        // Ensure proper touch targets
+        .btn {
+            min-height: 44px;
+        }
+    }
 }
