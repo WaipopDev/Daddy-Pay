@@ -21,7 +21,7 @@ const GraphReport = ({ lang }: { lang: { [key: string]: string } }) => {
         }
         setValueShop(search.branchId);
     }
-
+    
     return (
         <div className='bg-white py-3 border-t-2 border-gray-200'>
             <FilterDashboard fetchData={fetchData} />

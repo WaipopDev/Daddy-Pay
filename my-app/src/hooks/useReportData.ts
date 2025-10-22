@@ -22,6 +22,7 @@ interface ReportDataReturn {
     error: string | null;
     fetchData: (pageNumber?: number, search?: SearchParams) => Promise<void>;
     refreshCurrentPage: () => Promise<void>;
+    fetchDataExcel: (pageNumber?: number, search?: SearchParams) => Promise<ReportBranchIncomeItemDataProps[] | null>;
 }
 interface ReportDataReturnBank {
     items: ReportBankPaymentItemDataProps[] | null;
@@ -31,6 +32,7 @@ interface ReportDataReturnBank {
     error: string | null;
     fetchData: (pageNumber?: number, search?: SearchParams) => Promise<void>;
     refreshCurrentPage: () => Promise<void>;
+    fetchDataExcel: (pageNumber?: number, search?: SearchParams) => Promise<ReportBankPaymentItemDataProps[] | null>;
 }
 interface ReportDataState {
     item: ReportBranchIncomeItemDataProps[] | null;
@@ -119,6 +121,34 @@ export const useReportData = (): ReportDataReturn => {
         }
     }, []);
 
+    const fetchDataExcel = useCallback(async (pageNumber: number = 1, search: SearchParams = {}) => {
+        try {
+            const response = await axios.get(`${REPORT_API_ENDPOINTS.BRANCH_INCOME}`,
+                {
+                    params: {
+                        page: pageNumber.toString(),
+                        branchId: search.branchId || '',
+                        paymentType: search.paymentType || '',
+                        machineName: search.machineName || '',
+                        programName: search.programName || '',
+                        startDate: search.startDate || '',
+                        endDate: search.endDate || '',
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            if (response.status === 200) {
+                return response.data.items;
+            }
+            return null;
+        } catch (error) {
+            console.error("Error fetching shop info:", error);
+            return null;
+        }
+    },[]);
+
     const refreshCurrentPage = useCallback(async () => {
         await fetchData(state.page.page);
     }, [fetchData, state.page.page]);
@@ -139,6 +169,7 @@ export const useReportData = (): ReportDataReturn => {
         error: state.error,
         fetchData,
         refreshCurrentPage,
+        fetchDataExcel,
     };
 }
 
@@ -192,6 +223,31 @@ export const useReportDataBank = (): ReportDataReturnBank => {
         }
     }, []);
 
+    const fetchDataExcel = useCallback(async (pageNumber: number = 1, search: SearchParams = {}) => {
+        try {
+            const response = await axios.get(`${REPORT_API_ENDPOINTS.KBANK_PAYMENT}`,
+                {
+                    params: {
+                        page: pageNumber.toString(),
+                        branchId: search.branchId || '',
+                        startDate: search.startDate || '',
+                        endDate: search.endDate || '',
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            if (response.status === 200) {
+                return response.data;
+            }
+            return null;
+        } catch (error) {
+            console.error("Error fetching shop info:", error);
+            return null;
+        }
+    },[])
+
     const refreshCurrentPage = useCallback(async () => {
         await fetchData(state.page.page);
     }, [fetchData, state.page.page]);
@@ -212,5 +268,6 @@ export const useReportDataBank = (): ReportDataReturnBank => {
         error: state.error,
         fetchData,
         refreshCurrentPage,
+        fetchDataExcel
     };
 }
