@@ -15,7 +15,10 @@ const BranchIncomePage = () => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string };
     const router = useRouter();
     const { items, page, fetchData, summary } = useReportData();
-    const [search, setSearch] = useState<SearchParams>({});
+    const [search, setSearch] = useState<SearchParams>({
+        startDate: moment().format('YYYY-MM-DD'),
+        endDate: moment().format('YYYY-MM-DD'),
+    });
 
     const handleBack = () => {
         router.back();
