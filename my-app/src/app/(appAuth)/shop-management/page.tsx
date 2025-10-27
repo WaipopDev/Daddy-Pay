@@ -3,11 +3,13 @@ import TableComponent from '@/components/Table/Table';
 import { useAppSelector } from '@/store/hook';
 import { useRouter } from 'next/navigation';
 import React, { Suspense, useCallback, useEffect, useState } from 'react'
-import { Button, Col } from 'react-bootstrap';
+import { Button, Col, Dropdown, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 import ModalActionDelete from '@/components/Modals/ModalActionDelete';
 import { ShopManagementAdd, ShopManagementEdit } from '@/components/ShopManagement';
+import { useMasterShopList } from '@/hooks/useMasterData';
+import { cn } from '@/lib/utils';
 
 interface ItemDataProps {
     id: string;
@@ -29,14 +31,6 @@ interface ItemDataProps {
     }
 }
 
-// interface MachineDataProps {
-//     id: string;
-//     machineKey: string;
-//     machineType: string;
-//     machineBrand: string;
-//     machineModel: string;
-// }
-
 const ShopManagementPage = () => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
     const router = useRouter();
@@ -47,13 +41,15 @@ const ShopManagementPage = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [editId, setEditId] = useState('');
     const [showModalDelete, setShowModalDelete] = useState({ isShow: false, id: '' });
+    const { itemShop } = useMasterShopList();
+    const [valueShop, setValueShop] = useState('');
     // const [itemMachine, setItemMachine] = useState<MachineDataProps[][] | null>(null);
     // const [activeShopType, setActiveShopType] = useState('');
     // console.log("🚀 ~ ShopManagementPage ~ activeMachineType:", itemShop)
 
     const fetchData = useCallback(async (pageNumber: number = 1, search: string = '') => {
         try {
-            const response = await axios.get(`/api/shop-management?page=${pageNumber}&search=${search}`, {
+            const response = await axios.get(`/api/shop-management?page=${pageNumber}&shopId=${valueShop === 'all' ? '' : valueShop}&search=${search}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -65,15 +61,19 @@ const ShopManagementPage = () => {
         } catch (error) {
             console.error("Error fetching shop info:", error);
         }
-    }, []);
+    }, [valueShop]);
 
     
 
     
+
+    // useEffect(() => {
+    //     fetchData();
+    // }, [fetchData]);
 
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        fetchData(1, '');
+    }, [valueShop]);
 
     const handleOpenMachine = () => {
         setShowModal(true);
@@ -108,14 +108,32 @@ const ShopManagementPage = () => {
             console.error("Error deleting machine:", error);
         }
     };
-
+ 
     return (
         <main className="bg-white p-2 md:p-4">
             <div className="flex border-b border-gray-300 pb-2 mb-4">
-                <Col className="flex justify-start">
-
+                <Col>
+                    <Form.Group className="w-full">
+                        <Form.Label className="text-sm md:text-base">{lang['filter_report_shop']}</Form.Label>
+                        <Dropdown className="nav-dropdown-w">
+                            <Dropdown.Toggle
+                                className={cn(`flex items-center w-full px-2 py-2 rounded-md h-[35px] text-sm`)}
+                            >
+                                <p className="px-2 w-full text-left text-xs md:text-sm">{valueShop ? itemShop.find(item => item.id === valueShop)?.shopName : lang['global_select']}</p>
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                {
+                                    itemShop && itemShop.map((item, index) => (
+                                        <Dropdown.Item key={index} onClick={() => setValueShop(item.id)} active={valueShop === item.id}>
+                                            {item.shopName}
+                                        </Dropdown.Item>
+                                    ))
+                                }
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Form.Group>
                 </Col>
-                <Col className="flex justify-end">
+                <Col className="text-end">
                     <Button variant="primary" onClick={() => handleOpenMachine()} className="w-full md:w-auto">
                         <i className="fa-solid fa-plus pr-2"></i>{lang['page_shop_management_add']}
                     </Button>
@@ -140,7 +158,7 @@ const ShopManagementPage = () => {
                     {
                         item && (item.length ? item.map((item: ItemDataProps, index: number) => (
                             <tr key={index}>
-                                <td className="text-center">{(page.page - 1) * 10 + index + 1}</td>
+                                <td className="text-center">{((page.page - 1) * 50) + (index + 1)}</td>
                                 <td className="text-xs md:text-sm">{item.shopInfo.shopName}</td>
                                 <td className="text-xs md:text-sm">{item.shopManagementName}</td>
                                 <td className="text-xs md:text-sm">{item.shopManagementMachineID}</td>
