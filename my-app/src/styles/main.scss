@@ -245,6 +245,28 @@ input.form-control {
 
 .dropdown-menu {
     z-index: 1000 !important;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+// Custom scrollbar styling for dropdown menu
+.dropdown-menu::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+    
+    &:hover {
+        background: #a8a8a8;
+    }
 }
 
 // Ensure table headers don't interfere with dropdowns
