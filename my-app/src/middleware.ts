@@ -11,18 +11,21 @@ export async function middleware(req: NextRequest) {
     const token = req.cookies.get('token')?.value;
     const lang = req.cookies.get('lang')?.value || 'en'; 
     // const role = req.cookies.get('role')?.value;
-    // const cacheKey = `user-data-${token}`;
+    const cacheKey = token ? `user-data-${token}` : null;
     
     const publicPages = ['/login', '/logout'];
 
     // Allow public pages to load without redirection
     if (req.nextUrl.pathname === '/login') {
         console.log('req.nextUrl.pathname', req.nextUrl.pathname)
-        cache.delete('x-user-data-cache');
+        // Delete cache for the current token if it exists
+        if (token) {
+            const oldCacheKey = `user-data-${token}`;
+            cache.delete(oldCacheKey);
+        }
         const response = NextResponse.next();
         response.cookies.set('token', '', { path: '/', expires: new Date(0) });
         response.headers.delete('x-user-data');
-        console.log('cache.get(', cache.get('x-user-data-cache'))
         return response;
     }
     if (publicPages.includes(req.nextUrl.pathname)) {
@@ -35,7 +38,8 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(loginUrl);
     }
 
-    let userData = cache.get('x-user-data-cache')
+    let userData = cacheKey ? cache.get(cacheKey) : null
+    // console.log('userData', userData)
     let newToken = token;
     if (!userData) {
         try {
@@ -44,16 +48,24 @@ export async function middleware(req: NextRequest) {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            // console.log('res', res)
+            // console.log('res', res.data)
             const xNewToken = res.headers['X-New-Token'];
             const xTokenRefreshed = res.headers['X-Token-Refreshed'];
             if (xTokenRefreshed === 'true' && xNewToken) {
                 newToken = xNewToken;
                 console.log('Token refreshed automatically');
+                // Delete old cache entry when token is refreshed
+                if (cacheKey) {
+                    cache.delete(cacheKey);
+                }
             }
             userData = res.data;
             if (userData) {
-                cache.set('x-user-data-cache', JSON.stringify(userData), { ttl: 1000 * 60 * 10 });
+                // Use new token for cache key if token was refreshed
+                const finalCacheKey = newToken ? `user-data-${newToken}` : cacheKey;
+                if (finalCacheKey) {
+                    cache.set(finalCacheKey, JSON.stringify(userData), { ttl: 1000 * 60 * 10 });
+                }
             }
         } catch (err) {
             console.log("🚀 ~ middleware ~ err:", err)
@@ -63,7 +75,9 @@ export async function middleware(req: NextRequest) {
             url.searchParams.set('v', `${new Date().getTime()}`);
             const response = NextResponse.redirect(url);
             response.cookies.set('token', '', { path: '/', expires: new Date(0) });
-            cache.delete('x-user-data-cache');
+            if (cacheKey) {
+                cache.delete(cacheKey);
+            }
             
             return response;
         }

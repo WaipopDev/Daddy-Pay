@@ -1,5 +1,5 @@
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { LRUCache } from 'lru-cache'
 import { clearDataUser } from "@/app/actions";
 
@@ -9,10 +9,14 @@ const options = {
 }
 const cache = new LRUCache(options)
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     // Clear user data cache
     await clearDataUser()
-    cache.delete('x-user-data-cache');
+    const token = req.cookies.get('token')?.value;
+    if (token) {
+        const cacheKey = `user-data-${token}`;
+        cache.delete(cacheKey);
+    }
     const response = NextResponse.json({ message: 'Logged out successfully' });
 
     // Clear all cookies that might contain user data
