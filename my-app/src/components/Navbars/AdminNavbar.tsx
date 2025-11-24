@@ -13,7 +13,7 @@ import _ from 'lodash';
 import { SHOP_INFO_API_ENDPOINTS } from '@/constants/shopInfo';
 
 interface LanguageProp {
-   [key: string]: string;
+    [key: string]: string;
 }
 
 interface ShopInfo {
@@ -50,16 +50,16 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle, isMenuOpen }) =
     const getUser = useCallback(async () => {
         const res = await getData() as UserDataWithPermissions;
         dispatch(setPropsUser(res))
-        
+
         // Check if user role is 'user' or 'admin' and fetch shop info if needed
         if (res && (res.role === 'user' || res.role === 'admin')) {
             // Get rolePermissions or permissions from user data
             const rolePermissions = res.rolePermissions || res.permissions || [];
-     
+
             if (rolePermissions && rolePermissions.length > 0) {
                 const firstShopId = rolePermissions[0]?.shopId;
                 if (firstShopId) {
-                    
+
                     try {
                         const shopResponse = await axios.get(SHOP_INFO_API_ENDPOINTS.GET_BY_ID_API(firstShopId), {
                             headers: {
@@ -69,7 +69,7 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle, isMenuOpen }) =
                         });
                         if (shopResponse.data) {
                             setShopInfo({
-                                shopName: shopResponse.data.shopName || 'Daddy Pay',
+                                shopName: shopResponse.data.shopSystemName || 'Daddy Pay',
                                 shopUploadFile: shopResponse.data.shopUploadFile || '/images/logo.png'
                             });
                         }
@@ -85,7 +85,7 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle, isMenuOpen }) =
 
     const getLanguage = useCallback(async () => {
         const res = await axios.get('/api/lang/list')
-       
+
         if (res.data) {
             setLanguages(res.data)
         } else {
@@ -95,19 +95,19 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle, isMenuOpen }) =
 
     useEffect(() => {
         getLanguage()
-   
+
     }, [getLanguage])
 
     const fetchShopInfoForUser = useCallback(async () => {
         if (!user.role || (user.role !== 'user' && user.role !== 'admin') || shopInfo) {
             return;
         }
-    
-        
+
+
         try {
             const userData = await getData() as UserDataWithPermissions;
             const rolePermissions = userData.rolePermissions || userData.permissions || [];
-            
+
             if (rolePermissions && rolePermissions.length > 0) {
                 const firstShopId = rolePermissions[0]?.shopId;
                 if (firstShopId) {
@@ -119,7 +119,7 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle, isMenuOpen }) =
                     });
                     if (shopResponse.data) {
                         setShopInfo({
-                            shopName: shopResponse.data.shopName || 'Daddy Pay',
+                            shopName: shopResponse.data.shopSystemName || 'Daddy Pay',
                             shopUploadFile: shopResponse.data.shopUploadFile || '/images/logo.png'
                         });
                     }
@@ -168,21 +168,21 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle, isMenuOpen }) =
                         >
                             <i className={`fa-solid ${isMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
                         </button>
-                        
+
                         <div className="flex items-center cursor-pointer">
-                            <Image 
-                                src={shopInfo?.shopUploadFile || "/images/logo.png"} 
-                                width={60} 
-                                height={60} 
-                                priority 
-                                alt="logo" 
+                            <Image
+                                src={shopInfo?.shopUploadFile || "/images/logo.png"}
+                                width={60}
+                                height={60}
+                                priority
+                                alt="logo"
                             />
                             <h2 className="font-bold">
                                 {shopInfo?.shopName || 'Daddy Pay'}
                             </h2>
                         </div>
                     </div>
-                    
+
                     {/* Desktop menu */}
                     <div className="flex-col md:flex-row list-none items-center hidden md:flex">
                         <Dropdown className="nav-dropdown-lang mr-2">
@@ -200,7 +200,7 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle, isMenuOpen }) =
                         </Dropdown>
                         <UserDropdown />
                     </div>
-                    
+
                     {/* Mobile menu - only show user dropdown on mobile */}
                     <div className="md:hidden">
                         <UserDropdown />
