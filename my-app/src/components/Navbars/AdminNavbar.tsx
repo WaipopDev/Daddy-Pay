@@ -6,13 +6,28 @@ import Image from "next/image";
 import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { getData } from '@/app/actions';
 import { setPropsUser } from '@/store/features/userSlice';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Dropdown } from 'react-bootstrap';
 import Cookies from 'js-cookie'
 import _ from 'lodash';
+import { SHOP_INFO_API_ENDPOINTS } from '@/constants/shopInfo';
 
 interface LanguageProp {
    [key: string]: string;
+}
+
+interface ShopInfo {
+    shopName: string;
+    shopUploadFile: string;
+}
+
+interface UserPermission {
+    shopId: string;
+}
+
+interface UserDataWithPermissions extends UserAdmin {
+    rolePermissions?: UserPermission[];
+    permissions?: UserPermission[];
 }
 
 interface AdminNavbarProps {
@@ -28,12 +43,44 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle, isMenuOpen }) =
 
     // const [activeLanguage, setActiveLanguage] = useState('en')
     const [languages, setLanguages] = useState<LanguageProp>({})
+    const [shopInfo, setShopInfo] = useState<ShopInfo | null>(null)
 
     const langCode: string = Cookies.get('lang') || 'en'
 
     const getUser = useCallback(async () => {
-        const res = await getData()
+        const res = await getData() as UserDataWithPermissions;
         dispatch(setPropsUser(res))
+        
+        // Check if user role is 'user' or 'admin' and fetch shop info if needed
+        if (res && (res.role === 'user' || res.role === 'admin')) {
+            // Get rolePermissions or permissions from user data
+            const rolePermissions = res.rolePermissions || res.permissions || [];
+     
+            if (rolePermissions && rolePermissions.length > 0) {
+                const firstShopId = rolePermissions[0]?.shopId;
+                if (firstShopId) {
+                    
+                    try {
+                        const shopResponse = await axios.get(SHOP_INFO_API_ENDPOINTS.GET_BY_ID_API(firstShopId), {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            withCredentials: true,
+                        });
+                        if (shopResponse.data) {
+                            setShopInfo({
+                                shopName: shopResponse.data.shopName || 'Daddy Pay',
+                                shopUploadFile: shopResponse.data.shopUploadFile || '/images/logo.png'
+                            });
+                        }
+                    } catch (error) {
+                        const axiosError = error as AxiosError;
+                        console.error('Error fetching shop info:', axiosError);
+                        // Silently fail - will show default logo and name
+                    }
+                }
+            }
+        }
     }, [dispatch])
 
     const getLanguage = useCallback(async () => {
@@ -51,11 +98,47 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle, isMenuOpen }) =
    
     }, [getLanguage])
 
+    const fetchShopInfoForUser = useCallback(async () => {
+        if (!user.role || (user.role !== 'user' && user.role !== 'admin') || shopInfo) {
+            return;
+        }
+    
+        
+        try {
+            const userData = await getData() as UserDataWithPermissions;
+            const rolePermissions = userData.rolePermissions || userData.permissions || [];
+            
+            if (rolePermissions && rolePermissions.length > 0) {
+                const firstShopId = rolePermissions[0]?.shopId;
+                if (firstShopId) {
+                    const shopResponse = await axios.get(SHOP_INFO_API_ENDPOINTS.GET_BY_ID_API(firstShopId), {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        withCredentials: true,
+                    });
+                    if (shopResponse.data) {
+                        setShopInfo({
+                            shopName: shopResponse.data.shopName || 'Daddy Pay',
+                            shopUploadFile: shopResponse.data.shopUploadFile || '/images/logo.png'
+                        });
+                    }
+                }
+            }
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            console.error('Error fetching shop info:', axiosError);
+            // Silently fail - will show default logo and name
+        }
+    }, [user.role, shopInfo])
+
     useEffect(() => {
         if (!user.username) {
             getUser()
+        } else {
+            fetchShopInfoForUser()
         }
-    }, [user.username, getUser])
+    }, [user.username, getUser, fetchShopInfoForUser])
 
     const setActiveLanguage = async (langCode: string) => {
         console.log("🚀 ~ setActiveLanguage ~ langCode:", langCode)
@@ -87,9 +170,15 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle, isMenuOpen }) =
                         </button>
                         
                         <div className="flex items-center cursor-pointer">
-                            <Image src="/images/logo.png" width={60} height={60} priority alt="logo" />
+                            <Image 
+                                src={shopInfo?.shopUploadFile || "/images/logo.png"} 
+                                width={60} 
+                                height={60} 
+                                priority 
+                                alt="logo" 
+                            />
                             <h2 className="font-bold">
-                                {'Daddy Pay'}
+                                {shopInfo?.shopName || 'Daddy Pay'}
                             </h2>
                         </div>
                     </div>
