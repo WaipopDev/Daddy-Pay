@@ -169,7 +169,7 @@ export async function PATCH(req: NextRequest) {
         if (machinePicture && machinePicture.size > 0) {
             apiFormData.append('machinePictureFile', machinePicture);
         }
-console.log('apiFormData', apiFormData)
+
         const response = await axios.patch(`${process.env.API_URL}/api/v1/machine-info/${machineId}`, apiFormData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
