@@ -64,6 +64,7 @@
     "page_machine_info_picture":"Picture",
     "page_machine_info_add_machine":"Adding machine information",
     "page_machine_info_deleting":"Deleting machine information",
+    "page_machine_info_edit_machine":"Editing machine information",
 
     "page_program_info_program_info":"Program Information",
     "page_program_info_program_code":"Program Code",

@@ -78,6 +78,7 @@ export async function POST(_request: Request) {
         }
         
         const errorMessage = (err.response?.data as { message?: string })?.message || 'Internal Server Error';
+        console.log('errorMessage', err.response?.data)
         return NextResponse.json({ message: errorMessage || 'Internal Server Error' }, { status: 401 });
     }
 

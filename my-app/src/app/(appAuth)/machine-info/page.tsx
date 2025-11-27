@@ -1,12 +1,10 @@
 'use client';
 import { useAppDispatch, useAppSelector } from '@/store/hook'
-import { useRouter } from 'next/navigation'
 import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react'
-import { Button, Col, Form } from 'react-bootstrap'
+import { Button, Col } from 'react-bootstrap'
 import TableComponent from '@/components/Table/Table'
 import ModalForm from '@/components/Modals/ModalForm';
-import InputForm from '@/components/FormGroup/inputForm';
-import UploadFileForm from '@/components/FormGroup/uploadFileForm';
+import MachineInfoForm from '@/components/MachineInfoForm/MachineInfoForm';
 import axios from 'axios';
 import { openModalAlert } from '@/store/features/modalSlice';
 import { useErrorHandler } from '@/store/useErrorHandler';
@@ -19,15 +17,18 @@ import { ItemMachineInfoDataProps } from '@/types/machineInfoType';
 const MachineInfoPage = () => {
     const dispatch = useAppDispatch();
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
-    const router = useRouter();
     const formRef = useRef<HTMLFormElement>(null);
     const { handleError } = useErrorHandler();
 
     const [page, setPage] = useState({ page: 1, totalPages: 1 });
     const [item, setItem] = useState<ItemMachineInfoDataProps[] | null>(null);
     const [showModal, setShowModal] = useState(false);
+    const [showModalEdit, setShowModalEdit] = useState(false);
+    const [editItem, setEditItem] = useState<ItemMachineInfoDataProps | null>(null);
     const [validated, setValidated] = useState(false);
+    const [validatedEdit, setValidatedEdit] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState({ isShow: false, id: '' });
+    const formRefEdit = useRef<HTMLFormElement>(null);
 
 
     const fetchData = useCallback(async (pageNumber: number = 1, search: string = '') => {
@@ -93,6 +94,53 @@ const MachineInfoPage = () => {
         }
     }
 
+    const handleOpenEditMachine = (machineItem: ItemMachineInfoDataProps) => {
+        setEditItem(machineItem);
+        setShowModalEdit(true);
+    }
+
+    const handleSaveEditMachine = async () => {
+        const form = formRefEdit.current;
+        if (!form || !editItem) return;
+
+        setValidatedEdit(true);
+
+        if (form.checkValidity() === false) {
+            return;
+        }
+
+        try {
+            const formData = new FormData(form);
+
+            await axios.patch(`/api/machine-info?machineId=${editItem.id}`, formData);
+
+            setValidatedEdit(false);
+            setShowModalEdit(false);
+            setEditItem(null);
+            if (form) {
+                form.reset();
+            }
+
+            fetchData(page.page);
+
+            dispatch(openModalAlert({
+                message: lang['global_edit_success_message'] || lang['global_add_success_message']
+            }));
+        } catch (error) {
+            console.error('Error updating machine data:', error);
+            handleError(error);
+        }
+    }
+
+    const handleCloseEditModal = () => {
+        setShowModalEdit(false);
+        setValidatedEdit(false);
+        setEditItem(null);
+        if (formRefEdit.current) {
+            formRefEdit.current.reset();
+        }
+    }
+
     const handleDeleteMachine = async (id: string) => {
         try {
             const response = await axios.delete(`/api/machine-info?machineId=${id}`);
@@ -143,7 +191,7 @@ const MachineInfoPage = () => {
                                 <td><div className="flex justify-center">{item.machinePicturePath && <Image src={item.machinePicturePath} alt={item.machineType} width={40} height={40} />}</div></td>
                                 <td>
                                     <div className="flex gap-1 justify-center">
-                                        <Button variant="warning" size="sm" onClick={() => router.push(`/machine-info/edit/${item.id}`)}>
+                                        <Button variant="warning" size="sm" onClick={() => handleOpenEditMachine(item)}>
                                             <i className="fa-solid fa-pen-to-square"></i>
                                         </Button>
                                         <Button variant="danger" size="sm" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}>
@@ -166,48 +214,24 @@ const MachineInfoPage = () => {
                 title={lang['page_machine_info_add_machine']}
                 handleSave={() => handleSaveMachine()}
             >
-                <Form noValidate validated={validated} ref={formRef} >
-                    <Col className="mb-2">
-                        <InputForm
-                            label={lang['page_machine_info_machine_type']}
-                            placeholder={lang['page_machine_info_machine_type']}
-                            name="machineType"
-                            required
-                        />
-                    </Col>
-                    <Col className="mb-2">
-                        <InputForm
-                            label={lang['page_machine_info_brand']}
-                            placeholder={lang['page_machine_info_brand']}
-                            name="machineBrand"
-                            required
-                        />
-                    </Col>
-                    <Col className="mb-2">
-                        <InputForm
-                            label={lang['page_machine_info_model']}
-                            placeholder={lang['page_machine_info_model']}
-                            name="machineModel"
-                            required
-                        />
-                    </Col>
-                    <Col className="mb-2">
-                        <InputForm
-                            label={lang['page_machine_info_description']}
-                            placeholder={lang['page_machine_info_description']}
-                            name="machineDescription"
-
-                        />
-                    </Col>
-                    <Col className="mb-2">
-                        <UploadFileForm
-                            label={lang['page_machine_info_picture']}
-                            placeholder={lang['page_machine_info_picture']}
-                            name="machinePicture"
-
-                        />
-                    </Col>
-                </Form>
+                <MachineInfoForm
+                    action="add"
+                    formRef={formRef}
+                    validated={validated}
+                />
+            </ModalForm>
+            <ModalForm
+                show={showModalEdit}
+                handleClose={() => handleCloseEditModal()}
+                title={lang['page_machine_info_edit_machine']}
+                handleSave={() => handleSaveEditMachine()}
+            >
+                <MachineInfoForm
+                    action="edit"
+                    item={editItem}
+                    formRef={formRefEdit}
+                    validated={validatedEdit}
+                />
             </ModalForm>
             <ModalActionDelete
                 show={showModalDelete.isShow}

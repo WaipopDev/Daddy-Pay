@@ -136,3 +136,66 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json({ message: errorMessage || 'Internal Server Error' }, { status: 401 });
     }
 }
+
+export async function PATCH(req: NextRequest) {
+    try {
+        const token = req.cookies.get('token')?.value;
+        if (!token) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        }
+
+        const url = new URL(req.url);
+        const machineId = url.searchParams.get('machineId');
+        if (!machineId) {
+            return NextResponse.json({ message: 'Machine ID is required' }, { status: 400 });
+        }
+
+        const formData = await req.formData();
+        const machineType = formData.get('machineType') as string;
+        const machineBrand = formData.get('machineBrand') as string;
+        const machineModel = formData.get('machineModel') as string;
+        const machineDescription = formData.get('machineDescription') as string;
+        const machinePicture = formData.get('machinePicture') as File;
+
+        if (!machineType || !machineBrand || !machineModel) {
+            return NextResponse.json({ message: 'All required fields must be provided' }, { status: 400 });
+        }
+
+        const apiFormData = new FormData();
+        apiFormData.append('machineType', machineType);
+        apiFormData.append('machineBrand', machineBrand);
+        apiFormData.append('machineModel', machineModel);
+        apiFormData.append('machineDescription', machineDescription || '');
+        if (machinePicture && machinePicture.size > 0) {
+            apiFormData.append('machinePictureFile', machinePicture);
+        }
+console.log('apiFormData', apiFormData)
+        const response = await axios.patch(`${process.env.API_URL}/api/v1/machine-info/${machineId}`, apiFormData, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
+        if (response.status === 200) {
+            return await createResponseWithHeaders(
+                { message: 'Machine information updated successfully' },
+                response,
+                200
+            );
+        } else {
+            return NextResponse.json({ message: 'Failed to update machine information' }, { status: 401 });
+        }
+    } catch (error) {
+        const err = error as AxiosError;
+
+        // Check for token expiration in PATCH method
+        if (err.response?.headers && err.response.headers['x-token-expired']) {
+            console.log('Token expired detected in PATCH, initiating logout process');
+            return await handleTokenExpiration();
+        }
+
+        const errorMessage = (err.response?.data as { message?: string })?.message || 'Internal Server Error';
+        return NextResponse.json({ message: errorMessage || 'Internal Server Error' }, { status: 401 });
+    }
+}
