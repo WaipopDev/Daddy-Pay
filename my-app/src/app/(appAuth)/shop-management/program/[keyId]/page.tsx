@@ -1,18 +1,33 @@
 'use client';
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { Button, Col, Form, Tab, Table, Tabs } from "react-bootstrap";
+import { Button, Tab, Table, Tabs } from "react-bootstrap";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { openModalAlert, setProcess } from "@/store/features/modalSlice";
 import { useErrorHandler } from "@/store/useErrorHandler";
-import ModalForm from "@/components/Modals/ModalForm";
-import InputForm from "@/components/FormGroup/inputForm";
-import DropdownForm from "@/components/FormGroup/dropdownForm";
+
 import validateRequiredFields from "@/utils/validateRequiredFields";
 import ModalActionDelete from "@/components/Modals/ModalActionDelete";
+import ShopManagementProgramModal, { ShopManagementProgramFormData } from "@/components/ShopManagement/ShopManagementProgramModal";
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { SortableRow } from '@/components/Table/SortableRow';
 
-interface ItemDataProps {
+export interface ItemDataProps {
     id: string;
     shopManagementName: string;
     shopManagementMachineID: string;
@@ -32,7 +47,7 @@ interface ItemDataProps {
     }
 }
 
-interface defaultItemProgramDataProps {
+export interface defaultItemProgramDataProps {
     id: string;
     programName: string;
     programDescription: string;
@@ -45,7 +60,8 @@ interface ItemProgramDataProps {
     machineProgramPrice: string;
     machineProgramOperationTime: number;
     machineProgramStatus: string;
-    programInfo:{
+    sort: number;
+    programInfo: {
         id: string;
         programName: string;
         programDescription: string;
@@ -58,9 +74,8 @@ const ShopManagementProgramPage = () => {
     const dispatch = useAppDispatch();
     const { handleError } = useErrorHandler();
     const { keyId } = useParams();
-    const formRef = useRef<HTMLFormElement>(null);
 
-    const [validated, setValidated] = useState(false);
+
     const [item, setItem] = useState<ItemDataProps | null>(null);
     const [itemProgram, setItemProgram] = useState<ItemProgramDataProps[] | []>([]);
     const [defaultItemProgram, setDefaultItemProgram] = useState<defaultItemProgramDataProps[] | []>([]);
@@ -103,7 +118,7 @@ const ShopManagementProgramPage = () => {
             handleError(error);
             dispatch(setProcess(false));
         }
-    }, [dispatch,handleError]);
+    }, [dispatch, handleError]);
 
     const fetchProgramData = useCallback(async (keyId: string) => {
         try {
@@ -131,7 +146,7 @@ const ShopManagementProgramPage = () => {
     useEffect(() => {
         if (item) {
             fetchProgramData(item.machineInfo.id);
-            fetchItemData(item.machineInfo.id,item.shopInfo.id);
+            fetchItemData(item.machineInfo.id, item.shopInfo.id);
         }
     }, [item, fetchProgramData, fetchItemData]);
     const handleBack = () => {
@@ -142,24 +157,15 @@ const ShopManagementProgramPage = () => {
         setShowModal(false);
     };
 
-    const handleSaveProgram = async () => {
-        const form = formRef.current;
-        if (!form) return;
-
-        setValidated(true);
-
-        if (form.checkValidity() === false) {
-            return;
-        }
-         if (!item) {
+    const handleSaveProgram = async (data: ShopManagementProgramFormData) => {
+        if (!item) {
             dispatch(openModalAlert({
                 message: lang['global_error_message']
             }));
             return;
         }
-        const machineProgramID     = form['machineProgramID'].value;
-        const programPrice         = form['programPrice'].value;
-        const programOperationTime = form['programOperationTime'].value;
+
+        const { machineProgramID, programPrice, programOperationTime } = data;
 
         const message = validateRequiredFields([
             { value: machineProgramID, label: lang['page_shop_management_program'] },
@@ -170,24 +176,21 @@ const ShopManagementProgramPage = () => {
             dispatch(openModalAlert({ message: `${lang['global_required_fields']}<br/>${message}` }));
             return;
         }
-       
-       
+
+
         try {
-             dispatch(setProcess(true));
+            dispatch(setProcess(true));
             const params = {
                 machineProgramID,
                 programPrice,
                 programOperationTime,
-                shopInfoId   : item.shopInfo.id,
+                shopInfoId: item.shopInfo.id,
                 machineInfoId: item.machineInfo.id,
             }
 
             await axios.post('/api/shop-management/by/program', params);
 
-            setValidated(false);
             setShowModal(false);
-            form.reset();
-
             fetchItemData(item.machineInfo.id, item.shopInfo.id);
             dispatch(setProcess(false));
 
@@ -201,8 +204,8 @@ const ShopManagementProgramPage = () => {
         }
     }
 
-    const handleOpenAddProgram = () =>{
-        if(defaultItemProgram.length === 0) {
+    const handleOpenAddProgram = () => {
+        if (defaultItemProgram.length === 0) {
             dispatch(openModalAlert({
                 message: lang['page_shop_management_no_program'],
             }));
@@ -240,6 +243,50 @@ const ShopManagementProgramPage = () => {
             setShowModalDelete({ isShow: false, id: '' });
         }
     };
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    const handleDragEnd = async (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (active.id !== over?.id) {
+            setItemProgram((items) => {
+                const oldIndex = items.findIndex((item) => item.id === active.id);
+                const newIndex = items.findIndex((item) => item.id === over?.id);
+
+                const newItems = arrayMove(items, oldIndex, newIndex);
+
+                // Update sort order locally
+                const updatedItems = newItems.map((item, index) => ({
+                    ...item,
+                    sort: index + 1
+                }));
+
+                // Call API to update sort order
+                updateSortOrder(updatedItems);
+
+                return updatedItems;
+            });
+        }
+    };
+
+    const updateSortOrder = async (items: ItemProgramDataProps[]) => {
+        try {
+            const sortData = items.map(item => ({
+                id: item.id,
+                sort: item.sort
+            }));
+            await axios.patch('/api/shop-management/by/program', { sortData });
+        } catch (error) {
+            console.error("Error updating sort order:", error);
+            handleError(error);
+        }
+    };
+
     return (
         <main className="bg-white p-2 md:p-4">
             <Button variant="secondary" onClick={handleBack} className="mb-3 w-full md:w-auto">
@@ -287,98 +334,67 @@ const ShopManagementProgramPage = () => {
                                 title={lang['page_shop_management_program']}
                             >
                                 <div className="table-responsive-wrapper">
-                                    <Table striped bordered hover>
-                                        <thead>
-                                            <tr>
-                                                <th className="text-sm md:text-base">{lang['page_program_info_program_code']}</th>
-                                                <th className="text-sm md:text-base">{lang['page_program_info_description']}</th>
-                                                <th className="text-sm md:text-base">{lang['page_shop_management_price']}</th>
-                                                <th className="text-sm md:text-base">{lang['page_shop_management_operation_time_mins']}</th>
-                                                <th className="text-sm md:text-base">{lang['global_action']}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                itemProgram && itemProgram.length > 0 ? (
-                                                   itemProgram.map((item, index) => (
-                                                        <tr key={index}>
-                                                            <td className="text-xs md:text-sm">{item.programInfo.programName}</td>
-                                                            <td className="text-xs md:text-sm">{item.programInfo.programDescription}</td>
-                                                            <td className="text-xs md:text-sm text-right">{item.machineProgramPrice}</td>
-                                                            <td className="text-xs md:text-sm text-center">{item.machineProgramOperationTime}</td>
-                                                            <td>
-                                                                <div className="flex justify-center">
-                                                                    <Button variant="danger" size="sm" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}>
-                                                                        <i className="fa-solid fa-trash"></i>
-                                                                    </Button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                                ) : (
-                                                    <tr>
-                                                        <td colSpan={5} className="text-center text-xs md:text-sm">No data available</td>
-                                                    </tr>
-                                                )
-                                            }
-                                        </tbody>
-                                    </Table>
+                                    <DndContext
+                                        sensors={sensors}
+                                        collisionDetection={closestCenter}
+                                        onDragEnd={handleDragEnd}
+                                    >
+                                        <Table striped bordered hover>
+                                            <thead>
+                                                <tr>
+                                                    <th className="text-sm md:text-base">{lang['page_program_info_program_code']}</th>
+                                                    <th className="text-sm md:text-base">{lang['page_program_info_description']}</th>
+                                                    <th className="text-sm md:text-base">{lang['page_shop_management_price']}</th>
+                                                    <th className="text-sm md:text-base">{lang['page_shop_management_operation_time_mins']}</th>
+                                                    <th className="text-sm md:text-base">{lang['global_action']}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <SortableContext
+                                                    items={itemProgram}
+                                                    strategy={verticalListSortingStrategy}
+                                                >
+                                                    {
+                                                        itemProgram && itemProgram.length > 0 ? (
+                                                            itemProgram.map((item) => (
+                                                                <SortableRow key={item.id} id={item.id}>
+                                                                    <td className="text-xs md:text-sm">{item.programInfo.programName}</td>
+                                                                    <td className="text-xs md:text-sm">{item.programInfo.programDescription}</td>
+                                                                    <td className="text-xs md:text-sm text-right">{item.machineProgramPrice}</td>
+                                                                    <td className="text-xs md:text-sm text-center">{item.machineProgramOperationTime}</td>
+                                                                    <td>
+                                                                        <div className="flex justify-center">
+                                                                            <Button variant="danger" size="sm" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}>
+                                                                                <i className="fa-solid fa-trash"></i>
+                                                                            </Button>
+                                                                        </div>
+                                                                    </td>
+                                                                </SortableRow>
+                                                            ))
+                                                        ) : (
+                                                            <tr>
+                                                                <td colSpan={5} className="text-center text-xs md:text-sm">No data available</td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                </SortableContext>
+                                            </tbody>
+                                        </Table>
+                                    </DndContext>
                                 </div>
                             </Tab>
                         </Tabs>
                         <Button variant="primary" onClick={() => handleOpenAddProgram()} className="w-full md:w-auto mt-4">
                             <i className="fa-solid fa-plus pr-2"></i>{lang['page_shop_management_manage_program']}
                         </Button>
-                        <ModalForm
+                        <ShopManagementProgramModal
                             show={showModal}
-                            handleClose={() => handleCloseModal()}
-                            title={lang['page_shop_management_adding_program_price']}
-                            handleSave={() => handleSaveProgram()}
-                        >
-                            <Form noValidate validated={validated} ref={formRef} >
-                                <div className="flex pb-2">
-                                    <p className="basis-1/3 font-bold">{lang['page_shop_management_shop']}<span className="text-red-500">*</span> :</p>
-                                    <p>{item.shopInfo.shopName}</p>
-                                </div>
-                                <div className="flex pb-2">
-                                    <p className="basis-1/3 font-bold">{lang['page_machine_info_machine_type']}<span className="text-red-500">*</span> :</p>
-                                    <p>{item.machineInfo.machineType}</p>
-                                </div>
-                                <div className="flex pb-2">
-                                    <p className="basis-1/3 font-bold">{lang['page_machine_info_model']}<span className="text-red-500">*</span> :</p>
-                                    <p>{item.machineInfo.machineModel}</p>
-                                </div>
-                                <Col className="mb-2">
-                                    <DropdownForm
-                                        label={lang['page_shop_management_program']}
-                                        name="machineProgramID"
-                                        required
-                                        items={defaultItemProgram ? defaultItemProgram.map(program => ({
-                                            label: program.programName,
-                                            value: program.id
-                                        })) : []}
-                                    />
-                                </Col>
-                                <Col className="mb-2">
-                                    <InputForm
-                                        label={lang['global_price']}
-                                        placeholder={lang['global_price']}
-                                        name="programPrice"
-                                        type="number"
-                                        required
-                                    />
-                                </Col>
-                                <Col className="mb-2">
-                                    <InputForm
-                                        label={lang['page_shop_management_operation_time']}
-                                        placeholder={lang['page_shop_management_operation_time']}
-                                        name="programOperationTime"
-                                        type="number"
-                                        required
-                                    />
-                                </Col>
-                            </Form>
-                        </ModalForm>
+                            handleClose={handleCloseModal}
+                            handleSave={handleSaveProgram}
+                            lang={lang}
+                            item={item}
+                            defaultItemProgram={defaultItemProgram}
+                        />
                         <ModalActionDelete
                             show={showModalDelete.isShow}
                             handleClose={() => setShowModalDelete({ isShow: false, id: '' })}
@@ -391,7 +407,7 @@ const ShopManagementProgramPage = () => {
                 )
             }
 
-            
+
         </main>
     )
 }

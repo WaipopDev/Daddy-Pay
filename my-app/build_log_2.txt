@@ -1,0 +1,31 @@
+
+> my-app@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.6
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 2.7s
+   Linting and checking validity of types ...
+
+Failed to compile.
+
+./src/app/(appAuth)/shop-management/page.tsx
+76:8  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(appAuth)/shop-management/program/[keyId]/page.tsx
+2:41  Error: 'useRef' is defined but never used.  @typescript-eslint/no-unused-vars
+143:44  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/Filter/FilterDashboard.tsx
+26:8  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array. If 'fetchData' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+33:8  Warning: React Hook useEffect has a missing dependency: 'handleSearch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/ShopManagement/ShopManagementEdit.tsx
+100:8  Warning: React Hook useEffect has a missing dependency: 'fetchEditData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/hooks/useShopOperations.ts
+127:8  Warning: React Hook useCallback has a missing dependency: 'fetchBankData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
