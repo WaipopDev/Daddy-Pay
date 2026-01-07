@@ -7,6 +7,8 @@
     "menu_program": "Program Info",
     "menu_user": "User management",
     "menu_set_language": "Setting Language",
+    "menu_logout": "Logout",
+    "menu_change_password": "Change Password",
 
     "button_edit_language": "Edit Language",
     "button_add_language": "Add Language",
@@ -111,6 +113,17 @@
     "page_user_add_user":"Add User",
     "page_user_deleting":"Deleting User",
     "page_user_manage_branch":"Manage Branch",
+
+    "page_change_password_current":"Current Password",
+    "page_change_password_current_placeholder":"Enter current password",
+    "page_change_password_new":"New Password",
+    "page_change_password_new_placeholder":"Enter new password",
+    "page_change_password_confirm":"Confirm New Password",
+    "page_change_password_confirm_placeholder":"Confirm new password",
+    "page_change_password_confirm_required":"Please confirm your new password",
+    "page_change_password_password_mismatch":"Passwords do not match",
+    "page_change_password_same_password":"New password must be different from current password",
+    "page_change_password_success":"Password changed successfully",
 
     "filter_report_shop":"Shop",
     "filter_report_payment_method":"Payment Method",

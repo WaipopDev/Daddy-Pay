@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch } from 'react-redux';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { useRouter } from 'next/navigation';
 
 import { setProcess } from "@/store/features/modalSlice";
 import { clearPropsUser } from "@/store/features/userSlice";
@@ -10,7 +11,9 @@ import { useAppSelector } from "@/store/hook";
 
 const UserDropdown = () => {
     const dispatch = useDispatch();
+    const router = useRouter();
     const user     = useAppSelector(state => state.user)
+    const lang     = useAppSelector(state => state.lang) as { [key: string]: string };
 
     const handleLogout = async () => {
         try {
@@ -26,6 +29,10 @@ const UserDropdown = () => {
         }
     }
 
+    const handleChangePassword = () => {
+        router.push('/change-password');
+    }
+
     return (
         <>
             <Dropdown className="nav-dropdown-w">
@@ -34,13 +41,16 @@ const UserDropdown = () => {
                     <p className="px-2 w-full text-left">{user.username}</p>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => handleChangePassword()}>
+                        {lang['menu_change_password']}
+                    </Dropdown.Item>
                     <Dropdown.Item onClick={() => handleLogout()}>
-                        ออกจากระบบ
+                        {lang['menu_logout']}
                     </Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         </>
-    );
-};
+    )
+}
 
 export default UserDropdown;
