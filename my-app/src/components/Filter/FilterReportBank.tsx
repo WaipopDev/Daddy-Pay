@@ -54,9 +54,11 @@ const FilterReportBank = ({ reportName, fetchData }: FilterReportProps) => {
                             <Form.Label className="text-sm md:text-base">{lang['filter_report_shop']}</Form.Label>
                             <Dropdown className="nav-dropdown-w">
                                 <Dropdown.Toggle
-                                    className={cn(`flex items-center w-full px-2 py-2 rounded-md h-[35px] text-sm`)}
+                                    className={cn(`flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px] text-sm`)}
                                 >
-                                    <p className="px-2 w-full text-left text-xs md:text-sm">{valueShop ? itemShop.find(item => item.id === valueShop)?.shopName : lang['global_select']}</p>
+                                    <p className="px-2 flex-1 min-w-0 text-left text-xs md:text-sm truncate">
+                                        {valueShop ? itemShop.find(item => item.id === valueShop)?.shopName : lang['global_select']}
+                                    </p>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     {

@@ -54,9 +54,11 @@ const FilterDashboard = ({ fetchData }: FilterDashboardProps) => {
                         <Form.Group className="basis-1/4">
                             <Dropdown className="nav-dropdown-w">
                                 <Dropdown.Toggle
-                                    className={cn(`flex items-center w-full px-2 py-2 rounded-md h-[35px]`)}
+                                    className={cn(`flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px]`)}
                                 >
-                                    <p className="px-2 w-full text-left text-sm">{valueShop ? itemShop.find(item => item.id === valueShop)?.shopName : lang['global_select']}</p>
+                                    <p className="px-2 flex-1 min-w-0 text-left text-sm truncate">
+                                        {valueShop ? itemShop.find(item => item.id === valueShop)?.shopName : lang['global_select']}
+                                    </p>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     {
