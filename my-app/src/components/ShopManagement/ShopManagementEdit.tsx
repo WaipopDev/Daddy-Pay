@@ -1,23 +1,23 @@
 'use client';
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import ModalForm from '@/components/Modals/ModalForm';
 import InputForm from '@/components/FormGroup/inputForm';
 import DropdownForm from '@/components/FormGroup/dropdownForm';
 import axios from 'axios';
-// import { openModalAlert } from '@/store/features/modalSlice';
-import {  useAppSelector } from '@/store/hook';
+import { openModalAlert } from '@/store/features/modalSlice';
+import {  useAppDispatch, useAppSelector } from '@/store/hook';
 import { useErrorHandler } from '@/store/useErrorHandler';
-// import validateRequiredFields from '@/utils/validateRequiredFields';
-import _ from 'lodash';
+import validateRequiredFields from '@/utils/validateRequiredFields';
+// import _ from 'lodash';
 
-interface MachineDataProps {
-    id: string;
-    machineKey: string;
-    machineType: string;
-    machineBrand: string;
-    machineModel: string;
-}
+// interface MachineDataProps {
+//     id: string;
+//     machineKey: string;
+//     machineType: string;
+//     machineBrand: string;
+//     machineModel: string;
+// }
 
 interface ShopManagementDataProps {
     id: string;
@@ -42,56 +42,57 @@ interface ShopManagementDataProps {
 interface ShopManagementEditProps {
     show: boolean;
     handleClose: () => void;
-    // onSuccess: () => void;
+    onSuccess: () => void;
     editId: string;
 }
 
 const ShopManagementEdit: React.FC<ShopManagementEditProps> = ({
     show,
     handleClose,
-    // onSuccess,
+    onSuccess,
     editId
 }) => {
     // const dispatch = useAppDispatch();
     const lang = useAppSelector(state => state.lang) as { [key: string]: string };
+    const dispatch = useAppDispatch();
     const { handleError } = useErrorHandler();
     const formRef = useRef<HTMLFormElement>(null);
     const [validated, setValidated] = useState(false);
-    const [activeMachineType, setActiveMachineType] = useState('');
+    // const [activeMachineType, setActiveMachineType] = useState('');
     const [editData, setEditData] = useState<ShopManagementDataProps | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [itemShop, setItemShop] = useState<{id:string, shopName:string}[] | []>([]);
-    const [itemMachine, setItemMachine] = useState<MachineDataProps[][] | null>(null);
+    // const [itemShop, setItemShop] = useState<{id:string, shopName:string}[] | []>([]);
+    // const [itemMachine, setItemMachine] = useState<MachineDataProps[][] | null>(null);
 
-    const fetchMachineListData = useCallback(async () => {
-        try {
-            const response = await axios.get('/api/machine-info/list');
-            if (response.status === 200) {
-                const groupByType = _.groupBy(response.data, 'machineType');
-                const orderedByType = _.orderBy(groupByType, ['machineType'], ['asc']);
-                setItemMachine(orderedByType);
-            }
-        } catch (error) {
-            console.error("Error fetching machine list:", error);
-        }
-    }, []);
+    // const fetchMachineListData = useCallback(async () => {
+    //     try {
+    //         const response = await axios.get('/api/machine-info/list');
+    //         if (response.status === 200) {
+    //             const groupByType = _.groupBy(response.data, 'machineType');
+    //             const orderedByType = _.orderBy(groupByType, ['machineType'], ['asc']);
+    //             setItemMachine(orderedByType);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching machine list:", error);
+    //     }
+    // }, []);
 
-    const fetchShopListData = useCallback(async () => {
-        try {
-            const response = await axios.get('/api/shop-info/list-user');
-            if (response.status === 200) {
+    // const fetchShopListData = useCallback(async () => {
+    //     try {
+    //         const response = await axios.get('/api/shop-info/list-user');
+    //         if (response.status === 200) {
                 
-                setItemShop(response.data);
-            }
-        } catch (error) {
-            console.error("Error fetching shop list:", error);
-        }
-    }, []);
+    //             setItemShop(response.data);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching shop list:", error);
+    //     }
+    // }, []);
 
-    useEffect(() => {
-        fetchShopListData();
-        fetchMachineListData();
-    }, [fetchShopListData, fetchMachineListData]);
+    // useEffect(() => {
+    //     fetchShopListData();
+    //     fetchMachineListData();
+    // }, [fetchShopListData, fetchMachineListData]);
     // Fetch edit data when component mounts or editId changes
     useEffect(() => {
         if (show && editId) {
@@ -106,12 +107,12 @@ const ShopManagementEdit: React.FC<ShopManagementEditProps> = ({
             if (response.status === 200) {
                 setEditData(response.data);
                 // Set the active machine type based on the edit data
-                const machineTypeIndex = itemMachine?.findIndex(machineGroup => 
-                    machineGroup[0].machineType === response.data.machineInfo.machineType
-                );
-                if (machineTypeIndex !== undefined && machineTypeIndex !== -1) {
-                    setActiveMachineType(machineTypeIndex.toString());
-                }
+                // const machineTypeIndex = itemMachine?.findIndex(machineGroup => 
+                //     machineGroup[0].machineType === response.data.machineInfo.machineType
+                // );
+                // if (machineTypeIndex !== undefined && machineTypeIndex !== -1) {
+                //     setActiveMachineType(machineTypeIndex.toString());
+                // }
             }
         } catch (error) {
             console.error('Error fetching edit data:', error);
@@ -124,68 +125,67 @@ const ShopManagementEdit: React.FC<ShopManagementEditProps> = ({
     const handleSaveShopManagement = async () => {
         const form = formRef.current;
         if (!form) return;
-return
-        // setValidated(true);
+        setValidated(true);
 
-        // if (form.checkValidity() === false) {
-        //     return;
-        // }
+        if (form.checkValidity() === false) {
+            return;
+        }
 
-        // try {
-        //     const shopId              = form['shopId'].value;
-        //     const machineType         = form['machineType'].value;
-        //     const machineModel        = form['machineModel'].value;
-        //     const machineName         = form['machineName'].value;
-        //     const machineID           = form['machineID'].value;
-        //     const machineIotId        = form['machineIotId'].value;
-        //     const machineIntervalTime = form['machineIntervalTime'].value;
+        try {
+            const shopId              = form['shopId'].value;
+            // const machineType         = form['machineType'].value;
+            // const machineModel        = form['machineModel'].value;
+            const machineName         = form['machineName'].value;
+            const machineID           = form['machineID'].value;
+            const machineIotId        = form['machineIotId'].value;
+            const machineIntervalTime = form['machineIntervalTime'].value;
 
-        //     const message = validateRequiredFields([
-        //         { value: shopId, label: lang['page_shop_management_shop'] },
-        //         { value: machineType, label: lang['page_machine_info_machine_type'] },
-        //         { value: machineModel, label: lang['page_machine_info_model'] },
-        //         { value: machineName, label: lang['page_shop_management_machine_name'] },
-        //         { value: machineID, label: lang['page_shop_management_machine_id'] },
-        //         { value: machineIotId, label: lang['page_shop_management_iot_id'] },
-        //         { value: machineIntervalTime, label: lang['page_shop_management_interval_time'] }
-        //     ]);
-        //     if (message) {
-        //         dispatch(openModalAlert({ message: `${lang['global_required_fields']}<br/>${message}` }));
-        //         return;
-        //     }
-        //     const param = {
-        //         shopId,
-        //         machineType: itemMachine ? itemMachine[Number(machineType)][0].machineType : '',
-        //         machineModel,
-        //         machineName,
-        //         machineID,
-        //         machineIotId,
-        //         machineIntervalTime
-        //     }
+            const message = validateRequiredFields([
+                { value: shopId, label: lang['page_shop_management_shop'] },
+                // { value: machineType, label: lang['page_machine_info_machine_type'] },
+                // { value: machineModel, label: lang['page_machine_info_model'] },
+                { value: machineName, label: lang['page_shop_management_machine_name'] },
+                { value: machineID, label: lang['page_shop_management_machine_id'] },
+                { value: machineIotId, label: lang['page_shop_management_iot_id'] },
+                { value: machineIntervalTime, label: lang['page_shop_management_interval_time'] }
+            ]);
+            if (message) {
+                dispatch(openModalAlert({ message: `${lang['global_required_fields']}<br/>${message}` }));
+                return;
+            }
+            const param = {
+                shopId,
+                // machineType: itemMachine ? itemMachine[Number(machineType)][0].machineType : '',
+                // machineModel,
+                machineName,
+                machineID,
+                machineIotId,
+                machineIntervalTime
+            }
 
-        //     await axios.patch(`/api/shop-management/by/${editId}`, param);
+            await axios.patch(`/api/shop-management/by/${editId}`, param);
 
-        //     setValidated(false);
-        //     handleClose();
-        //     form.reset();
-        //     setActiveMachineType('');
-        //     setEditData(null);
+            setValidated(false);
+            handleClose();
+            form.reset();
+            // setActiveMachineType('');
+            setEditData(null);
 
-        //     onSuccess();
+            onSuccess();
 
-        //     dispatch(openModalAlert({
-        //         message: lang['global_edit_success_message']
-        //     }));
-        // } catch (error) {
-        //     console.error('Error updating machine data:', error);
-        //     handleError(error);
-        // }
+            dispatch(openModalAlert({
+                message: lang['global_edit_success_message']
+            }));
+        } catch (error) {
+            console.error('Error updating machine data:', error);
+            handleError(error);
+        }
     }
 
     const handleCloseModal = () => {
         handleClose();
         setValidated(false);
-        setActiveMachineType('');
+        // setActiveMachineType('');
         setEditData(null);
         if (formRef.current) {
             formRef.current.reset();
@@ -235,11 +235,12 @@ return
                         label={lang['page_shop_management_shop']}
                         name="shopId"
                         required
-                        items={itemShop ? _.map(itemShop, (shop) => ({
-                            label: shop.shopName,
-                            value: shop.id
-                        })) : []}
+                        items={[{
+                            label: editData?.shopInfo.shopName || '',
+                            value: editData?.shopInfo.id || ''
+                        }]}
                         defaultValue={editData?.shopInfo.id}
+                        disabled={true}
                     />
                 </Col>
                 <Col className="mb-2">
@@ -247,11 +248,13 @@ return
                         label={lang['page_machine_info_machine_type']}
                         name="machineType"
                         required
-                        items={itemMachine ? _.map(itemMachine, (machine, index) => ({
-                            label: machine[0].machineType,
-                            value: index.toString()
-                        })) : []}
-                        onChange={(value) => setActiveMachineType(value)}
+                        items={[{
+                            label: editData?.machineInfo.machineType || '',
+                            value: editData?.machineInfo.machineType || ''
+                        }]}
+                        // onChange={(value) => setActiveMachineType(value)}
+                        defaultValue={editData?.machineInfo.machineType || ''}
+                        disabled={true}
                     />
                 </Col>
                 <Col className="mb-2">
@@ -259,11 +262,12 @@ return
                         label={lang['page_machine_info_model']}
                         name="machineModel"
                         required
-                        items={itemMachine && activeMachineType ? itemMachine[Number(activeMachineType)].map(machine => ({
-                            label: machine.machineModel,
-                            value: machine.id.toString()
-                        })) : []}
-                        disabled={!activeMachineType}
+                        items={[{
+                            label: editData?.machineInfo.machineModel || '',
+                            value: editData?.machineInfo.machineModel || ''
+                        }]}
+                        disabled={true}
+                        defaultValue={editData?.machineInfo.machineModel || ''}
                     />
                 </Col>
                 <Col className="mb-2">

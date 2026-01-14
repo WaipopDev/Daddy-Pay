@@ -47,15 +47,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         }
         
         const body = await req.json();
-        const { shopId, machineType, machineModel, machineName, machineID, machineIotId, machineIntervalTime } = body;
+        const { shopId, machineName, machineID, machineIotId, machineIntervalTime } = body;
         
-        if (!machineType || !machineModel || !machineName || !machineID || !machineIotId || !machineIntervalTime) {
+        if (!machineName || !machineID || !machineIotId || !machineIntervalTime) {
             return NextResponse.json({ message: 'All fields are required' }, { status: 400 });
         }
         
         const params_update = {
             shopId,
-            machineId                 : machineModel,
+            // machineId                 : machineModel,
             shopManagementName        : machineName,
             shopManagementDescription : '',
             shopManagementMachineID   : machineID,

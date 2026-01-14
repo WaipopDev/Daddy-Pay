@@ -195,7 +195,7 @@ const ShopManagementPage = () => {
             <ShopManagementEdit
                 show={showEditModal}
                 handleClose={handleCloseEditModal}
-                // onSuccess={handleSuccess}
+                onSuccess={handleSuccess}
                 editId={editId}
             />
             <ModalActionDelete
