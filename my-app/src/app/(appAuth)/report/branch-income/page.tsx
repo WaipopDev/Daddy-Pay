@@ -89,6 +89,7 @@ const BranchIncomePage = () => {
         dispatch(setProcess(false));
         setIsExporting(false);
     }
+
     return (
         <div className="bg-white p-2 md:p-4">
             <Button variant="secondary" onClick={handleBack} className="mb-3 w-full md:w-auto">
@@ -132,7 +133,15 @@ const BranchIncomePage = () => {
                         handleActive={(number: number) => handleFetchPageData(number)}
                     >
                         {items && items.length > 0 && items.map((item, index) => (
-                            <tr key={index}>
+                            <tr
+                                key={index}
+                                className={[
+                                    // Bootstrap sets background on td/th via `.table > :not(caption) > * > *`
+                                    // so we apply row colors to cells to ensure it shows.
+                                    'hover:[&>td]:bg-gray-100',
+                                    item.shopManagement?.deletedAt ? '[&>td]:!bg-red-500' : '',
+                                ].join(' ')}
+                            >
                                 <td className="text-center">{noIndex(page.page, index, 50)}</td>
                                 <td className="text-xs md:text-sm">{moment(item.createdAt).format('DD-MM-YYYY HH:mm:ss')}</td>
                                 <td className="text-xs md:text-sm">{item.transactionIot}</td>

@@ -17,6 +17,7 @@ export interface ReportBranchIncomeItemDataProps {
     },
     shopManagement:{
         shopManagementName: string;
+        deletedAt?: string;
     }
 }
 

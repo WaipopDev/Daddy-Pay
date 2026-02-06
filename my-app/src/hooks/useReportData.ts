@@ -101,10 +101,11 @@ export const useReportData = (): ReportDataReturn => {
                     },
                 }
             );
+
             if (response.status === 200 && responseSummary.status === 200) {
                 setState({
                     item: response.data.items,
-                    summary: responseSummary.data.totalprice,
+                    summary: responseSummary.data.totalPrice,
                     page: { 
                         page: response.data.meta.currentPage, 
                         totalPages: response.data.meta.totalPages 
