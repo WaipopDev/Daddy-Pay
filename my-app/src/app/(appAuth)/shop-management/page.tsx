@@ -163,7 +163,7 @@ const ShopManagementPage = () => {
                                 <td className="text-xs md:text-sm">{item.shopManagementName}</td>
                                 <td className="text-xs md:text-sm">{item.shopManagementMachineID}</td>
                                 <td className="text-xs md:text-sm">{item.shopManagementIotID}</td>
-                                <td className="text-xs md:text-sm">{item.machineInfo.machineType}</td>
+                                <td className="text-xs md:text-sm">{item.machineInfo?.machineType || '-'}</td>
                                 <td><div className="flex justify-center text-xs md:text-sm">{item.shopManagementStatus}</div></td>
                                 <td>
                                     <div className="flex gap-1 justify-center">
