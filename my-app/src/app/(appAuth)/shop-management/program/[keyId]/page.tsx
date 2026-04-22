@@ -347,6 +347,7 @@ const ShopManagementProgramPage = () => {
                                             <thead>
                                                 <tr>
                                                     <th className="text-sm md:text-base">{lang['page_program_info_program_code']}</th>
+                                                    <th className="text-sm md:text-base">Machine Program Key</th>
                                                     <th className="text-sm md:text-base">{lang['page_program_info_description']}</th>
                                                     <th className="text-sm md:text-base">{lang['page_shop_management_price']}</th>
                                                     <th className="text-sm md:text-base">{lang['page_shop_management_operation_time_mins']}</th>
@@ -363,6 +364,7 @@ const ShopManagementProgramPage = () => {
                                                             itemProgram.map((item) => (
                                                                 <SortableRow key={item.id} id={item.id}>
                                                                     <td className="text-xs md:text-sm">{item.programInfo.programName}</td>
+                                                                    <td className="text-xs md:text-sm">{item.machineProgramKey || '-'}</td>
                                                                     <td className="text-xs md:text-sm">{item.programInfo.programDescription}</td>
                                                                     <td className="text-xs md:text-sm text-right">{item.machineProgramPrice}</td>
                                                                     <td className="text-xs md:text-sm text-center">{item.machineProgramOperationTime}</td>
@@ -377,7 +379,7 @@ const ShopManagementProgramPage = () => {
                                                             ))
                                                         ) : (
                                                             <tr>
-                                                                <td colSpan={5} className="text-center text-xs md:text-sm">No data available</td>
+                                                                <td colSpan={6} className="text-center text-xs md:text-sm">No data available</td>
                                                             </tr>
                                                         )
                                                     }

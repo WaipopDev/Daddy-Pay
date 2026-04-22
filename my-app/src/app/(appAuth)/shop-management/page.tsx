@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 interface ItemDataProps {
     id: string;
     shopManagementName: string;
+    shopManagementKey: string;
     shopManagementMachineID: string;
     shopManagementIotID: string;
     shopManagementIntervalTime: number;
@@ -145,6 +146,7 @@ const ShopManagementPage = () => {
                         '#',
                         lang['page_shop_management_shop_name'],
                         lang['page_shop_management_machine_name'],
+                        'Shop Management Key',
                         lang['page_shop_management_machine_id'],
                         lang['page_shop_management_iot_id'],
                         lang['page_machine_info_machine_type'],
@@ -161,6 +163,7 @@ const ShopManagementPage = () => {
                                 <td className="text-center">{((page.page - 1) * 50) + (index + 1)}</td>
                                 <td className="text-xs md:text-sm">{item.shopInfo.shopName}</td>
                                 <td className="text-xs md:text-sm">{item.shopManagementName}</td>
+                                <td className="text-xs md:text-sm">{item.shopManagementKey || '-'}</td>
                                 <td className="text-xs md:text-sm">{item.shopManagementMachineID}</td>
                                 <td className="text-xs md:text-sm">{item.shopManagementIotID}</td>
                                 <td className="text-xs md:text-sm">{item.machineInfo?.machineType || '-'}</td>
@@ -181,7 +184,7 @@ const ShopManagementPage = () => {
                             </tr>
                         )) : (
                             <tr>
-                                <td colSpan={8} className="text-center text-xs md:text-sm">{lang['global_no_data']}</td>
+                                <td colSpan={9} className="text-center text-xs md:text-sm">{lang['global_no_data']}</td>
                             </tr>
                         ))
                     }
