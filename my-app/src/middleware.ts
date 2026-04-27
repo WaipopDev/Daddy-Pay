@@ -95,22 +95,8 @@ export async function middleware(req: NextRequest) {
 
     if (userData) {
         response.cookies.set('token', newToken, { path: '/', httpOnly: true })
-        
-        // Monitor userData size
-        const userDataJson = JSON.stringify(userData);
-        const userDataSize = Buffer.byteLength(userDataJson, 'utf8');
-        const base64Data = Buffer.from(userDataJson, 'utf-8').toString('base64');
-        const base64Size = Buffer.byteLength(base64Data, 'utf8');
-        
-        // Log size for monitoring
-        console.log(`UserData size: ${userDataSize} bytes, Base64: ${base64Size} bytes (${(base64Size/1024).toFixed(2)} KB)`);
-        
-        // Warning if approaching limit
-        if (base64Size > 6144) { // 6KB warning
-            console.warn(`⚠️  UserData approaching size limit: ${base64Size} bytes`);
-        }
-        
-        response.headers.set('x-user-data', base64Data);
+        // Do not pass full user JSON via headers (base64 ~33% larger). Proxies often cap
+        // total header size (~4–8KB) → 502. Server code loads user via cookie + /admin/me instead.
     }
 
     if (req.nextUrl.pathname === '/login' ) {

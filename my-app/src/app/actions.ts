@@ -1,21 +1,27 @@
 'use server';
-import { cookies, headers } from 'next/headers'
+import { cookies } from 'next/headers'
+
 export async function getData() {
-    const authHeader = (await headers()).get('x-user-data')
-    if (!authHeader) {
-        throw new Error('No authentication header found');
+    const token = (await cookies()).get('token')?.value
+    if (!token) {
+        throw new Error('No authentication token found');
     }
-    const decodedData = Buffer.from(authHeader, 'base64').toString('utf-8');
-    return JSON.parse(decodedData);
+    const apiUrl = process.env.API_URL
+    if (!apiUrl) {
+        throw new Error('API_URL is not configured');
+    }
+    const res = await fetch(`${apiUrl}/api/v1/admin/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store',
+    })
+    if (!res.ok) {
+        throw new Error(`Failed to load user: ${res.status}`);
+    }
+    return res.json();
 }
 
 export async function clearDataUser() {
     (await cookies()).set('token', '', { path: '/', expires: new Date(0) });
     (await cookies()).set('role', '', { path: '/', expires: new Date(0) });
-    return new Response('User data cleared', {
-        status: 200,
-        headers: {
-            'x-user-data': '' // Clear the header by setting it empty
-        }
-    });
+    return new Response('User data cleared', { status: 200 });
 }
