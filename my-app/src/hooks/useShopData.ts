@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import {
-    ShopInfoItemDataProps
+    ShopInfoItemDataProps,
+    ShopInfoSearchParams,
 } from '@/types/shopInfoType';
 import { SHOP_INFO_API_ENDPOINTS } from '@/constants/shopInfo';
 import { PAGINATION_CONFIG } from '@/constants/main';
@@ -11,7 +12,7 @@ interface UseShopDataReturn {
     page: PageState;
     isLoading: boolean;
     error: string | null;
-    fetchData: (pageNumber?: number, search?: string) => Promise<void>;
+    fetchData: (pageNumber?: number, search?: ShopInfoSearchParams) => Promise<void>;
     refreshCurrentPage: () => Promise<void>;
 }
 interface ShopInfoPageState {
@@ -37,18 +38,33 @@ export const useShopData = (): UseShopDataReturn => {
     // const [isLoading, setIsLoading] = useState<boolean>(false);
     // const [error, setError] = useState<string | null>(null);
     const [state, setState] = useState<ShopInfoPageState>(INITIAL_STATE);
+    const [filters, setFilters] = useState<ShopInfoSearchParams>({
+        shopName: '',
+        shopStatus: '',
+    });
 
-    const fetchData = useCallback(async (pageNumber: number = 1, search: string = '') => {
+    const fetchData = useCallback(async (
+        pageNumber: number = 1,
+        search?: ShopInfoSearchParams
+    ) => {
+        const activeFilters = search ?? filters;
+        if (search) {
+            setFilters(search);
+        }
+
         try {
             setState((prevState) => ({ ...prevState, isLoading: true, error: null }));
 
-            const response = await axios.get(`${SHOP_INFO_API_ENDPOINTS.BASE}?page=${pageNumber}&search=${search}`,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+            const response = await axios.get(SHOP_INFO_API_ENDPOINTS.BASE, {
+                params: {
+                    page: pageNumber,
+                    shopName: activeFilters.shopName,
+                    shopStatus: activeFilters.shopStatus,
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
             if (response.status === 200) {
                 setState({
@@ -67,12 +83,11 @@ export const useShopData = (): UseShopDataReturn => {
         } finally {
             setState((prevState) => ({ ...prevState, isLoading: false }));
         }
-    }, []);
-    
+    }, [filters]);
 
     const refreshCurrentPage = useCallback(async () => {
-        await fetchData(state.page.page);
-    }, [fetchData, state.page.page]);
+        await fetchData(state.page.page, filters);
+    }, [fetchData, state.page.page, filters]);
 
     useEffect(() => {
         fetchData();

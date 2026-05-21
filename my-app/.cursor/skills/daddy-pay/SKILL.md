@@ -29,9 +29,15 @@ Full workflows: [SKILL.md](../../../docs/SKILL.md). Architecture: [DESIGN.md](..
 ## New / changed feature (structure)
 
 1. Thin `page.tsx` → `use<Feature>ViewModel` → `<Feature>View vm={vm} />`.
-2. `services/<feature>Service.ts` for API; ViewModel for state/handlers.
-3. `components/<Feature>/` for UI only. Reference: `language-settings`.
-4. New strings → `languageDefault.json`. Menu: `layout.tsx` `menuItems` + `role`.
+2. `services/<feature>Service.ts` for API; ViewModel for state/handlers (no JSX).
+3. `components/<Feature>/` — split UI blocks (required):
+   - `<Feature>View.tsx` — compose only, map `lang` → props
+   - `<Feature>Header.tsx` / `<Feature>Toolbar.tsx` — back, title, actions
+   - `<Feature>Filter.tsx` — date/search filters
+   - `<Feature>Table.tsx` — table rows
+   - `<Feature>*Modal.tsx` — modals when needed
+4. References: `LanguageSettings/` (tabs+modals), `ShopManagementTransaction/` (header+filter+table).
+5. New strings → `languageDefault.json`. Menu: `layout.tsx` `menuItems` + `role`.
 
 ## Auth debug order
 
@@ -41,4 +47,6 @@ middleware `/me` → cookie `token` → API route headers → `getData()` → `A
 
 - [ ] Auth matches siblings
 - [ ] No secrets / no oversized headers
+- [ ] page → ViewModel → service → View (no monolithic page)
+- [ ] View composes sub-components (Header/Filter/Table/Modal), not one 100+ line file
 - [ ] `npm run lint` if substantial change

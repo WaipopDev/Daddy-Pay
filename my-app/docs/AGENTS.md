@@ -53,8 +53,11 @@ src/constants/<feature>.ts               # API paths, config
 src/utils/<feature>Validation.ts           # Form validation (if needed)
 src/lib/                                   # Static helpers (e.g. default JSON)
 src/components/<Feature>/
-  <Feature>View.tsx                      # Compose sub-components
-  <SubComponent>.tsx                       # Presentational UI only
+  <Feature>View.tsx                      # Compose only — map lang → props
+  <Feature>Header.tsx                    # Back, title, toolbar (if applicable)
+  <Feature>Filter.tsx                    # Search / date / filters (if applicable)
+  <Feature>Table.tsx                     # Table + rows (if applicable)
+  <Feature>*Modal.tsx                    # Modals (if applicable)
   index.ts
 src/app/api/<feature>/                   # BFF routes
 ```
@@ -66,6 +69,15 @@ src/app/api/<feature>/                   # BFF routes
 | **service** | HTTP calls only |
 | **View / components** | JSX, labels from `lang`, props + callbacks — no direct API |
 | **BFF** | `cookies()`, proxy to `API_URL` |
+
+### Sub-components (do not skip)
+
+`<Feature>View.tsx` must **not** contain full header + filter + table markup in one file. Split each major block into `components/<Feature>/<Feature><Block>.tsx` and wire from the View.
+
+Examples:
+
+- `LanguageSettings/` — Toolbar, Tabs, Table, Add/Edit modals
+- `ShopManagementTransaction/` — Header, Filter, Table
 
 Also: every new UI string → `lang['key']` + **`languageDefault.json`**.
 

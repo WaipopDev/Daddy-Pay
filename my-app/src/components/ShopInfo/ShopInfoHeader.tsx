@@ -4,7 +4,6 @@ import { Button, Col } from 'react-bootstrap';
 
 interface ShopInfoHeaderProps {
     onAddShop: () => void;
-    onSearch?: (searchTerm: string) => void;
     lang: { [key: string]: string };
     isLoading?: boolean;
 }

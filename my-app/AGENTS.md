@@ -2,7 +2,9 @@
 
 เอกสารสำหรับ AI agent อยู่ที่ **[docs/](./docs/)** — อ่านคู่มือหลักที่ **[docs/AGENTS.md](./docs/AGENTS.md)**
 
-**สำคัญ:** แก้ไขหรือเพิ่มฟีเจอร์ใหม่ใน `(appAuth)` ให้แยก **page → ViewModel hook → service → components/View** (อ้างอิง `language-settings`) — ห้ามรวม logic + UI ใน `page.tsx` ไฟล์เดียว
+**สำคัญ:** ฟีเจอร์ใหม่ใน `(appAuth)` ต้องแยก **page → ViewModel → service → components/** และใน `components/<Feature>/` ต้องแยก **View + sub-components** (Header, Filter, Table, Modal) — ห้ามรวม logic ใน `page.tsx` หรือรวม UI ทั้งหน้าใน `*View.tsx` ไฟล์เดียว
+
+อ้างอิง: `LanguageSettings/`, `ShopManagementTransaction/` — รายละเอียดใน [docs/RULE.md](./docs/RULE.md)
 
 | เอกสาร | ลิงก์ |
 |--------|------|

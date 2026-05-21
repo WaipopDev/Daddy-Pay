@@ -123,14 +123,17 @@ Shop create/edit: browser → `POST /api/shop-info` (multipart) → backend Form
 Standard structure for `(appAuth)` features (canonical example: **language-settings**):
 
 ```
-page.tsx  →  useFeatureViewModel()  →  FeatureView  →  sub-components
+page.tsx  →  useFeatureViewModel()  →  FeatureView  →  Header / Filter / Table / Modals
                 ↓
          featureService.ts  →  /api/* BFF  →  API_URL
 ```
 
 - **ViewModel**: orchestration only (no JSX).
-- **View / components**: presentation; labels from Redux `lang`.
-- **Do not** add new business logic inside a single `page.tsx` file.
+- **FeatureView**: layout composition only — map `lang` to props; **no axios**.
+- **Sub-components**: one file per major UI block under `components/<Feature>/`.
+- **Do not** put header + filter + table + modals in a single `page.tsx` or a single 100+ line `*View.tsx`.
+
+Canonical examples: `LanguageSettings/`, `ShopManagementTransaction/`.
 
 ## UI architecture
 

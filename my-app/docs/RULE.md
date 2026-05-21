@@ -17,21 +17,68 @@ Rules for humans and AI agents working in this repository.
 - Types go in `src/types/`; shared constants in `src/constants/`.
 - Use `@/` path alias for imports from `src/`.
 
-## Feature structure (page / ViewModel / View)
+## Feature structure (page / ViewModel / Service / View)
 
-**Required** when adding or materially changing a feature. Reference implementation: `language-settings`.
+**Required** when adding or materially changing a feature under `(appAuth)`.
+
+### Layer rules
 
 | File | Allowed content |
 |------|-----------------|
-| `app/(appAuth)/<feature>/page.tsx` | Import hook + `<Feature>View vm={vm} />` only |
-| `hooks/use<Feature>ViewModel.ts` | State, effects, handlers, validation calls, modal dispatch |
-| `services/<feature>Service.ts` | `axios` to `/api/...` |
-| `components/<Feature>/*.tsx` | UI; receive data/callbacks via props |
-| `components/<Feature>/<Feature>View.tsx` | Layout composition, map `lang` to labels |
+| `app/(appAuth)/<feature>/page.tsx` | Import hook + `<Feature>View vm={vm} />` only (~10–20 lines) |
+| `hooks/use<Feature>ViewModel.ts` | State, effects, handlers, validation calls, modal dispatch — **no JSX** |
+| `services/<feature>Service.ts` | `axios` to `/api/...` only — **no React** |
+| `components/<Feature>/<Feature>View.tsx` | Compose sub-components; map `lang` → label props — **no axios** |
+| `components/<Feature>/<Feature>*.tsx` | Presentational UI (header, filter, table, modals) — props + callbacks only |
+| `components/<Feature>/index.ts` | Re-export public components |
 
-**Do not** in `page.tsx` or view components: `axios.post/get`, large `useState` blocks, or business validation.
+### Sub-components (required)
 
-Naming: `useLanguageSettingsViewModel`, `languageSettingsService`, `LanguageSettingsView`.
+**Do not** put header, filters, tables, or modals inline in `<Feature>View.tsx` when they are separate UI blocks.
+
+Split into dedicated files under `components/<Feature>/`:
+
+| UI block | Example file |
+|----------|----------------|
+| Toolbar / back / title | `LanguageSettingsToolbar.tsx`, `ShopManagementTransactionHeader.tsx` |
+| Filters / search form | `ShopManagementTransactionFilter.tsx` |
+| Data table | `LanguageTranslationsTable.tsx`, `ShopManagementTransactionTable.tsx` |
+| Modals | `LanguageAddModal.tsx`, `LanguageEditModal.tsx` |
+
+`<Feature>View.tsx` should read like a layout file: import sub-components, pass `lang` labels and `vm` callbacks.
+
+**Reference implementations:**
+
+- Complex (tabs + modals): `language-settings` → `components/LanguageSettings/`
+- List + filter + table: `shop-management/transaction/[id]` → `components/ShopManagementTransaction/`
+
+### Naming
+
+| Layer | Pattern | Example |
+|-------|---------|---------|
+| ViewModel hook | `use<Feature>ViewModel` | `useShopManagementTransactionViewModel` |
+| Service | `<feature>Service.ts` | `shopManagementTransactionService.ts` |
+| Root view | `<Feature>View.tsx` | `ShopManagementTransactionView.tsx` |
+| Sub-component | `<Feature><Purpose>.tsx` | `ShopManagementTransactionTable.tsx` |
+
+### Forbidden
+
+| Layer | Do not |
+|-------|--------|
+| `page.tsx` | `axios`, `useState`, `useEffect`, business logic, large JSX |
+| `*View.tsx` | `axios`, fetch, validation logic, table row mapping for whole page in one file |
+| Sub-components | `axios`, Redux dispatch, `useParams` (keep in ViewModel) |
+| ViewModel | JSX / `return <...>` |
+| Service | React hooks, UI strings |
+
+### Quick checklist (feature work)
+
+- [ ] `page.tsx` is thin (hook + View only)
+- [ ] API calls live in `services/<feature>Service.ts`
+- [ ] State/handlers in `use<Feature>ViewModel.ts`
+- [ ] `<Feature>View.tsx` composes sub-components (not one 100+ line file)
+- [ ] Each major UI block has its own file under `components/<Feature>/`
+- [ ] New strings in `languageDefault.json`
 
 ## API routes (BFF)
 

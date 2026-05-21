@@ -1,6 +1,7 @@
 'use client';
 import TableComponent from '@/components/Table/Table';
 import { useAppSelector } from '@/store/hook';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { Suspense, useCallback, useEffect, useState } from 'react'
 import { Button, Col, Dropdown, Form } from 'react-bootstrap';
@@ -109,7 +110,6 @@ const ShopManagementPage = () => {
             console.error("Error deleting machine:", error);
         }
     };
- 
     return (
         <main className="bg-white p-2 md:p-4">
             <div className="flex border-b border-gray-300 pb-2 mb-4">
@@ -162,7 +162,14 @@ const ShopManagementPage = () => {
                             <tr key={index}>
                                 <td className="text-center">{((page.page - 1) * 50) + (index + 1)}</td>
                                 <td className="text-xs md:text-sm">{item.shopInfo.shopName}</td>
-                                <td className="text-xs md:text-sm">{item.shopManagementName}</td>
+                                <td className="text-xs md:text-sm">
+                                    <Link
+                                        href={`/shop-management/transaction/${item.id}`}
+                                        className="text-blue-500 hover:text-blue-700 hover:underline"
+                                    >
+                                        {item.shopManagementName}
+                                    </Link>
+                                </td>
                                 <td className="text-xs md:text-sm">{item.shopManagementKey || '-'}</td>
                                 <td className="text-xs md:text-sm">{item.shopManagementMachineID}</td>
                                 <td className="text-xs md:text-sm">{item.shopManagementIotID}</td>

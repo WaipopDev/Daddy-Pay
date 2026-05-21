@@ -92,13 +92,27 @@ export async function GET(req: NextRequest) {
         }
         const url = new URL(req.url);
         const page = url.searchParams.get('page') || '1';
-        // const limit    = url.searchParams.get('limit') || '10';
-        // const column   = url.searchParams.get('column') || 'shopName';
-        // const sort     = url.searchParams.get('sort') || 'ASC';
-        const response = await axios.get(`${process.env.API_URL}/api/v1/shop-info?page=${page}&limit=10&column=shopName&sort=ASC`, {
+        const shopName = url.searchParams.get('shopName') || '';
+        const shopStatus = url.searchParams.get('shopStatus') || '';
+
+        const params: Record<string, string | number> = {
+            page,
+            limit: 10,
+            column: 'shopName',
+            sort: 'ASC',
+        };
+        if (shopName) {
+            params.shopName = shopName;
+        }
+        if (shopStatus) {
+            params.shopStatus = shopStatus;
+        }
+
+        const response = await axios.get(`${process.env.API_URL}/api/v1/shop-info`, {
+            params,
             headers: {
-                Authorization: `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         });
       
         
@@ -113,8 +127,9 @@ export async function GET(req: NextRequest) {
         }
         
         const errorMessage = (err.response?.data as { message?: string })?.message || 'Internal Server Error';
+        const status = err.response?.status || 500;
 
-        return NextResponse.json({ message: errorMessage || 'Internal Server Error' }, { status: 401 });
+        return NextResponse.json({ message: errorMessage }, { status });
     }
 }
 

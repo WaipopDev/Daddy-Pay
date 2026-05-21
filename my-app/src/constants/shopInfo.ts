@@ -20,7 +20,14 @@ export const SHOP_INFO_API_ENDPOINTS = {
 export const SHOP_STATUS = {
     ACTIVE: 'active',
     INACTIVE: 'inactive',
+    ALL: '',
 } as const;
+
+export const getShopStatusFilterOptions = (lang: Record<string, string>) => [
+    { value: SHOP_STATUS.ALL, label: lang['global_all'] },
+    { value: SHOP_STATUS.ACTIVE, label: lang['global_active'] },
+    { value: SHOP_STATUS.INACTIVE, label: lang['global_inactive'] },
+] as const;
 
 // Table Configuration
 export const SHOP_INFO_TABLE_CONFIG = {

@@ -52,6 +52,11 @@ export interface BankFormDataProps {
     merchantId: string;
     partnerSecret: string;
 }
+export interface ShopInfoSearchParams {
+    shopName: string;
+    shopStatus: string;
+}
+
 // API Response Types
 export interface ShopInfoApiResponse {
     items: ShopInfoItemDataProps[];

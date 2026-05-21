@@ -11,7 +11,9 @@ import { useShopOperations } from "@/hooks/useShopOperations";
 
 // Components
 import ShopInfoHeader from "@/components/ShopInfo/ShopInfoHeader";
+import ShopInfoFilter from "@/components/ShopInfo/ShopInfoFilter";
 import ShopInfoTableContent from "@/components/ShopInfo/ShopInfoTableContent";
+import type { ShopInfoSearchParams } from "@/types/shopInfoType";
 
 // Utils
 import { getShopInfoTableHeaders } from "@/utils/shopInfoUtils";
@@ -46,7 +48,15 @@ const ShopInfoPage = () => {
     });
     const handleEditBank = (id: string) => {
         handleShowBankModal(id);
-    }
+    };
+
+    const handleFilterSearch = (search: ShopInfoSearchParams) => {
+        fetchData(1, search);
+    };
+
+    const handlePageChange = (pageNumber: number) => {
+        fetchData(pageNumber);
+    };
 
     // Get table headers
     const tableHeaders = getShopInfoTableHeaders(lang);
@@ -54,11 +64,16 @@ const ShopInfoPage = () => {
     return (
         <main className="bg-white p-2 md:p-4" role="main">
             <ErrorBoundary>
-                <ShopInfoHeader 
+                <ShopInfoHeader
                     onAddShop={handleAddShop}
-                    onSearch={(searchTerm) => fetchData(1, searchTerm)}
                     lang={lang}
                     isLoading={isLoading}
+                />
+
+                <ShopInfoFilter
+                    lang={lang}
+                    isLoading={isLoading}
+                    onSearch={handleFilterSearch}
                 />
 
                 <Suspense fallback={<p>Loading feed...</p>}>
@@ -66,7 +81,7 @@ const ShopInfoPage = () => {
                         head={tableHeaders}
                         page={page.page}
                         totalPages={page.totalPages}
-                        handleActive={(pageNumber: number) => fetchData(pageNumber)}
+                        handleActive={handlePageChange}
                     >
                         <ShopInfoTableContent
                             items={items}
