@@ -13,6 +13,11 @@ export interface LanguageSavePayload {
     translations: TranslationsMap;
 }
 
+export interface LanguageUpdatePayload {
+    langName: string;
+    translations: TranslationsMap;
+}
+
 export interface LanguageAddFormState {
     langCode: string;
     langName: string;

@@ -14,3 +14,14 @@ export const validateLanguageAddForm = (
     }
     return errors;
 };
+
+export const validateLanguageEditForm = (
+    langName: string,
+    messages: { langNameRequired: string }
+): Pick<LanguageAddFormErrors, 'langName'> => {
+    const errors: Pick<LanguageAddFormErrors, 'langName'> = {};
+    if (!langName.trim()) {
+        errors.langName = messages.langNameRequired;
+    }
+    return errors;
+};

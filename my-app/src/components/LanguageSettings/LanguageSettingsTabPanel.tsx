@@ -6,20 +6,34 @@ import LanguageTranslationsTable from './LanguageTranslationsTable';
 import type { TranslationsMap } from '@/types/languageSettingsType';
 
 interface LanguageSettingsTabPanelProps {
+    langCode: string;
     labels: Record<string, string>;
     translations: TranslationsMap;
+    onEdit: (langCode: string) => void;
+    onDelete: (langCode: string) => void;
 }
 
 const LanguageSettingsTabPanel: React.FC<LanguageSettingsTabPanelProps> = ({
+    langCode,
     labels,
     translations,
+    onEdit,
+    onDelete,
 }) => (
     <>
         <div className="flex flex-col md:flex-row justify-end pb-2 mb-4 gap-2">
-            <Button variant="primary" className="w-full md:w-auto">
+            <Button
+                variant="primary"
+                className="w-full md:w-auto"
+                onClick={() => onEdit(langCode)}
+            >
                 {labels.editLanguage}
             </Button>
-            <Button variant="danger" className="w-full md:w-auto">
+            <Button
+                variant="danger"
+                className="w-full md:w-auto"
+                onClick={() => onDelete(langCode)}
+            >
                 {labels.deleteLanguage}
             </Button>
         </div>

@@ -13,6 +13,8 @@ interface LanguageSettingsTabsProps {
     activeTranslations: TranslationsMap;
     labels: Record<string, string>;
     onTabChange: (key: string | null) => void;
+    onEdit: (langCode: string) => void;
+    onDelete: (langCode: string) => void;
 }
 
 const LanguageSettingsTabs: React.FC<LanguageSettingsTabsProps> = ({
@@ -21,6 +23,8 @@ const LanguageSettingsTabs: React.FC<LanguageSettingsTabsProps> = ({
     activeTranslations,
     labels,
     onTabChange,
+    onEdit,
+    onDelete,
 }) => {
     const keys = Object.keys(langList);
     if (keys.length === 0) return null;
@@ -34,8 +38,11 @@ const LanguageSettingsTabs: React.FC<LanguageSettingsTabsProps> = ({
             {_.map(langList, (langName, code) => (
                 <Tab key={code} eventKey={code} title={langName}>
                     <LanguageSettingsTabPanel
+                        langCode={code}
                         labels={labels}
-                        translations={activeTranslations}
+                        translations={activeTabKey === code ? activeTranslations : {}}
+                        onEdit={onEdit}
+                        onDelete={onDelete}
                     />
                 </Tab>
             ))}

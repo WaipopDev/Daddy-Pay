@@ -4,6 +4,8 @@ import React from 'react';
 import LanguageSettingsToolbar from './LanguageSettingsToolbar';
 import LanguageSettingsTabs from './LanguageSettingsTabs';
 import LanguageAddModal from './LanguageAddModal';
+import LanguageEditModal from './LanguageEditModal';
+import ModalActionDelete from '@/components/Modals/ModalActionDelete';
 import type { useLanguageSettingsViewModel } from '@/hooks/useLanguageSettingsViewModel';
 
 type ViewModel = ReturnType<typeof useLanguageSettingsViewModel>;
@@ -47,6 +49,8 @@ const LanguageSettingsView: React.FC<LanguageSettingsViewProps> = ({ vm }) => {
                 activeTranslations={vm.langActive}
                 labels={tabLabels}
                 onTabChange={vm.handleTabChange}
+                onEdit={vm.openEditModal}
+                onDelete={vm.openDeleteModal}
             />
 
             <LanguageAddModal
@@ -59,6 +63,26 @@ const LanguageSettingsView: React.FC<LanguageSettingsViewProps> = ({ vm }) => {
                 onLangCodeChange={vm.setLangCode}
                 onLangNameChange={vm.setLangName}
                 onTranslationChange={vm.setTranslationValue}
+            />
+
+            <LanguageEditModal
+                show={vm.showEditModal}
+                title={lang['page_language_settings_edit_title']}
+                labels={modalLabels}
+                form={vm.form}
+                onClose={vm.closeEditModal}
+                onSave={vm.updateExistingLanguage}
+                onLangNameChange={vm.setLangName}
+                onTranslationChange={vm.setTranslationValue}
+            />
+
+            <ModalActionDelete
+                show={vm.showDeleteModal}
+                handleClose={vm.closeDeleteModal}
+                title={lang['page_language_settings_deleting']}
+                text={lang['global_delete_confirmation']}
+                id={vm.deleteLangCode}
+                handleConfirm={vm.confirmDeleteLanguage}
             />
         </main>
     );
