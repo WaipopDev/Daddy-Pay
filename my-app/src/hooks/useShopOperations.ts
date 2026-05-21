@@ -5,7 +5,9 @@ import {
     ShopInfoItemDataProps,
     ShopModalDeleteState,
     ShopModalOnlinePaymentState,
+    ShopModalSubscriptionState,
     ShopOnlinePaymentFormData,
+    ShopSubscriptionFormData,
 } from '@/types/shopInfoType';
 import { useAppDispatch } from '@/store/hook';
 import { openModalAlert } from '@/store/features/modalSlice';
@@ -14,6 +16,7 @@ import {
     SHOP_INFO_ROUTES,
     SHOP_INFO_API_ENDPOINTS,
     isOnlinePaymentStatus,
+    isSubscriptionStatus,
 } from '@/constants/shopInfo';
 
 interface BankFormData {
@@ -36,9 +39,11 @@ interface UseShopOperationsReturn {
     showModalDelete: ShopModalDeleteState;
     showModalBank: ShopModalBankState;
     showModalOnlinePayment: ShopModalOnlinePaymentState;
+    showModalSubscription: ShopModalSubscriptionState;
     isDeleting: boolean;
     isSavingBank: boolean;
     isSavingOnlinePayment: boolean;
+    isSavingSubscription: boolean;
     handleAddShop: () => void;
     handleEditShop: (id: string) => void;
     handleDeleteShop: (id: string) => Promise<void>;
@@ -53,12 +58,19 @@ interface UseShopOperationsReturn {
         shopId: string,
         data: ShopOnlinePaymentFormData
     ) => Promise<void>;
+    handleShowSubscriptionModal: (item: ShopInfoItemDataProps) => void;
+    handleCloseSubscriptionModal: () => void;
+    handleSaveSubscription: (
+        shopId: string,
+        data: ShopSubscriptionFormData
+    ) => Promise<void>;
 }
 
 interface UseShopOperationsProps {
     onDeleteSuccess?: () => Promise<void>;
     onBankSaveSuccess?: () => Promise<void>;
     onOnlinePaymentSaveSuccess?: () => Promise<void>;
+    onSubscriptionSaveSuccess?: () => Promise<void>;
     lang?: Record<string, string>;
 }
 
@@ -66,6 +78,7 @@ export const useShopOperations = ({
     onDeleteSuccess,
     onBankSaveSuccess,
     onOnlinePaymentSaveSuccess,
+    onSubscriptionSaveSuccess,
     lang = {},
 }: UseShopOperationsProps = {}): UseShopOperationsReturn => {
     const router = useRouter();
@@ -87,7 +100,14 @@ export const useShopOperations = ({
         });
     const [isDeleting, setIsDeleting] = useState(false);
     const [isSavingBank, setIsSavingBank] = useState(false);
+    const [showModalSubscription, setShowModalSubscription] =
+        useState<ShopModalSubscriptionState>({
+            isShow: false,
+            shopId: '',
+            initialData: undefined,
+        });
     const [isSavingOnlinePayment, setIsSavingOnlinePayment] = useState(false);
+    const [isSavingSubscription, setIsSavingSubscription] = useState(false);
 
     const fetchBankData = useCallback(async (id: string): Promise<BankFormData | undefined> => {
         try {
@@ -255,13 +275,89 @@ export const useShopOperations = ({
         ]
     );
 
+    const handleShowSubscriptionModal = useCallback((item: ShopInfoItemDataProps) => {
+        const cycle = Number(item.subNotificationCycle);
+        setShowModalSubscription({
+            isShow: true,
+            shopId: item.id,
+            initialData: {
+                subSubscriptionStatus: isSubscriptionStatus(item.subSubscriptionStatus)
+                    ? item.subSubscriptionStatus
+                    : '',
+                subRegistrationDate: item.subRegistrationDate || '',
+                subExpirationDate: item.subExpirationDate || '',
+                subNotificationCycle:
+                    Number.isInteger(cycle) && cycle >= 1 && cycle <= 90 ? cycle : '',
+                subNotifyToEmail: item.subNotifyToEmail || '',
+            },
+        });
+    }, []);
+
+    const handleCloseSubscriptionModal = useCallback(() => {
+        setShowModalSubscription({
+            isShow: false,
+            shopId: '',
+            initialData: undefined,
+        });
+    }, []);
+
+    const handleSaveSubscription = useCallback(
+        async (shopId: string, data: ShopSubscriptionFormData) => {
+            try {
+                setIsSavingSubscription(true);
+                const response = await axios.patch(
+                    SHOP_INFO_API_ENDPOINTS.SUBSCRIPTION(shopId),
+                    {
+                        ...data,
+                        subNotificationCycle: Number(data.subNotificationCycle),
+                    }
+                );
+
+                if (response.status === 200) {
+                    handleCloseSubscriptionModal();
+                    dispatch(
+                        openModalAlert({
+                            message: lang['global_success'] || 'Success',
+                            title: lang['global_success'] || 'Success',
+                        })
+                    );
+                    if (onSubscriptionSaveSuccess) {
+                        await onSubscriptionSaveSuccess();
+                    }
+                }
+            } catch (error) {
+                const err = error as AxiosError;
+                const errorMessage =
+                    (err.response?.data as { message?: string })?.message ||
+                    lang['global_error_message'] ||
+                    'Failed to update subscription';
+                dispatch(
+                    openModalAlert({
+                        message: errorMessage,
+                        title: lang['global_error'] || 'Error',
+                    })
+                );
+            } finally {
+                setIsSavingSubscription(false);
+            }
+        },
+        [
+            dispatch,
+            handleCloseSubscriptionModal,
+            lang,
+            onSubscriptionSaveSuccess,
+        ]
+    );
+
     return {
         showModalDelete,
         showModalBank,
         showModalOnlinePayment,
+        showModalSubscription,
         isDeleting,
         isSavingBank,
         isSavingOnlinePayment,
+        isSavingSubscription,
         handleAddShop,
         handleEditShop,
         handleDeleteShop,
@@ -273,5 +369,8 @@ export const useShopOperations = ({
         handleShowOnlinePaymentModal,
         handleCloseOnlinePaymentModal,
         handleSaveOnlinePayment,
+        handleShowSubscriptionModal,
+        handleCloseSubscriptionModal,
+        handleSaveSubscription,
     };
 };

@@ -26,7 +26,10 @@ export interface ShopModalDeleteState {
     id: string;
 }
 
-import type { OnlinePaymentStatusValue } from '@/constants/shopInfo';
+import type {
+    OnlinePaymentStatusValue,
+    SubscriptionStatusValue,
+} from '@/constants/shopInfo';
 
 export interface ShopOnlinePaymentFormData {
     onlinePaymentStatus: OnlinePaymentStatusValue | '';
@@ -40,6 +43,20 @@ export interface ShopModalOnlinePaymentState {
     initialData?: ShopOnlinePaymentFormData;
 }
 
+export interface ShopSubscriptionFormData {
+    subSubscriptionStatus: SubscriptionStatusValue | '';
+    subRegistrationDate: string;
+    subExpirationDate: string;
+    subNotificationCycle: number | '';
+    subNotifyToEmail: string;
+}
+
+export interface ShopModalSubscriptionState {
+    isShow: boolean;
+    shopId: string;
+    initialData?: ShopSubscriptionFormData;
+}
+
 export interface ShopTableRowProps {
     item: ShopInfoItemDataProps;
     index: number;
@@ -49,6 +66,7 @@ export interface ShopTableRowProps {
     onDelete: (id: string) => void;
     onEditBank: (id: string) => void;
     onEditOnlinePayment: (item: ShopInfoItemDataProps) => void;
+    onEditSubscription: (item: ShopInfoItemDataProps) => void;
 }
 
 export interface ShopInfoItemDataProps {
@@ -65,7 +83,7 @@ export interface ShopInfoItemDataProps {
     subExpirationDate: string;
     subSubscriptionStatus: string;
     subNotificationCycle:number;
-    subNotificationTime:string;
+    subNotifyToEmail:string;
 }
 
 export interface BankFormDataProps {

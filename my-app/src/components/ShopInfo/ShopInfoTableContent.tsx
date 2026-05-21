@@ -13,6 +13,7 @@ interface ShopInfoTableContentProps {
     isLoading?: boolean;
     onEditBank: (id: string) => void;
     onEditOnlinePayment: (item: ShopInfoItemDataProps) => void;
+    onEditSubscription: (item: ShopInfoItemDataProps) => void;
 }
 
 /**
@@ -28,6 +29,7 @@ const ShopInfoTableContent: React.FC<ShopInfoTableContentProps> = ({
     isLoading = false,
     onEditBank,
     onEditOnlinePayment,
+    onEditSubscription,
 }) => {
     // Loading state
     if (isLoading) {
@@ -59,6 +61,7 @@ const ShopInfoTableContent: React.FC<ShopInfoTableContentProps> = ({
                     onDelete={onDelete}
                     onEditBank={onEditBank}
                     onEditOnlinePayment={onEditOnlinePayment}
+                    onEditSubscription={onEditSubscription}
                 />
             ))}
         </>

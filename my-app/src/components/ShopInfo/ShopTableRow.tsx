@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import { ShopTableRowProps } from '@/types/shopInfoType';
 import {
     formatOnlinePaymentStatus,
+    formatShopInfoDate,
     formatShopStatus,
     formatSubscriptionStatus,
 } from '@/utils/shopInfoUtils';
@@ -22,6 +23,7 @@ const ShopTableRow: React.FC<ShopTableRowProps> = ({
     onDelete,
     onEditBank,
     onEditOnlinePayment,
+    onEditSubscription,
 }) => {
     const rowNumber = getRowNumber(index, currentPage, PAGINATION_CONFIG.ITEMS_PER_PAGE);
     const statusDisplay = formatShopStatus(item.shopStatus, lang);
@@ -42,8 +44,8 @@ const ShopTableRow: React.FC<ShopTableRowProps> = ({
                     {onlinePaymentStatusDisplay.text}
                 </span>
             </td>
-            <td>{item.subRegistrationDate || '-'}</td>
-            <td>{item.subExpirationDate || '-'}</td>
+            <td>{formatShopInfoDate(item.subRegistrationDate)}</td>
+            <td>{formatShopInfoDate(item.subExpirationDate)}</td>
             <td className="text-center">
                 <span className={subscriptionStatusDisplay.className}>
                     {subscriptionStatusDisplay.text}
@@ -53,8 +55,17 @@ const ShopTableRow: React.FC<ShopTableRowProps> = ({
             <td>{item.shopMobilePhone}</td>
             <td>
                 <Button
+                    variant="success"
+                    size="sm"
+                    onClick={() => onEditSubscription(item)}
+                    title={lang['button_edit_subscription']}
+                >
+                    <i className="fa-solid fa-calendar-check" aria-hidden="true"></i>
+                </Button>
+                <Button
                     variant="primary"
                     size="sm"
+                    className="ml-2"
                     onClick={() => onEditOnlinePayment(item)}
                     title={lang['button_edit_online_payment']}
                 >

@@ -5,6 +5,7 @@ import TableComponent from "@/components/Table/Table";
 import ModalActionDelete from "@/components/Modals/ModalActionDelete";
 import ModalActionBank from "@/components/Modals/ModalActionBank";
 import ModalActionOnlinePayment from "@/components/Modals/ModalActionOnlinePayment";
+import ModalActionSubscription from "@/components/Modals/ModalActionSubscription";
 
 // Custom hooks
 import { useShopData } from "@/hooks/useShopData";
@@ -31,6 +32,7 @@ const ShopInfoPage = () => {
         showModalDelete,
         showModalBank,
         showModalOnlinePayment,
+        showModalSubscription,
         // isDeleting,
         handleAddShop,
         handleEditShop,
@@ -43,7 +45,11 @@ const ShopInfoPage = () => {
         handleShowOnlinePaymentModal,
         handleCloseOnlinePaymentModal,
         handleSaveOnlinePayment,
+        handleShowSubscriptionModal,
+        handleCloseSubscriptionModal,
+        handleSaveSubscription,
         isSavingOnlinePayment,
+        isSavingSubscription,
     } = useShopOperations({
         lang,
         onDeleteSuccess: async () => {
@@ -53,6 +59,9 @@ const ShopInfoPage = () => {
             await fetchData(page.page);
         },
         onOnlinePaymentSaveSuccess: async () => {
+            await fetchData(page.page);
+        },
+        onSubscriptionSaveSuccess: async () => {
             await fetchData(page.page);
         },
     });
@@ -102,6 +111,7 @@ const ShopInfoPage = () => {
                             isLoading={isLoading}
                             onEditBank={handleEditBank}
                             onEditOnlinePayment={handleShowOnlinePaymentModal}
+                            onEditSubscription={handleShowSubscriptionModal}
                         />
                     </TableComponent>
                 </Suspense>
@@ -132,6 +142,16 @@ const ShopInfoPage = () => {
                     initialData={showModalOnlinePayment.initialData}
                     onSave={handleSaveOnlinePayment}
                     isSaving={isSavingOnlinePayment}
+                />
+
+                <ModalActionSubscription
+                    show={showModalSubscription.isShow}
+                    handleClose={handleCloseSubscriptionModal}
+                    title={lang['modal_subscription_title']}
+                    shopId={showModalSubscription.shopId}
+                    initialData={showModalSubscription.initialData}
+                    onSave={handleSaveSubscription}
+                    isSaving={isSavingSubscription}
                 />
             </ErrorBoundary>
         </main>

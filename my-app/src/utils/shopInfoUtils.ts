@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { ShopInfoItemDataProps } from '@/types/shopInfoType';
 import {
     ONLINE_PAYMENT_STATUS,
@@ -8,6 +9,12 @@ import {
 /**
  * Shop Info utility functions
  */
+
+export const formatShopInfoDate = (value?: string): string => {
+    if (!value) return '-';
+    const parsed = moment(value, ['YYYY-MM-DD', moment.ISO_8601], true);
+    return parsed.isValid() ? parsed.format('DD-MM-YYYY') : value;
+};
 
 /**
  * Generates table headers for shop info table
