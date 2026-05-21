@@ -45,6 +45,7 @@ export default function RootLayout({
                 >
                     <AxiosInterceptorProvider>
                         {children}
+                        <div id="datepicker-portal" />
                         <ModalAlert />
                         <ProcessLoad />
                     </AxiosInterceptorProvider>

@@ -152,12 +152,66 @@ export async function GET() {
 - Menu/sidebar: use `key` in `layout.tsx` `menuItems`; display via `lang[item.key]` in `Sidebar` / `HeaderBar`.
 - Naming: `menu_*`, `page_*`, `button_*`, `global_*`, `validation_*`, `filter_*`.
 
-## UI
+## UI design (required)
 
-- Tables: `components/Table/Table.tsx`, `CustomPagination.tsx`.
-- Forms: `components/FormGroup/*`, validate with `utils/validateRequiredFields.ts`.
-- Modals: `ModalForm`, `ModalAlert`, `ModalActionDelete`.
-- Styling: Bootstrap components + Tailwind utility classes (e.g. layout in `(appAuth)/layout.tsx`).
+Follow the **existing project UI** — see [DESIGN.md](./DESIGN.md#ui-design-system-required). Copy the nearest feature; do not introduce new design systems.
+
+### Page structure
+
+```tsx
+<main className="bg-white p-2 md:p-4">
+  <ErrorBoundary>
+    <FeatureHeader />   {/* optional back + title + add */}
+    <FeatureFilter />   {/* optional search / dropdowns / dates */}
+    <TableComponent />  {/* or feature table sub-component */}
+    <FeatureModals />   {/* delete, edit, etc. */}
+  </ErrorBoundary>
+</main>
+```
+
+### Must use (shared components)
+
+| Need | Use |
+|------|-----|
+| Data table | `components/Table/Table.tsx` + `CustomPagination` |
+| Loading rows | `components/Table/LoadingSkeleton.tsx` |
+| Text/date inputs | `components/FormGroup/inputForm.tsx` |
+| Dropdowns in forms | `components/FormGroup/dropdownForm.tsx` |
+| Date range filter | `components/FormGroup/DatePickerRange.tsx` |
+| Delete confirm | `components/Modals/ModalActionDelete.tsx` |
+| Success/error toast modal | `openModalAlert` (`modalSlice`) |
+| Full-screen loading overlay | `setProcess` (`modalSlice`) |
+
+### Styling rules
+
+- **Bootstrap** for interactive controls (`Button`, `Form`, `Modal`, `Dropdown`).
+- **Tailwind** for layout only (`grid`, `gap-3`, `md:grid-cols-3`, `text-xs md:text-sm`, `border-b border-gray-200`).
+- **Font Awesome** solid icons on buttons (`fa-solid fa-*`).
+- Table action buttons: `size="sm"`, variants `primary` | `info` | `warning` | `danger`.
+
+### Status display
+
+- Define allowed values in `constants/<feature>.ts`.
+- Format in `utils/<feature>Utils.ts` → `{ text, className }`.
+- Render with `<span className={className}>` — `text-success` / `text-danger` / `text-muted`.
+
+### Forbidden in UI code
+
+- New UI libraries (MUI, Ant, Chakra, etc.)
+- Hardcoded English/Thai labels (use `lang['key']`)
+- `window.alert` / `confirm` (use modals / `openModalAlert`)
+- Inline `axios` in components (use ViewModel + service)
+- Custom pagination/table markup when `TableComponent` fits
+
+### UI references by feature type
+
+| Type | Copy from |
+|------|-----------|
+| Settings / tabs | `components/LanguageSettings/` |
+| List + filter + table | `shop-info` + `components/ShopInfo/` |
+| Report filters | `components/Filter/FilterReport*.tsx` |
+| Transaction/history | `components/ShopManagementTransaction/` |
+| Modal CRUD | `Modals/ModalActionBank.tsx`, `ModalActionOnlinePayment.tsx` |
 
 ## File uploads
 

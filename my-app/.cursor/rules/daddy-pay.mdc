@@ -36,5 +36,6 @@ return createResponseWithHeaders(response.data, response);
   4. `components/<Feature>/` — split UI: `*View.tsx` composes `*Header`, `*Filter`, `*Table`, `*Modal` (not one bloated View)
 - References: `LanguageSettings/`, `ShopManagementTransaction/`
 - axios only in `services/` or BFF routes — never in `page.tsx`, View, or sub-components
-- UI: `lang['key']` + `languageDefault.json`.
+- **UI design**: follow `docs/DESIGN.md#ui-design-system-required` — Bootstrap + Tailwind + FA; reuse `TableComponent`, `FormGroup/*`, `Modals/*`; page shell `bg-white p-2 md:p-4`; Header/Filter/Table/Modal split; copy `ShopInfo/`, `ShopManagementTransaction/`, `LanguageSettings/`
+- UI text: `lang['key']` + `languageDefault.json`; status via `utils/*Utils.ts` + `text-success`/`text-danger`
 - Minimize diff; `@/` imports; commit only when user asks.

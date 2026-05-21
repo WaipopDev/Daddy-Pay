@@ -135,12 +135,134 @@ page.tsx  →  useFeatureViewModel()  →  FeatureView  →  Header / Filter / T
 
 Canonical examples: `LanguageSettings/`, `ShopManagementTransaction/`.
 
-## UI architecture
+## UI design system (required)
 
-- **Layout shell**: `(appAuth)/layout.tsx` — `AdminNavbar`, `Sidebar`, `HeaderBar`, mobile overlay.
-- **Design tokens**: Background `#ECEEF6`, sidebar offset `md:pl-[14rem]`, navbar height ~80px.
-- **Component library**: Bootstrap + Font Awesome icons in menu config.
-- **Charts**: Chart.js wrappers in `components/Dashboard/`.
+**Before building new UI**, copy patterns from the nearest existing feature. Do not invent new layout libraries, color systems, or one-off components when a shared one exists.
+
+Full coding rules: [RULE.md](./RULE.md#ui-design-required). Reference UIs:
+
+| Pattern | Reference files |
+|---------|-----------------|
+| Feature layout (ViewModel + sub-views) | `LanguageSettings/`, `ShopManagementTransaction/` |
+| List + filter + table | `shop-info/` + `ShopInfoFilter`, `ShopInfoHeader`, `ShopTableRow` |
+| Report filters | `Filter/FilterReport.tsx`, `FilterReportBank.tsx` |
+| Detail with back | `ShopManagementTransactionHeader.tsx` |
+| Row actions + modals | `ShopTableRow.tsx`, `Modals/ModalActionBank.tsx`, `ModalActionOnlinePayment.tsx` |
+| Full-page form | `ShopInfoForm/`, `UserInfo/UserForm.tsx` |
+
+### Page shell
+
+Every protected list/detail page uses the same outer wrapper:
+
+```tsx
+<main className="bg-white p-2 md:p-4" role="main">
+  <ErrorBoundary>
+    {/* Header → Filter → Table → Modals */}
+  </ErrorBoundary>
+</main>
+```
+
+- App background: `#ECEEF6` (set in `(appAuth)/layout.tsx`).
+- Content area: white card via `bg-white` on `<main>`.
+
+### Layout blocks (compose in `*View.tsx`)
+
+| Block | Responsibility | Typical classes / components |
+|-------|----------------|------------------------------|
+| **Header** | Title, back, primary action (Add) | `ShopInfoHeader`, `*Toolbar`, `*Header` |
+| **Filter** | Search / dropdowns / date range | `Form` + `grid grid-cols-1 md:grid-cols-3 gap-3`, `border-b border-gray-200 pb-3 mb-4` |
+| **Table** | Data grid + pagination | `TableComponent`, `LoadingSkeleton`, `CustomPagination` |
+| **Modals** | Create/edit/delete/confirm | `components/Modals/*` or `components/<Feature>/*Modal.tsx` |
+
+### Styling stack
+
+| Use | For |
+|-----|-----|
+| **react-bootstrap** | `Button`, `Form`, `Modal`, `Table`, `Dropdown`, `Col` |
+| **Tailwind utilities** | Grid, spacing, responsive width (`md:w-1/3`, `text-xs md:text-sm`) |
+| **Font Awesome** | Icons: `fa-solid fa-search`, `fa-plus`, `fa-pen-to-square`, `fa-trash`, `fa-bank` |
+| **`cn()` from `@/lib/utils`** | Conditional classes on dropdowns/toggles |
+
+Do **not** add MUI, Ant Design, or other UI kits.
+
+### Tables
+
+- Wrapper: `components/Table/Table.tsx` (`TableComponent`).
+- Headers: from `lang` via helper (e.g. `getShopInfoTableHeaders(lang)`).
+- Loading: `LoadingSkeleton` with `COLUMN_COUNT` from feature constants.
+- Empty: one `<tr><td colSpan={n}>` + `lang['global_no_data']`.
+- Cell text: `text-xs md:text-sm`; row index via `noIndex()` / `getRowNumber()`.
+- Pagination: `handleActive` on `TableComponent`; page size from `PAGINATION_CONFIG` in `constants/main.ts`.
+
+### Filters
+
+- Submit on `Form` `onSubmit` → `e.preventDefault()` → callback to ViewModel/hook.
+- Search button: `variant="primary"`, icon `fa-solid fa-search`, label `lang['global_search']`.
+- Shop/status dropdowns: `Dropdown` + `nav-dropdown-w` + `cn()` (see `ShopInfoFilter`, `FilterReportBank`).
+- Date range: `DatePickerRange` from `components/FormGroup/DatePickerRange.tsx`.
+- Narrow fields: `w-full md:w-1/3` on `Form.Group` when spec asks for 1/3 width.
+
+### Buttons (action column)
+
+| Action | variant | Icon |
+|--------|---------|------|
+| Add (header) | `primary` | `fa-plus` |
+| Edit | `warning` | `fa-pen-to-square` |
+| Delete | `danger` | `fa-trash` |
+| Bank / payment | `info` / `primary` | `fa-bank` / `fa-credit-card` |
+| Back | `secondary` | `fa-arrow-left` |
+
+Use `size="sm"` in table rows; `className="ml-2"` between adjacent buttons.
+
+### Modals
+
+- `Modal` from react-bootstrap: `centered`, `Modal.Header` with `closeButton`, `className="py-2"`.
+- Footer: primary Save (`fa-floppy-disk`) + secondary Cancel (`fa-xmark`).
+- Confirm delete: `ModalActionDelete`.
+- Alerts / validation errors: `openModalAlert` from `modalSlice` (not `window.alert`).
+- Long operations: `setProcess(true/false)` from `modalSlice` where siblings do.
+
+### Forms (add/edit pages)
+
+- Reuse `components/FormGroup/inputForm.tsx`, `dropdownForm.tsx`, `uploadFileForm.tsx`.
+- Full entity forms: `ShopInfoForm`, `UserForm` — match their `Row` / `Col` layout.
+- Client validation: `utils/*Validation.ts` or `validateRequiredFields.ts`; show errors via `openModalAlert` or field `isInvalid`.
+
+### Status badges (table cells)
+
+- Format in `utils/*Utils.ts` (e.g. `formatShopStatus`, `formatOnlinePaymentStatus`, `formatSubscriptionStatus`).
+- Display: `<span className={display.className}>{display.text}</span>`.
+- Colors: `text-success` (active/enable), `text-danger` (inactive/disable/expired), `text-muted` (unknown).
+- Status values: constants in `constants/<feature>.ts` (`SHOP_STATUS`, `ONLINE_PAYMENT_STATUS`, etc.).
+
+### i18n (all visible text)
+
+- `const lang = useAppSelector(state => state.lang)`.
+- Keys in `languageDefault.json`: `page_*`, `button_*`, `global_*`, `filter_*`, `validation_*`, `modal_*`.
+- Pass **resolved strings** into presentational children (labels props), not raw keys.
+
+### Shared components map
+
+```
+components/
+  Table/          TableComponent, CustomPagination, LoadingSkeleton, SortableRow
+  FormGroup/      inputForm, dropdownForm, DatePickerRange, uploadFileForm
+  Modals/         ModalForm, ModalAlert, ModalActionDelete, ModalActionBank, …
+  Filter/         FilterReport, FilterReportBank, FilterDashboard
+  ErrorBoundary/  wrap page content
+  <Feature>/      feature-specific Header, Filter, Table, View
+```
+
+### UI checklist (new/changed screens)
+
+- [ ] Same `<main className="bg-white p-2 md:p-4">` + `ErrorBoundary` as siblings
+- [ ] Header / Filter / Table split into separate files under `components/<Feature>/`
+- [ ] `TableComponent` + pagination, not raw `<table>` alone
+- [ ] Loading + empty states match existing tables
+- [ ] Buttons use project variants + Font Awesome icons
+- [ ] Modals match `ModalAction*` / `ModalForm` patterns
+- [ ] All labels from `lang['key']` + `languageDefault.json`
+- [ ] Status columns use formatter utils + semantic colors
 
 ## State management
 

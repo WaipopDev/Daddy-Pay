@@ -231,16 +231,22 @@ input.form-control {
 }
 
 // Global z-index fixes for DatePicker and Dropdowns
+// Bootstrap modal: backdrop 1050, modal 1055 — datepicker must be above modal
+$datepicker-z-index: 1100;
+
 .react-datepicker {
-    z-index: 1000 !important;
+    z-index: $datepicker-z-index !important;
 }
 
-.react-datepicker__portal {
-    z-index: 1000 !important;
+.react-datepicker__portal,
+#datepicker-portal {
+    z-index: $datepicker-z-index !important;
+    position: relative;
 }
 
-.react-datepicker-popper {
-    z-index: 1000 !important;
+.react-datepicker-popper,
+.react-datepicker-popper-container {
+    z-index: $datepicker-z-index !important;
 }
 
 .dropdown-menu {
@@ -277,11 +283,12 @@ input.form-control {
 }
 
 // DatePicker popper specific styling
-.react-datepicker-popper {
-    z-index: 1000 !important;
+.react-datepicker-popper,
+.react-datepicker-popper-container {
+    z-index: $datepicker-z-index !important;
     
     .react-datepicker {
-        z-index: 1000 !important;
+        z-index: $datepicker-z-index !important;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         border: 1px solid #e5e7eb;
         border-radius: 0.5rem;
@@ -353,15 +360,17 @@ input.form-control {
     
     // DatePicker z-index fix
     .react-datepicker {
-        z-index: 1000 !important;
+        z-index: $datepicker-z-index !important;
     }
     
-    .react-datepicker__portal {
-        z-index: 1000 !important;
+    .react-datepicker__portal,
+    #datepicker-portal {
+        z-index: $datepicker-z-index !important;
     }
     
-    .react-datepicker-popper {
-        z-index: 1000 !important;
+    .react-datepicker-popper,
+    .react-datepicker-popper-container {
+        z-index: $datepicker-z-index !important;
     }
     
     // Mobile LoginForm styles - minimal CSS for iOS compatibility

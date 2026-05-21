@@ -1,6 +1,7 @@
 import React, { FC, forwardRef } from 'react'
 import DatePicker from "react-datepicker";
 import moment from 'moment';
+import DatePickerPopperContainer from './DatePickerPopperContainer';
 
 interface Props {
     onChange?: ((value: [Date | null, Date | null]) => void);
@@ -42,7 +43,8 @@ const DatePickerRange: FC<Props> = (props) => {
                     startDate={dateValue ? dateValue[0] : null}
                     endDate={dateValue ? dateValue[1] : null}
                     popperClassName="react-datepicker-popper"
-                    portalId="datepicker-portal"
+                    popperContainer={DatePickerPopperContainer}
+                    popperProps={{ strategy: 'fixed' }}
                 />
             </div>
         </div>

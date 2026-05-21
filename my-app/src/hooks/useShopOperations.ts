@@ -1,8 +1,20 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { ShopModalDeleteState } from '@/types/shopInfoType';
-import { SHOP_INFO_ROUTES, SHOP_INFO_API_ENDPOINTS } from '@/constants/shopInfo';
+import {
+    ShopInfoItemDataProps,
+    ShopModalDeleteState,
+    ShopModalOnlinePaymentState,
+    ShopOnlinePaymentFormData,
+} from '@/types/shopInfoType';
+import { useAppDispatch } from '@/store/hook';
+import { openModalAlert } from '@/store/features/modalSlice';
+import { AxiosError } from 'axios';
+import {
+    SHOP_INFO_ROUTES,
+    SHOP_INFO_API_ENDPOINTS,
+    isOnlinePaymentStatus,
+} from '@/constants/shopInfo';
 
 interface BankFormData {
     consumerId: string;
@@ -23,8 +35,10 @@ interface ShopModalBankState {
 interface UseShopOperationsReturn {
     showModalDelete: ShopModalDeleteState;
     showModalBank: ShopModalBankState;
+    showModalOnlinePayment: ShopModalOnlinePaymentState;
     isDeleting: boolean;
     isSavingBank: boolean;
+    isSavingOnlinePayment: boolean;
     handleAddShop: () => void;
     handleEditShop: (id: string) => void;
     handleDeleteShop: (id: string) => Promise<void>;
@@ -33,18 +47,29 @@ interface UseShopOperationsReturn {
     handleShowBankModal: (shopId: string, initialData?: BankFormData) => void;
     handleCloseBankModal: () => void;
     handleSaveBank: (shopId: string, bankData: BankFormData) => Promise<void>;
+    handleShowOnlinePaymentModal: (item: ShopInfoItemDataProps) => void;
+    handleCloseOnlinePaymentModal: () => void;
+    handleSaveOnlinePayment: (
+        shopId: string,
+        data: ShopOnlinePaymentFormData
+    ) => Promise<void>;
 }
 
 interface UseShopOperationsProps {
     onDeleteSuccess?: () => Promise<void>;
     onBankSaveSuccess?: () => Promise<void>;
+    onOnlinePaymentSaveSuccess?: () => Promise<void>;
+    lang?: Record<string, string>;
 }
 
-export const useShopOperations = ({ 
+export const useShopOperations = ({
     onDeleteSuccess,
-    onBankSaveSuccess 
+    onBankSaveSuccess,
+    onOnlinePaymentSaveSuccess,
+    lang = {},
 }: UseShopOperationsProps = {}): UseShopOperationsReturn => {
     const router = useRouter();
+    const dispatch = useAppDispatch();
     const [showModalDelete, setShowModalDelete] = useState<ShopModalDeleteState>({ 
         isShow: false, 
         id: '' 
@@ -54,8 +79,15 @@ export const useShopOperations = ({
         shopId: '',
         initialData: undefined
     });
+    const [showModalOnlinePayment, setShowModalOnlinePayment] =
+        useState<ShopModalOnlinePaymentState>({
+            isShow: false,
+            shopId: '',
+            initialData: undefined,
+        });
     const [isDeleting, setIsDeleting] = useState(false);
     const [isSavingBank, setIsSavingBank] = useState(false);
+    const [isSavingOnlinePayment, setIsSavingOnlinePayment] = useState(false);
 
     const fetchBankData = useCallback(async (id: string): Promise<BankFormData | undefined> => {
         try {
@@ -156,11 +188,80 @@ export const useShopOperations = ({
         }
     }, [onBankSaveSuccess, handleCloseBankModal]);
 
+    const handleShowOnlinePaymentModal = useCallback((item: ShopInfoItemDataProps) => {
+        setShowModalOnlinePayment({
+            isShow: true,
+            shopId: item.id,
+            initialData: {
+                onlinePaymentStatus: isOnlinePaymentStatus(item.onlinePaymentStatus)
+                    ? item.onlinePaymentStatus
+                    : '',
+                onlineActivationDate: item.onlineActivationDate || '',
+                onlineCloseDate: item.onlineCloseDate || '',
+            },
+        });
+    }, []);
+
+    const handleCloseOnlinePaymentModal = useCallback(() => {
+        setShowModalOnlinePayment({
+            isShow: false,
+            shopId: '',
+            initialData: undefined,
+        });
+    }, []);
+
+    const handleSaveOnlinePayment = useCallback(
+        async (shopId: string, data: ShopOnlinePaymentFormData) => {
+            try {
+                setIsSavingOnlinePayment(true);
+                const response = await axios.patch(
+                    SHOP_INFO_API_ENDPOINTS.ONLINE_PAYMENT(shopId),
+                    data
+                );
+
+                if (response.status === 200) {
+                    handleCloseOnlinePaymentModal();
+                    dispatch(
+                        openModalAlert({
+                            message: lang['global_success'] || 'Success',
+                            title: lang['global_success'] || 'Success',
+                        })
+                    );
+                    if (onOnlinePaymentSaveSuccess) {
+                        await onOnlinePaymentSaveSuccess();
+                    }
+                }
+            } catch (error) {
+                const err = error as AxiosError;
+                const errorMessage =
+                    (err.response?.data as { message?: string })?.message ||
+                    lang['global_error_message'] ||
+                    'Failed to update online payment';
+                dispatch(
+                    openModalAlert({
+                        message: errorMessage,
+                        title: lang['global_error'] || 'Error',
+                    })
+                );
+            } finally {
+                setIsSavingOnlinePayment(false);
+            }
+        },
+        [
+            dispatch,
+            handleCloseOnlinePaymentModal,
+            lang,
+            onOnlinePaymentSaveSuccess,
+        ]
+    );
+
     return {
         showModalDelete,
         showModalBank,
+        showModalOnlinePayment,
         isDeleting,
         isSavingBank,
+        isSavingOnlinePayment,
         handleAddShop,
         handleEditShop,
         handleDeleteShop,
@@ -169,5 +270,8 @@ export const useShopOperations = ({
         handleShowBankModal,
         handleCloseBankModal,
         handleSaveBank,
+        handleShowOnlinePaymentModal,
+        handleCloseOnlinePaymentModal,
+        handleSaveOnlinePayment,
     };
 };

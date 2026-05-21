@@ -81,6 +81,18 @@ Examples:
 
 Also: every new UI string → `lang['key']` + **`languageDefault.json`**.
 
+### UI design (match existing project)
+
+Do **not** design new screens from scratch. Follow [DESIGN.md — UI design system](./DESIGN.md#ui-design-system-required):
+
+- Page shell: `bg-white p-2 md:p-4` + `ErrorBoundary`
+- Compose: **Header → Filter → Table → Modals** in separate files under `components/<Feature>/`
+- Reuse: `TableComponent`, `FormGroup/*`, `Modals/*`, `Filter/*`
+- Bootstrap + Tailwind + Font Awesome only
+- Status formatters in `utils/`, colors `text-success` / `text-danger`
+
+References: `ShopInfo/`, `ShopManagementTransaction/`, `LanguageSettings/`, `Filter/FilterReportBank.tsx`
+
 ## Auth (critical)
 
 1. Login: `POST /api/auth-signin` → sets **httpOnly** cookie `token`.
@@ -111,7 +123,8 @@ npm run lint
 ## When changing code
 
 1. **New or non-trivial feature changes**: use the [feature page structure](#feature-page-structure-required-for-newchanged-features) above; copy `language-settings` / `LanguageSettings` if unsure.
-2. Match existing patterns in the nearest file (API route, service, view model).
+2. **UI**: follow [UI design system](./DESIGN.md#ui-design-system-required); copy nearest `components/<Feature>/` and `Modals/*`.
+3. Match existing patterns in the nearest file (API route, service, view model).
 3. New backend calls: BFF in `src/app/api/...` + client calls via `src/services/...` (not axios inside page/components).
 4. Keep diffs minimal; do not refactor unrelated files.
 5. Do not commit `.env` or secrets.

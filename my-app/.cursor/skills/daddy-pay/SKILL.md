@@ -37,7 +37,8 @@ Full workflows: [SKILL.md](../../../docs/SKILL.md). Architecture: [DESIGN.md](..
    - `<Feature>Table.tsx` — table rows
    - `<Feature>*Modal.tsx` — modals when needed
 4. References: `LanguageSettings/` (tabs+modals), `ShopManagementTransaction/` (header+filter+table).
-5. New strings → `languageDefault.json`. Menu: `layout.tsx` `menuItems` + `role`.
+5. UI: [DESIGN.md UI design system](../../../docs/DESIGN.md#ui-design-system-required) — `TableComponent`, `FormGroup/*`, modals, page shell, status formatters; copy nearest feature folder.
+6. New strings → `languageDefault.json`. Menu: `layout.tsx` `menuItems` + `role`.
 
 ## Auth debug order
 
@@ -49,4 +50,5 @@ middleware `/me` → cookie `token` → API route headers → `getData()` → `A
 - [ ] No secrets / no oversized headers
 - [ ] page → ViewModel → service → View (no monolithic page)
 - [ ] View composes sub-components (Header/Filter/Table/Modal), not one 100+ line file
+- [ ] UI matches project design (DESIGN.md): shared Table/Form/Modal components, no new UI kits
 - [ ] `npm run lint` if substantial change

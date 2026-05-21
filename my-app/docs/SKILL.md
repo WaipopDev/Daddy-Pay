@@ -37,25 +37,23 @@ Use this skill when implementing or debugging features in the Daddy Pay admin ap
 1. Add thin page: `src/app/(appAuth)/<feature>/page.tsx` (hook + View only).
 2. Create `hooks/use<Feature>ViewModel.ts` — all state and actions.
 3. Create `services/<feature>Service.ts` — API calls used by the ViewModel.
-4. Create `components/<Feature>/`:
-   - `<Feature>View.tsx` — compose only; map `lang` to label props.
-   - Sub-components per UI block (do not inline everything in View):
-     - Header/toolbar/back → `<Feature>Header.tsx` or `<Feature>Toolbar.tsx`
-     - Filters → `<Feature>Filter.tsx`
-     - Table → `<Feature>Table.tsx`
-     - Modals → `<Feature>AddModal.tsx`, etc.
-   - Export via `index.ts`.
+4. Create `components/<Feature>/` — follow [DESIGN.md UI design system](./DESIGN.md#ui-design-system-required):
+   - `<Feature>View.tsx` — compose only; `<main className="bg-white p-2 md:p-4">` + `ErrorBoundary`.
+   - Sub-components: Header, Filter, Table, Modal (separate files — not one bloated View).
+   - Reuse `TableComponent`, `FormGroup/*`, `Modals/ModalAction*`; Bootstrap + Tailwind + Font Awesome.
+   - Status columns: formatters in `utils/` + `text-success` / `text-danger`.
+   - Export via `index.ts`. Copy from nearest: `ShopInfo/`, `ShopManagementTransaction/`, `LanguageSettings/`.
 5. Add `types/`, `constants/`, `utils/*Validation.ts` as needed.
 6. If menu entry needed: update `menuItems` in `(appAuth)/layout.tsx` with `role` array.
 7. UI strings: `lang['key']` + entries in `languageDefault.json`.
 8. For user/shop context: Redux `user` slice (loaded in `AdminNavbar` via `getData()`).
-9. Reuse `Table`, `Filter*`, `FormGroup`, `ModalForm` from `src/components/`.
+9. Do **not** add new UI libraries; reuse shared components under `src/components/`.
 10. Confirm middleware matcher does not block the path.
 
 **References:**
 
 - Tabs + modals: `language-settings` + `components/LanguageSettings/`
-- List + filter + table: `shop-management/transaction/[id]` + `components/ShopManagementTransaction/`
+- List + filter + table: `shop-info` + `components/ShopInfo/`, `components/ShopManagementTransaction/`
 
 ---
 
@@ -112,6 +110,7 @@ Use this skill when implementing or debugging features in the Daddy Pay admin ap
 - [ ] No full user blob in HTTP headers
 - [ ] Feature split: page thin → ViewModel → service → View (if feature work)
 - [ ] View composes sub-components (Header/Filter/Table/Modal files — not one bloated View)
+- [ ] UI matches DESIGN: `TableComponent`, `FormGroup/*`, Bootstrap+Tailwind+FA icons, status formatters
 - [ ] New UI strings in `languageDefault.json`
 - [ ] `npm run lint` passes (run when changes are substantial)
 - [ ] User asked for commit → follow `RULE.md` git section only then

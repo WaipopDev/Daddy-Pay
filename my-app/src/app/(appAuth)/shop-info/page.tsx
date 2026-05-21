@@ -4,6 +4,7 @@ import { useAppSelector } from "@/store/hook";
 import TableComponent from "@/components/Table/Table";
 import ModalActionDelete from "@/components/Modals/ModalActionDelete";
 import ModalActionBank from "@/components/Modals/ModalActionBank";
+import ModalActionOnlinePayment from "@/components/Modals/ModalActionOnlinePayment";
 
 // Custom hooks
 import { useShopData } from "@/hooks/useShopData";
@@ -29,6 +30,7 @@ const ShopInfoPage = () => {
     const {
         showModalDelete,
         showModalBank,
+        showModalOnlinePayment,
         // isDeleting,
         handleAddShop,
         handleEditShop,
@@ -38,13 +40,21 @@ const ShopInfoPage = () => {
         handleShowBankModal,
         handleCloseBankModal,
         handleSaveBank,
+        handleShowOnlinePaymentModal,
+        handleCloseOnlinePaymentModal,
+        handleSaveOnlinePayment,
+        isSavingOnlinePayment,
     } = useShopOperations({
+        lang,
         onDeleteSuccess: async () => {
             await fetchData(page.page);
         },
         onBankSaveSuccess: async () => {
             await fetchData(page.page);
-        }
+        },
+        onOnlinePaymentSaveSuccess: async () => {
+            await fetchData(page.page);
+        },
     });
     const handleEditBank = (id: string) => {
         handleShowBankModal(id);
@@ -91,6 +101,7 @@ const ShopInfoPage = () => {
                             onDelete={handleShowDeleteModal}
                             isLoading={isLoading}
                             onEditBank={handleEditBank}
+                            onEditOnlinePayment={handleShowOnlinePaymentModal}
                         />
                     </TableComponent>
                 </Suspense>
@@ -111,6 +122,16 @@ const ShopInfoPage = () => {
                     shopId={showModalBank.shopId}
                     onSave={handleSaveBank}
                     initialData={showModalBank.initialData}
+                />
+
+                <ModalActionOnlinePayment
+                    show={showModalOnlinePayment.isShow}
+                    handleClose={handleCloseOnlinePaymentModal}
+                    title={lang['modal_online_payment_title']}
+                    shopId={showModalOnlinePayment.shopId}
+                    initialData={showModalOnlinePayment.initialData}
+                    onSave={handleSaveOnlinePayment}
+                    isSaving={isSavingOnlinePayment}
                 />
             </ErrorBoundary>
         </main>

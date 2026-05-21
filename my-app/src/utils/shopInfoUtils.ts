@@ -1,5 +1,9 @@
 import { ShopInfoItemDataProps } from '@/types/shopInfoType';
-import { SHOP_STATUS } from '@/constants/shopInfo';
+import {
+    ONLINE_PAYMENT_STATUS,
+    SHOP_STATUS,
+    SUBSCRIPTION_STATUS,
+} from '@/constants/shopInfo';
 
 /**
  * Shop Info utility functions
@@ -40,6 +44,58 @@ export const formatShopStatus = (status: string, lang: { [key: string]: string }
         text: isActive ? lang['global_active'] : lang['global_inactive'],
         className: isActive ? 'text-success' : 'text-danger',
         isActive
+    };
+};
+
+/**
+ * Formats online payment status for display (enable | disable)
+ */
+export const formatOnlinePaymentStatus = (
+    status: string,
+    lang: { [key: string]: string }
+) => {
+    const normalized = status?.toLowerCase();
+    const isEnabled = normalized === ONLINE_PAYMENT_STATUS.ENABLE;
+    const isDisabled = normalized === ONLINE_PAYMENT_STATUS.DISABLE;
+
+    return {
+        text: isEnabled
+            ? lang['global_enable']
+            : isDisabled
+              ? lang['global_disable']
+              : status || '-',
+        className: isEnabled
+            ? 'text-success'
+            : isDisabled
+              ? 'text-danger'
+              : 'text-muted',
+        isEnabled,
+    };
+};
+
+/**
+ * Formats subscription status for display (active | expired)
+ */
+export const formatSubscriptionStatus = (
+    status: string,
+    lang: { [key: string]: string }
+) => {
+    const normalized = status?.toLowerCase();
+    const isActive = normalized === SUBSCRIPTION_STATUS.ACTIVE;
+    const isExpired = normalized === SUBSCRIPTION_STATUS.EXPIRED;
+
+    return {
+        text: isActive
+            ? lang['global_active']
+            : isExpired
+              ? lang['global_expired']
+              : status || '-',
+        className: isActive
+            ? 'text-success'
+            : isExpired
+              ? 'text-danger'
+              : 'text-muted',
+        isActive,
     };
 };
 
