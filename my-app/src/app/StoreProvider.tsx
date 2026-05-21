@@ -4,10 +4,10 @@ import type { ReactNode } from "react";
 import { Provider } from 'react-redux'
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { makeStore, AppStore } from '@/store/store'
-import Cookies from 'js-cookie'
 import { setLang } from '@/store/features/langSlice';
 import axios from 'axios';
 import languageDefault from '../../languageDefault.json';
+import { getClientLangCode } from '@/lib/langCookie';
 // import { setPrefix, setPermission } from '@/store/features/masterSlice'
 
 interface Props {
@@ -28,7 +28,7 @@ export const StoreProvider = ({ children }: Props) => {
             const hasLang = langState && Object.keys(langState).length > 0;
        
             if (!hasLang) {
-                const langCode = Cookies.get('lang') || 'en'
+                const langCode = getClientLangCode()
                 try {
                     const langData = await axios.get(`/api/lang?langCode=${langCode}`)
                     // console.log('langData', langData)

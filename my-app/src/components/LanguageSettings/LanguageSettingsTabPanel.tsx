@@ -3,6 +3,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import LanguageTranslationsTable from './LanguageTranslationsTable';
+import { isLanguageDeletable } from '@/constants/languageSettings';
 import type { TranslationsMap } from '@/types/languageSettingsType';
 
 interface LanguageSettingsTabPanelProps {
@@ -19,7 +20,10 @@ const LanguageSettingsTabPanel: React.FC<LanguageSettingsTabPanelProps> = ({
     translations,
     onEdit,
     onDelete,
-}) => (
+}) => {
+    const canDelete = isLanguageDeletable(langCode);
+
+    return (
     <>
         <div className="flex flex-col md:flex-row justify-end pb-2 mb-4 gap-2">
             <Button
@@ -29,13 +33,15 @@ const LanguageSettingsTabPanel: React.FC<LanguageSettingsTabPanelProps> = ({
             >
                 {labels.editLanguage}
             </Button>
-            <Button
-                variant="danger"
-                className="w-full md:w-auto"
-                onClick={() => onDelete(langCode)}
-            >
-                {labels.deleteLanguage}
-            </Button>
+            {canDelete && (
+                <Button
+                    variant="danger"
+                    className="w-full md:w-auto"
+                    onClick={() => onDelete(langCode)}
+                >
+                    {labels.deleteLanguage}
+                </Button>
+            )}
         </div>
         <LanguageTranslationsTable
             labels={{
@@ -46,6 +52,7 @@ const LanguageSettingsTabPanel: React.FC<LanguageSettingsTabPanelProps> = ({
             translations={translations}
         />
     </>
-);
+    );
+};
 
 export default LanguageSettingsTabPanel;

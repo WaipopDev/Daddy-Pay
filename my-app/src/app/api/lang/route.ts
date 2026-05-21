@@ -13,7 +13,9 @@ export async function GET(req: NextRequest) {
         if (!langCode) {
             return NextResponse.json({ message: 'Language code is required' }, { status: 400 });
         }
-        const response = await axios.get(`${process.env.API_URL}/api/v1/language?labgCode=${langCode}`);
+        const response = await axios.get(
+            `${process.env.API_URL}/api/v1/language?langCode=${encodeURIComponent(langCode)}`
+        );
         return await createResponseWithHeaders(response.data, response);
     } catch (error) {
         const err = error as AxiosError;

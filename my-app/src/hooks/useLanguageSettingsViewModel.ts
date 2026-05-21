@@ -5,6 +5,7 @@ import { AxiosError } from 'axios';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { openModalAlert, setProcess } from '@/store/features/modalSlice';
 import { getDefaultTranslations } from '@/lib/languageDefaultTranslations';
+import { isLanguageDeletable } from '@/constants/languageSettings';
 import {
     deleteLanguage,
     fetchLanguageByCode,
@@ -121,10 +122,16 @@ export const useLanguageSettingsViewModel = () => {
         setForm(EMPTY_FORM);
     }, []);
 
-    const openDeleteModal = useCallback((langCode: string) => {
-        setDeleteLangCode(langCode);
-        setShowDeleteModal(true);
-    }, []);
+    const openDeleteModal = useCallback(
+        (langCode: string) => {
+            if (!isLanguageDeletable(langCode)) {
+                return;
+            }
+            setDeleteLangCode(langCode);
+            setShowDeleteModal(true);
+        },
+        []
+    );
 
     const closeDeleteModal = useCallback(() => {
         setShowDeleteModal(false);
@@ -223,6 +230,9 @@ export const useLanguageSettingsViewModel = () => {
 
     const confirmDeleteLanguage = useCallback(
         async (langCode: string) => {
+            if (!isLanguageDeletable(langCode)) {
+                return;
+            }
             dispatch(setProcess(true));
             try {
                 await deleteLanguage(langCode);
