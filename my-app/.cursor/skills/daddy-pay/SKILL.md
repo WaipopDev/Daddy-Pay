@@ -26,11 +26,12 @@ Full workflows: [SKILL.md](../../../docs/SKILL.md). Architecture: [DESIGN.md](..
 4. axios 401 → `handleTokenExpiration()`.
 5. Client calls `/api/...` with `withCredentials: true` if needed.
 
-## New page
+## New / changed feature (structure)
 
-1. `src/app/(appAuth)/<name>/page.tsx`.
-2. Menu: `layout.tsx` `menuItems` + `role`.
-3. Data: existing hooks or `/api/...`; user from Redux (`getData` in navbar).
+1. Thin `page.tsx` → `use<Feature>ViewModel` → `<Feature>View vm={vm} />`.
+2. `services/<feature>Service.ts` for API; ViewModel for state/handlers.
+3. `components/<Feature>/` for UI only. Reference: `language-settings`.
+4. New strings → `languageDefault.json`. Menu: `layout.tsx` `menuItems` + `role`.
 
 ## Auth debug order
 

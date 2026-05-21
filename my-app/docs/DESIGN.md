@@ -116,7 +116,21 @@ Shop create/edit: browser → `POST /api/shop-info` (multipart) → backend Form
 | Shop management | `(appAuth)/shop-management` | `api/shop-management/*` |
 | Machine / Program | `machine-info`, `program-info` | `api/machine-info`, `api/program-info` |
 | Users | `user-management` | `api/user/*`, `constants/user.ts` |
-| i18n | `language-settings` | `api/lang/*`, `lib/getLangData.ts` |
+| i18n | `language-settings` | `api/lang/*`, `languageSettingsService`, `LanguageSettings/` components |
+
+## Frontend feature module layout
+
+Standard structure for `(appAuth)` features (canonical example: **language-settings**):
+
+```
+page.tsx  →  useFeatureViewModel()  →  FeatureView  →  sub-components
+                ↓
+         featureService.ts  →  /api/* BFF  →  API_URL
+```
+
+- **ViewModel**: orchestration only (no JSX).
+- **View / components**: presentation; labels from Redux `lang`.
+- **Do not** add new business logic inside a single `page.tsx` file.
 
 ## UI architecture
 

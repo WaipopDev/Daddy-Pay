@@ -37,8 +37,37 @@ src/
   hooks/                # Client data hooks
   middleware.ts         # Auth gate, token refresh, LRU user cache
   store/                # Redux slices
-  types/ utils/ lib/
+  types/ utils/ lib/ services/
 ```
+
+## Feature page structure (required for new/changed features)
+
+When adding or changing a feature under `(appAuth)`, **do not put all logic in `page.tsx`**. Split into layers (reference: **language-settings**).
+
+```
+src/app/(appAuth)/<feature>/page.tsx     # Thin: hook + View only (~10–20 lines)
+src/hooks/use<Feature>ViewModel.ts       # State, handlers, Redux dispatch
+src/services/<feature>Service.ts         # axios → /api/... (no UI)
+src/types/<feature>Type.ts               # Types
+src/constants/<feature>.ts               # API paths, config
+src/utils/<feature>Validation.ts           # Form validation (if needed)
+src/lib/                                   # Static helpers (e.g. default JSON)
+src/components/<Feature>/
+  <Feature>View.tsx                      # Compose sub-components
+  <SubComponent>.tsx                       # Presentational UI only
+  index.ts
+src/app/api/<feature>/                   # BFF routes
+```
+
+| Layer | Responsibility |
+|-------|----------------|
+| **page** | `const vm = useXxxViewModel(); return <XxxView vm={vm} />;` |
+| **ViewModel hook** | `useState`, fetch/save, modals, `openModalAlert`, `setProcess` |
+| **service** | HTTP calls only |
+| **View / components** | JSX, labels from `lang`, props + callbacks — no direct API |
+| **BFF** | `cookies()`, proxy to `API_URL` |
+
+Also: every new UI string → `lang['key']` + **`languageDefault.json`**.
 
 ## Auth (critical)
 
@@ -69,11 +98,12 @@ npm run lint
 
 ## When changing code
 
-1. Match existing patterns in the nearest file (API route, page, hook).
-2. New backend calls: prefer `src/app/api/...` BFF + client axios to `/api/...` with `withCredentials: true` where cookies matter.
-3. Keep diffs minimal; do not refactor unrelated files.
-4. Do not commit `.env` or secrets.
-5. Run `npm run lint` after substantive edits.
+1. **New or non-trivial feature changes**: use the [feature page structure](#feature-page-structure-required-for-newchanged-features) above; copy `language-settings` / `LanguageSettings` if unsure.
+2. Match existing patterns in the nearest file (API route, service, view model).
+3. New backend calls: BFF in `src/app/api/...` + client calls via `src/services/...` (not axios inside page/components).
+4. Keep diffs minimal; do not refactor unrelated files.
+5. Do not commit `.env` or secrets.
+6. Run `npm run lint` after substantive edits.
 
 ## Out of scope for agents unless asked
 

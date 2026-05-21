@@ -29,5 +29,7 @@ return createResponseWithHeaders(response.data, response);
 ## Code
 
 - BFF only from browser (`/api/...`), not `API_URL` in client.
-- Pages: `src/app/(appAuth)/`; reuse hooks in `src/hooks/`, components in `src/components/`.
+- **New/changed features**: page (thin) → `use*ViewModel` → `*Service` → `components/*View` — see `language-settings`. No monolithic `page.tsx`.
+- axios only in `services/` or BFF routes, not in View/components.
+- UI: `lang['key']` + `languageDefault.json`.
 - Minimize diff; `@/` imports; commit only when user asks.

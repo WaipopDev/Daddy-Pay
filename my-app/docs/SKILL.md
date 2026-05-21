@@ -34,12 +34,27 @@ Use this skill when implementing or debugging features in the Daddy Pay admin ap
 
 ## Workflow: New protected page
 
-1. Add page under `src/app/(appAuth)/<feature>/page.tsx`.
-2. If menu entry needed: update `menuItems` in `(appAuth)/layout.tsx` with `role` array.
-3. Prefer `'use client'` + existing hooks if data is loaded client-side.
-4. For user/shop context: Redux `user` slice (loaded in `AdminNavbar` via `getData()`).
-5. Reuse `Table`, `Filter*`, `FormGroup` components from `src/components/`.
-6. Confirm middleware matcher does not block the path (pages are covered by default).
+1. Add thin page: `src/app/(appAuth)/<feature>/page.tsx` (hook + View only).
+2. Create `hooks/use<Feature>ViewModel.ts` — all state and actions.
+3. Create `services/<feature>Service.ts` — API calls used by the ViewModel.
+4. Create `components/<Feature>/` — `*View.tsx`, modals, tables; export via `index.ts`.
+5. Add `types/`, `constants/`, `utils/*Validation.ts` as needed.
+6. If menu entry needed: update `menuItems` in `(appAuth)/layout.tsx` with `role` array.
+7. UI strings: `lang['key']` + entries in `languageDefault.json`.
+8. For user/shop context: Redux `user` slice (loaded in `AdminNavbar` via `getData()`).
+9. Reuse `Table`, `Filter*`, `FormGroup`, `ModalForm` from `src/components/`.
+10. Confirm middleware matcher does not block the path.
+
+**Reference:** `src/app/(appAuth)/language-settings/` + `src/components/LanguageSettings/` + `useLanguageSettingsViewModel`.
+
+---
+
+## Workflow: Extend existing feature
+
+1. Prefer extending ViewModel + service + component — **not** growing `page.tsx`.
+2. New API: BFF route + service function + ViewModel handler.
+3. New UI block: new component under `components/<Feature>/`, wire in `*View.tsx`.
+4. Add `languageDefault.json` keys for any new labels.
 
 ---
 
@@ -85,6 +100,8 @@ Use this skill when implementing or debugging features in the Daddy Pay admin ap
 - [ ] Token/auth path consistent with sibling routes
 - [ ] No secrets or `.env` committed
 - [ ] No full user blob in HTTP headers
+- [ ] Feature split: page thin, ViewModel + service + components (if feature work)
+- [ ] New UI strings in `languageDefault.json`
 - [ ] `npm run lint` passes (run when changes are substantial)
 - [ ] User asked for commit → follow `RULE.md` git section only then
 

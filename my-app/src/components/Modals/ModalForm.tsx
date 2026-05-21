@@ -10,17 +10,19 @@ const ModalForm = ({
     handleClose,
     title,
     handleSave,
-    children
+    children,
+    size = undefined,
 }: {
     show: boolean;
     handleClose: () => void;
     title: string;
     handleSave: () => void;
     children: React.ReactNode;
+    size?: 'sm' | 'lg' | 'xl' | undefined;
 }) => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
     return (
-        <Modal show={show} centered onHide={() => handleClose()}>
+        <Modal show={show} centered onHide={() => handleClose()} size={size}>
             <Modal.Header className="py-2" closeButton>
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>

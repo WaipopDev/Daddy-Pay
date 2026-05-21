@@ -17,6 +17,22 @@ Rules for humans and AI agents working in this repository.
 - Types go in `src/types/`; shared constants in `src/constants/`.
 - Use `@/` path alias for imports from `src/`.
 
+## Feature structure (page / ViewModel / View)
+
+**Required** when adding or materially changing a feature. Reference implementation: `language-settings`.
+
+| File | Allowed content |
+|------|-----------------|
+| `app/(appAuth)/<feature>/page.tsx` | Import hook + `<Feature>View vm={vm} />` only |
+| `hooks/use<Feature>ViewModel.ts` | State, effects, handlers, validation calls, modal dispatch |
+| `services/<feature>Service.ts` | `axios` to `/api/...` |
+| `components/<Feature>/*.tsx` | UI; receive data/callbacks via props |
+| `components/<Feature>/<Feature>View.tsx` | Layout composition, map `lang` to labels |
+
+**Do not** in `page.tsx` or view components: `axios.post/get`, large `useState` blocks, or business validation.
+
+Naming: `useLanguageSettingsViewModel`, `languageSettingsService`, `LanguageSettingsView`.
+
 ## API routes (BFF)
 
 Pattern for proxy routes:
