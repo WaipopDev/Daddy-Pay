@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import axios from 'axios';
 import { LRUCache } from 'lru-cache'
-import { LANGUAGE_DEFAULT_CODE, normalizeLangCode } from '@/constants/languageSettings'
+import { normalizeLangCode } from '@/constants/languageSettings'
 const options = {
     max: 5000, // maximum number of items that can be stored in the cache
     ttl: 1000 * 60 * 10 // 10 minutes

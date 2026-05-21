@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { LANGUAGE_DEFAULT_CODE, normalizeLangCode } from '@/constants/languageSettings';
+import { normalizeLangCode } from '@/constants/languageSettings';
 
 export { normalizeLangCode } from '@/constants/languageSettings';
 
