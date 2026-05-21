@@ -1,0 +1,33 @@
+---
+description: Daddy Pay admin — auth, BFF API, and coding conventions
+alwaysApply: true
+---
+
+# Daddy Pay
+
+Read [AGENTS.md](../../docs/AGENTS.md), [RULE.md](../../docs/RULE.md), [DESIGN.md](../../docs/DESIGN.md) for full context.
+
+## Auth
+
+- Session: httpOnly cookie `token`. Backend: `{API_URL}/api/v1/admin/*`.
+- Middleware validates pages; `/api/*` excluded — each route checks `cookies().get('token')`.
+- **Never** put full user JSON in `x-user-data` (502 from proxy header limits). Use `getData()` → `/admin/me` via cookie.
+- Token refresh: forward `X-New-Token` / `X-Token-Refreshed` via `createResponseWithHeaders` / middleware.
+
+## API routes
+
+```typescript
+const token = (await cookies()).get('token')?.value;
+if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+const response = await axios.get(`${process.env.API_URL}/api/v1/admin/...`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
+return createResponseWithHeaders(response.data, response);
+// 401 → handleTokenExpiration()
+```
+
+## Code
+
+- BFF only from browser (`/api/...`), not `API_URL` in client.
+- Pages: `src/app/(appAuth)/`; reuse hooks in `src/hooks/`, components in `src/components/`.
+- Minimize diff; `@/` imports; commit only when user asks.
