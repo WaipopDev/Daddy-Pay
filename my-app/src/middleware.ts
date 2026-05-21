@@ -13,7 +13,7 @@ export async function middleware(req: NextRequest) {
     // const role = req.cookies.get('role')?.value;
     const cacheKey = token ? `user-data-${token}` : null;
     
-    const publicPages = ['/login', '/logout'];
+    const publicPages = ['/login', '/logout', '/reset-password'];
 
     // Allow public pages to load without redirection
     if (req.nextUrl.pathname === '/login') {
