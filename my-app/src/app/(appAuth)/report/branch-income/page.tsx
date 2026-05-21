@@ -47,15 +47,15 @@ const BranchIncomePage = () => {
         }
         const excelData = excelDataArray.map((item, index) => ({
             '#': index + 1,
-            'วันที่ทำรายการ': moment(item.createdAt).format('DD-MM-YYYY HH:mm:ss'),
-            'Transaction IoT': item.transactionIot,
-            'Transaction Bank Ref': item.transactionId,
-            'ชื่อร้าน': item.shopInfo.shopName,
-            'ประเภทเครื่อง': item.machineInfo.machineType,
-            'ชื่อเครื่อง': item.shopManagement.shopManagementName,
-            'ชื่อโปรแกรม': item.programInfo.programName,
-            'ประเภทราคา': PAYMENT_METHOD.find(i => i.id === item.priceType)?.name || '-',
-            'ราคา': item.price
+            [lang['page_report_branch_income_transaction_date']]: moment(item.createdAt).format('DD-MM-YYYY HH:mm:ss'),
+            [lang['page_report_branch_income_transaction_iot']]: item.transactionIot,
+            [lang['page_report_branch_income_transaction_bank_ref']]: item.transactionId,
+            [lang['page_report_branch_income_shop_name']]: item.shopInfo.shopName,
+            [lang['page_report_branch_income_machine_type']]: item.machineInfo.machineType,
+            [lang['page_report_branch_income_machine_name']]: item.shopManagement.shopManagementName,
+            [lang['page_report_branch_income_program_name']]: item.programInfo.programName,
+            [lang['page_report_branch_income_price_type']]: PAYMENT_METHOD.find(i => i.id === item.priceType)?.name || '-',
+            [lang['page_report_branch_income_price']]: item.price
         }));
   
         // Create workbook and worksheet
@@ -78,11 +78,10 @@ const BranchIncomePage = () => {
         ws['!cols'] = colWidths;
 
         // Add worksheet to workbook
-        XLSX.utils.book_append_sheet(wb, ws, 'Branch Income Report');
+        XLSX.utils.book_append_sheet(wb, ws, lang['page_report_excel_sheet_branch_income']);
 
-        // Generate filename with current date
         const currentDate = moment().format('YYYY-MM-DD');
-        const filename = `Branch_Income_Report_${currentDate}.xlsx`;
+        const filename = `${lang['page_report_excel_filename_branch_income']}_${currentDate}.xlsx`;
 
         // Save file
         XLSX.writeFile(wb, filename);
@@ -106,7 +105,7 @@ const BranchIncomePage = () => {
                     disabled={isExporting}
                 >
                     <i className="fa-solid fa-file-excel pr-2"></i>
-                    Export Excel
+                    {lang['button_export_excel']}
                 </Button>
             </div>
             <div className="pb-2 mb-4">
@@ -115,7 +114,7 @@ const BranchIncomePage = () => {
             </div>
 
             <ErrorBoundary>
-                <Suspense fallback={<p>Loading feed...</p>}>
+                <Suspense fallback={<p>{lang['global_loading']}</p>}>
                     <TableComponent
                         head={['#', 
                             lang['page_report_branch_income_transaction_date'], 

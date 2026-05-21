@@ -146,7 +146,7 @@ const ShopManagementPage = () => {
                         '#',
                         lang['page_shop_management_shop_name'],
                         lang['page_shop_management_machine_name'],
-                        'Shop Management Key',
+                        lang['page_shop_management_shop_management_key'],
                         lang['page_shop_management_machine_id'],
                         lang['page_shop_management_iot_id'],
                         lang['page_machine_info_machine_type'],
@@ -204,7 +204,7 @@ const ShopManagementPage = () => {
             <ModalActionDelete
                 show={showModalDelete.isShow}
                 handleClose={() => setShowModalDelete({ isShow: false, id: '' })}
-                title={lang['page_machine_info_deleting']}
+                title={lang['page_shop_management_deleting_machine']}
                 text={lang['global_delete_confirmation']}
                 id={showModalDelete.id}
                 handleConfirm={(id) => handleDeleteMachine(id)}

@@ -2,8 +2,11 @@
 import React from 'react'
 import Link from 'next/link'
 import { Table } from 'react-bootstrap'
+import { useAppSelector } from '@/store/hook';
 
 const ReportPage = () => {
+    const lang = useAppSelector(state => state.lang) as { [key: string]: string };
+
     return (
         <div className="bg-white p-2 md:p-4">
             <div className="table-responsive-wrapper">
@@ -11,7 +14,7 @@ const ReportPage = () => {
                     <thead>
                         <tr>
                             <th className="text-sm md:text-base">#</th>
-                            <th className="text-sm md:text-base">Report</th>
+                            <th className="text-sm md:text-base">{lang['page_report_list_title']}</th>
                         </tr>
                     </thead>
                     <tbody className="text-sm">
@@ -22,7 +25,7 @@ const ReportPage = () => {
                                     href="/report/branch-income" 
                                     className="text-blue-500 hover:text-blue-700 transition-colors text-sm md:text-base block py-2"
                                 >
-                                    รายงานข้อมูลรายรับสาขา
+                                    {lang['page_report_branch_income_link']}
                                 </Link>
                             </td>
                         </tr>
@@ -33,7 +36,7 @@ const ReportPage = () => {
                                     href="/report/kbank-payment" 
                                     className="text-blue-500 hover:text-blue-700 transition-colors text-sm md:text-base block py-2"
                                 >
-                                    รายงานข้อมูลการตัดเงินจากพร้อมเพย์เพื่อชำระค่าบริการ (ธนาคารกสิกรไทย (KBank))
+                                    {lang['page_report_kbank_payment']}
                                 </Link>
                             </td>
                         </tr>

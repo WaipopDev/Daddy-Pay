@@ -75,8 +75,8 @@ const LanguageSettingsPage = () => {
                                         <Table striped bordered hover>
                                             <thead>
                                                 <tr>
-                                                    <th className="text-sm md:text-base">Key</th>
-                                                    <th className="text-sm md:text-base">Value</th>
+                                                    <th className="text-sm md:text-base">{lang['page_language_settings_key']}</th>
+                                                    <th className="text-sm md:text-base">{lang['page_language_settings_value']}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -90,7 +90,7 @@ const LanguageSettingsPage = () => {
                                                         ))
                                                     ) : (
                                                         <tr>
-                                                            <td colSpan={2} className="text-center text-xs md:text-sm">No data available</td>
+                                                            <td colSpan={2} className="text-center text-xs md:text-sm">{lang['global_no_data']}</td>
                                                         </tr>
                                                     )
                                                 }

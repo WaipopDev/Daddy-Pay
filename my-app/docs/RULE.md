@@ -79,6 +79,16 @@ export async function GET() {
 - Modals: `modalSlice`.
 - Use `useAppDispatch` / `useAppSelector` from `@/store/hook`.
 
+## Internationalization (lang)
+
+- Protected UI loads strings from Redux `lang` via `useAppSelector(state => state.lang)`.
+- Default keys live in **`languageDefault.json`** at project root; `StoreProvider` dispatches them on startup.
+- **Every new or changed user-facing string** in `(appAuth)` (and shared components they use) must:
+  1. Use `lang['your_key']` in code — no hardcoded labels, buttons, alerts, or table headers.
+  2. Add the same key and English default to **`languageDefault.json`**.
+- Menu/sidebar: use `key` in `layout.tsx` `menuItems`; display via `lang[item.key]` in `Sidebar` / `HeaderBar`.
+- Naming: `menu_*`, `page_*`, `button_*`, `global_*`, `validation_*`, `filter_*`.
+
 ## UI
 
 - Tables: `components/Table/Table.tsx`, `CustomPagination.tsx`.

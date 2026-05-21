@@ -50,13 +50,13 @@ const UserManagementPage = () => {
         onAddSuccess: async () => {
             await fetchData(page.page);
             dispatch(openModalAlert({
-                message: lang['global_add_success_message'] || 'User added successfully'
+                message: lang['page_user_add_success']
             }));
         },
         onEditSuccess: async () => {
             await fetchData(page.page);
             dispatch(openModalAlert({
-                message: lang['global_edit_success_message'] || 'User updated successfully'
+                message: lang['page_user_edit_success']
             }));
         }
     });
@@ -189,7 +189,7 @@ const UserManagementPage = () => {
                 <ModalForm
                     show={showModalAdd}
                     handleClose={handleCloseModal}
-                    title={lang['page_user_add_user'] || 'Add User'}
+                    title={lang['page_user_add_user']}
                     handleSave={handleSaveUserForm}
                 >
                     <UserForm
@@ -204,7 +204,7 @@ const UserManagementPage = () => {
                 <ModalForm
                     show={showModalEdit.isShow}
                     handleClose={handleCloseEditModalForm}
-                    title={lang['page_user_edit_user'] || 'Edit User'}
+                    title={lang['page_user_edit_user']}
                     handleSave={handleUpdateUserForm}
                 >
                     <UserForm
@@ -220,8 +220,8 @@ const UserManagementPage = () => {
                 <ModalActionDelete
                     show={showModalDelete.isShow}
                     handleClose={handleCloseDeleteModal}
-                    title={lang['page_user_deleting'] || 'Deleting User'}
-                    text={lang['global_delete_confirmation'] || 'Are you sure you want to delete this user?'}
+                    title={lang['page_user_deleting']}
+                    text={lang['global_delete_confirmation']}
                     id={showModalDelete.id}
                     handleConfirm={handleDeleteUser}
                 />

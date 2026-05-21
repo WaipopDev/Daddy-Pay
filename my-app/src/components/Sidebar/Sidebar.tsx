@@ -67,7 +67,7 @@ const Sidebar: React.FC<MenuItems[] & SidebarProps> = (props) => {
 
                     </div>
                     <div className="absolute bottom-[8px] left-4 text-sm text-gray-500">
-                        Version 1.00
+                        {lang['global_version']}
                     </div>
                 </div>
             </div>

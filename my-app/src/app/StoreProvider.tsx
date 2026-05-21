@@ -31,12 +31,13 @@ export const StoreProvider = ({ children }: Props) => {
                 const langCode = Cookies.get('lang') || 'en'
                 try {
                     const langData = await axios.get(`/api/lang?langCode=${langCode}`)
-                    console.log('langData', langData)
-                    // if (langData.data) {
-                    //     store.dispatch(setLang(langData.data))
-                    // } else {
+                    // console.log('langData', langData)
+                    if (langData.data) {
+                        store.dispatch(setLang(langData.data))
+                    } else {
                         store.dispatch(setLang(languageDefault))
-                    // }
+                        // store.dispatch(setLang(languageDefault))
+                    }
                 } catch (apiError) {
                     console.error("Failed to fetch language from API:", apiError)
                     store.dispatch(setLang(languageDefault))

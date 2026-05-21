@@ -7,7 +7,6 @@ import FilterReportBank from '@/components/Filter/FilterReportBank';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import TableComponent from '@/components/Table/Table';
 import moment from 'moment';
-import { PAYMENT_METHOD } from '@/constants/main';
 import { useReportDataBank } from '@/hooks';
 import { formatNumber } from '@/utils/main';
 import { setProcess } from '@/store/features/modalSlice';
@@ -45,7 +44,7 @@ const KbankPaymentPage = () => {
             [lang['page_report_branch_income_machine_type']]: item.machineType,
             [lang['page_report_branch_income_machine_name']]: item.shopManagementName,
             [lang['page_report_branch_income_program_name']]: item.programName,
-            [lang['page_report_branch_income_price_type']]: PAYMENT_METHOD.find(i => i.id === 'prompt_pay')?.name || '-',
+            [lang['page_report_branch_income_price_type']]: lang['filter_report_prompt_pay'],
             [lang['page_report_branch_income_price']]: item.txnAmount
         })) : [];
   
@@ -70,11 +69,10 @@ const KbankPaymentPage = () => {
         ws['!cols'] = colWidths;
 
         // Add worksheet to workbook
-        XLSX.utils.book_append_sheet(wb, ws, 'Branch Income Report');
+        XLSX.utils.book_append_sheet(wb, ws, lang['page_report_excel_sheet_kbank_payment']);
 
-        // Generate filename with current date
         const currentDate = moment().format('YYYY-MM-DD');
-        const filename = `Branch_Income_Report_${currentDate}.xlsx`;
+        const filename = `${lang['page_report_excel_filename_kbank_payment']}_${currentDate}.xlsx`;
 
         // Save file
         XLSX.writeFile(wb, filename);
@@ -97,16 +95,16 @@ const KbankPaymentPage = () => {
                     disabled={isExporting}
                 >
                     <i className="fa-solid fa-file-excel pr-2"></i>
-                    Export Excel
+                    {lang['button_export_excel']}
                 </Button>
             </div>
             <div className="pb-2 mb-4">
-                <p className="font-bold text-lg md:text-xl">{lang['page_report_branch_income']}</p>
+                <p className="font-bold text-lg md:text-xl">{lang['page_report_kbank_payment']}</p>
                 <p className="text-sm md:text-base">{lang['page_report_branch_income_total_income']} : {formatNumber(summary && Number(summary) || 0)} {lang['global_baht']}</p>
             </div>
 
             <ErrorBoundary>
-                <Suspense fallback={<p>Loading feed...</p>}>
+                <Suspense fallback={<p>{lang['global_loading']}</p>}>
                     <TableComponent
                         head={['#',
                             lang['page_report_branch_income_transaction_date'],
@@ -136,7 +134,7 @@ const KbankPaymentPage = () => {
                                 <td className="text-xs md:text-sm">{item.machineType}</td>
                                 <td className="text-xs md:text-sm">{item.shopManagementName}</td>
                                 <td className="text-xs md:text-sm">{item.programName}</td>
-                                <td className="text-xs md:text-sm">{PAYMENT_METHOD.find(i => i.id === 'prompt_pay')?.name || '-'}</td>
+                                <td className="text-xs md:text-sm">{lang['filter_report_prompt_pay']}</td>
                                 <td className="text-xs md:text-sm text-right">{item.txnAmount}</td>
                             </tr>
                         ))}

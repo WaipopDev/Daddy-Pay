@@ -97,7 +97,7 @@ const ProgramInfoPage = () => {
             if (editData) {
                 await axios.patch(`/api/program-info`, { ...params, id: editData.id });
                 dispatch(openModalAlert({
-                    message: lang['global_update_success_message'] || 'Update Success'
+                    message: lang['global_update_success_message']
                 }));
             } else {
                 await axios.post('/api/program-info', params);

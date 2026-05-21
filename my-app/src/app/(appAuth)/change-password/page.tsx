@@ -28,21 +28,21 @@ const ChangePasswordPage = () => {
         const newErrors: { [key: string]: string } = {};
 
         if (!formData.currentPassword) {
-            newErrors.currentPassword = lang['validation_password_required'] || 'Current password is required';
+            newErrors.currentPassword = lang['validation_password_required'];
         }
 
         if (!formData.newPassword) {
-            newErrors.newPassword = lang['validation_password_required'] || 'New password is required';
+            newErrors.newPassword = lang['validation_password_required'];
         } else if (formData.newPassword.length < 6) {
-            newErrors.newPassword = lang['validation_password_min_length'] || 'Password must be at least 6 characters';
+            newErrors.newPassword = lang['validation_password_min_length'];
         } else if (formData.newPassword === formData.currentPassword) {
-            newErrors.newPassword = lang['page_change_password_same_password'] || 'New password must be different from current password';
+            newErrors.newPassword = lang['page_change_password_same_password'];
         }
 
         if (!formData.confirmPassword) {
-            newErrors.confirmPassword = lang['page_change_password_confirm_required'] || 'Please confirm your new password';
+            newErrors.confirmPassword = lang['page_change_password_confirm_required'];
         } else if (formData.newPassword !== formData.confirmPassword) {
-            newErrors.confirmPassword = lang['page_change_password_password_mismatch'] || 'Passwords do not match';
+            newErrors.confirmPassword = lang['page_change_password_password_mismatch'];
         }
 
         setErrors(newErrors);
@@ -89,8 +89,8 @@ const ChangePasswordPage = () => {
 
             if (response.status === 200) {
                 dispatch(openModalAlert({
-                    message: lang['page_change_password_success'] || 'Password changed successfully',
-                    title: lang['global_success'] || 'Success'
+                    message: lang['page_change_password_success'],
+                    title: lang['global_success']
                 }));
                 
                 // Reset form
@@ -109,10 +109,10 @@ const ChangePasswordPage = () => {
             }
         } catch (error) {
             const err = error as AxiosError;
-            const errorMessage = (err.response?.data as { message?: string })?.message || err.message || 'Failed to change password';
+            const errorMessage = (err.response?.data as { message?: string })?.message || err.message || lang['page_change_password_failed'];
             dispatch(openModalAlert({
                 message: errorMessage,
-                title: lang['global_error'] || 'Error'
+                title: lang['global_error']
             }));
         } finally {
             setIsProcess(false);
@@ -130,7 +130,7 @@ const ChangePasswordPage = () => {
                 <div className="max-w-2xl mx-auto">
                     <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
                         <h2 className="text-2xl md:text-3xl font-bold mb-6">
-                            {lang['menu_change_password'] || 'Change Password'}
+                            {lang['menu_change_password']}
                         </h2>
                         
                         <Form 
@@ -142,8 +142,8 @@ const ChangePasswordPage = () => {
                             <Row>
                                 <Col md={12} className="mb-3">
                                     <InputForm
-                                        label={lang['page_change_password_current'] || 'Current Password'}
-                                        placeholder={lang['page_change_password_current_placeholder'] || 'Enter current password'}
+                                        label={lang['page_change_password_current']}
+                                        placeholder={lang['page_change_password_current_placeholder']}
                                         name="currentPassword"
                                         type="password"
                                         value={formData.currentPassword}
@@ -158,8 +158,8 @@ const ChangePasswordPage = () => {
                             <Row>
                                 <Col md={12} className="mb-3">
                                     <InputForm
-                                        label={lang['page_change_password_new'] || 'New Password'}
-                                        placeholder={lang['page_change_password_new_placeholder'] || 'Enter new password'}
+                                        label={lang['page_change_password_new']}
+                                        placeholder={lang['page_change_password_new_placeholder']}
                                         name="newPassword"
                                         type="password"
                                         value={formData.newPassword}
@@ -174,8 +174,8 @@ const ChangePasswordPage = () => {
                             <Row>
                                 <Col md={12} className="mb-3">
                                     <InputForm
-                                        label={lang['page_change_password_confirm'] || 'Confirm New Password'}
-                                        placeholder={lang['page_change_password_confirm_placeholder'] || 'Confirm new password'}
+                                        label={lang['page_change_password_confirm']}
+                                        placeholder={lang['page_change_password_confirm_placeholder']}
                                         name="confirmPassword"
                                         type="password"
                                         value={formData.confirmPassword}
@@ -192,7 +192,7 @@ const ChangePasswordPage = () => {
                                     <ButtonCancel handleCancel={handleCancel} />
                                     <ButtonSubmit 
                                         isProcess={isProcess} 
-                                        title={lang['button_save'] || 'Save'} 
+                                        title={lang['button_save']} 
                                         className="w-auto"
                                         icon="fa-solid fa-floppy-disk"
                                     />

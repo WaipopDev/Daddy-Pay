@@ -216,7 +216,7 @@ const ShopManagementEdit: React.FC<ShopManagementEditProps> = ({
                     <div className="spinner-border" role="status">
                         <span className="visually-hidden">Loading...</span>
                     </div>
-                    <p className="mt-2">Loading data...</p>
+                    <p className="mt-2">{lang['global_loading_data']}</p>
                 </div>
             </ModalForm>
         );
