@@ -18,6 +18,7 @@ interface MenuItems {
 const EXTRA_PAGE_LANG_KEYS: Record<string, string> = {
     '/change-password': 'menu_change_password',
     '/subscriptions': 'menu_subscriptions',
+    '/user-shop-management': 'menu_user_shop_management',
 };
 
 const HeaderBar: React.FC<MenuItems[]> = (menuItems) => {

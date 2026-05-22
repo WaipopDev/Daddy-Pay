@@ -37,6 +37,15 @@ const UserDropdown = () => {
         router.push('/subscriptions');
     };
 
+    const handleUserShopManagement = () => {
+        router.push('/user-shop-management');
+    };
+
+    const showShopManagement =
+        user.role === 'user' ||
+        user.role === 'admin' ||
+        user.role === 'super-admin';
+
     return (
         <>
             <Dropdown className="nav-dropdown-w">
@@ -45,6 +54,11 @@ const UserDropdown = () => {
                     <p className="px-2 w-full text-left">{user.username}</p>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
+                    {showShopManagement && (
+                        <Dropdown.Item onClick={() => handleUserShopManagement()}>
+                            {lang['menu_user_shop_management']}
+                        </Dropdown.Item>
+                    )}
                     <Dropdown.Item onClick={() => handleSubscriptions()}>
                         {lang['menu_subscriptions']}
                     </Dropdown.Item>

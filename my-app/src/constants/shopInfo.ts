@@ -8,6 +8,7 @@ export const SHOP_INFO_ROUTES = {
 // API Endpoints
 export const SHOP_INFO_API_ENDPOINTS = {
     BASE: '/api/shop-info',
+    LIST: '/api/shop-info/list',
     GET_BY_ID: (id: string) => `/api/shop-info/by/${id}`,
     GET_BY_ID_API: (id: string) => `/api/shop-info/by-id/${id}`,
     DELETE: (shopId: string) => `/api/shop-info?shopId=${shopId}`,

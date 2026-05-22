@@ -10,10 +10,16 @@ import Image from "next/image";
 interface ShopInfoFormProps {
     item?: ItemShopInfoDataProps | null;
     action?: 'add' | 'edit';
+    readOnly?: boolean;
 }
 
-const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add' }) => {
+const ShopInfoForm: React.FC<ShopInfoFormProps> = ({
+    item = null,
+    action = 'add',
+    readOnly = false,
+}) => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
+    const isRequired = !readOnly;
 
     const renderShopInfoSection = () => (
         <>
@@ -25,14 +31,16 @@ const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add'
                     label={lang['page_shop_info_shop_code']}
                     placeholder={lang['page_shop_info_shop_code']}
                     name="shopCode"
-                    required
+                    required={isRequired}
+                    disabled={readOnly}
                     defaultValue={item?.shopCode || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_shop_name']}
                     placeholder={lang['page_shop_info_shop_name']}
                     name="shopName"
-                    required
+                    required={isRequired}
+                    disabled={readOnly}
                     defaultValue={item?.shopName || ''}
                 />
             </Row>
@@ -41,12 +49,14 @@ const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add'
                     label={lang['page_shop_info_shop_address']}
                     placeholder={lang['page_shop_info_shop_address']}
                     name="shopAddress"
+                    disabled={readOnly}
                     defaultValue={item?.shopAddress || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_contact_info']}
                     placeholder={lang['page_shop_info_contact_info']}
                     name="shopContactInfo"
+                    disabled={readOnly}
                     defaultValue={item?.shopContactInfo || ''}
                 />
             </Row>
@@ -55,12 +65,14 @@ const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add'
                     label={lang['page_shop_info_mobile_phone']}
                     placeholder={lang['page_shop_info_mobile_phone']}
                     name="shopMobilePhone"
+                    disabled={readOnly}
                     defaultValue={item?.shopMobilePhone || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_email']}
                     placeholder={lang['page_shop_info_email']}
                     name="shopEmail"
+                    disabled={readOnly}
                     defaultValue={item?.shopEmail || ''}
                 />
             </Row>
@@ -69,12 +81,14 @@ const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add'
                     label={lang['page_shop_info_latitude']}
                     placeholder={lang['page_shop_info_latitude']}
                     name="shopLatitude"
+                    disabled={readOnly}
                     defaultValue={item?.shopLatitude || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_longitude']}
                     placeholder={lang['page_shop_info_longitude']}
                     name="shopLongitude"
+                    disabled={readOnly}
                     defaultValue={item?.shopLongitude || ''}
                 />
             </Row>
@@ -83,7 +97,8 @@ const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add'
                     label={lang['global_status']}
                     defaultValue={item?.shopStatus || 'active'}
                     name="shopStatus"
-                    required
+                    required={isRequired}
+                    disabled={readOnly}
                     items={[
                         { label: lang['global_active'], value: 'active' },
                         { label: lang['global_inactive'], value: 'inactive' }
@@ -93,11 +108,13 @@ const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add'
                     label={lang['page_shop_info_system_name']}
                     placeholder={lang['page_shop_info_system_name']}
                     name="shopSystemName"
-                    required
+                    required={isRequired}
+                    disabled={readOnly}
                     defaultValue={item?.shopSystemName || ''}
                 />
             </Row>
             <Row className="pt-2">
+                {!readOnly && (
                 <div className="col-6">
                     <UploadFileForm
                         label={lang['global_logo']}
@@ -106,6 +123,7 @@ const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add'
                         required={action === 'add'}
                     />
                 </div>
+                )}
                 {action === 'edit' && item?.shopUploadFile && (
                     <div className="col-6">
                         <Image 
@@ -132,12 +150,14 @@ const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add'
                     label={lang['page_shop_info_tax_name']}
                     placeholder={lang['page_shop_info_tax_name']}
                     name="shopTaxName"
+                    disabled={readOnly}
                     defaultValue={item?.shopTaxName || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_tax_id']}
                     placeholder={lang['page_shop_info_tax_id']}
                     name="shopTaxId"
+                    disabled={readOnly}
                     defaultValue={item?.shopTaxId || ''}
                 />
             </Row>
@@ -147,6 +167,7 @@ const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add'
                         label={lang['page_shop_info_tax_address']}
                         placeholder={lang['page_shop_info_tax_address']}
                         name="shopTaxAddress"
+                        disabled={readOnly}
                         defaultValue={item?.shopTaxAddress || ''}
                     />
                 </div>
@@ -164,14 +185,16 @@ const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add'
                     label={lang['page_shop_info_bank_account']}
                     placeholder={lang['page_shop_info_bank_account']}
                     name="shopBankAccount"
-                    required
+                    required={isRequired}
+                    disabled={readOnly}
                     defaultValue={item?.shopBankAccount || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_bank_account_number']}
                     placeholder={lang['page_shop_info_bank_account_number']}
                     name="shopBankAccountNumber"
-                    required
+                    required={isRequired}
+                    disabled={readOnly}
                     defaultValue={item?.shopBankAccountNumber || ''}
                 />
             </Row>
@@ -180,14 +203,16 @@ const ShopInfoForm: React.FC<ShopInfoFormProps> = ({ item = null, action = 'add'
                     label={lang['page_shop_info_bank_name']}
                     placeholder={lang['page_shop_info_bank_name']}
                     name="shopBankName"
-                    required
+                    required={isRequired}
+                    disabled={readOnly}
                     defaultValue={item?.shopBankName || ''}
                 />
                 <InputForm
                     label={lang['page_shop_info_bank_branch']}
                     placeholder={lang['page_shop_info_bank_branch']}
                     name="shopBankBranch"
-                    required
+                    required={isRequired}
+                    disabled={readOnly}
                     defaultValue={item?.shopBankBranch || ''}
                 />
             </Row>

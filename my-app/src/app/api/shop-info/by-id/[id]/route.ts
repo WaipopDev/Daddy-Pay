@@ -13,7 +13,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         if (!id) {
             return NextResponse.json({ message: 'ID is required' }, { status: 400 });
         }
-        const response = await axios.get(`${process.env.API_URL}/api/v1/shop-info/by-id/${id}`, {
+        const encodedId = encodeURIComponent(id);
+        const response = await axios.get(`${process.env.API_URL}/api/v1/shop-info/by-id/${encodedId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -31,6 +32,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
         const errorMessage = (err.response?.data as { message?: string })?.message || 'Internal Server Error';
 
-        return NextResponse.json({ message: errorMessage || 'Internal Server Error' }, { status: 401 });
+        return NextResponse.json(
+            { message: errorMessage || 'Internal Server Error' },
+            { status: err.response?.status || 500 }
+        );
     }
 }

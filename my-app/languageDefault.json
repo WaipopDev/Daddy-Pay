@@ -26,6 +26,7 @@
     "menu_logout": "Logout",
     "menu_change_password": "Change Password",
     "menu_subscriptions": "Subscriptions",
+    "menu_user_shop_management": "User Management",
     "page_subscriptions_registration_date": "Registration Date",
     "page_subscriptions_expiration_date": "Expiration Date",
 
