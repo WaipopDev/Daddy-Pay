@@ -3,6 +3,7 @@ import React, { Suspense, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/store/hook";
 import TableComponent from "@/components/Table/Table";
 import ModalActionDelete from "@/components/Modals/ModalActionDelete";
+import ModalActionUserSubscribe from "@/components/Modals/ModalActionUserSubscribe";
 import ModalForm from "@/components/Modals/ModalForm";
 import { openModalAlert } from "@/store/features/modalSlice";
 
@@ -11,7 +12,8 @@ import { useUserData } from "@/hooks/useUserData";
 import { useUserOperations } from "@/hooks/useUserOperations";
 
 // Components
-import { UserInfoHeader, UserInfoTableContent } from "@/components/UserInfo";
+import { UserInfoHeader, UserInfoFilter, UserInfoTableContent } from "@/components/UserInfo";
+import type { UserInfoSearchParams } from "@/types/userType";
 import UserForm from "@/components/UserInfo/UserForm";
 
 // Utils
@@ -31,9 +33,6 @@ const UserManagementPage = () => {
         showModalDelete,
         showModalAdd,
         showModalEdit,
-        isDeleting,
-        isAdding,
-        isEditing,
         handleAddUser,
         handleEditUser,
         handleDeleteUser,
@@ -43,7 +42,13 @@ const UserManagementPage = () => {
         handleCloseEditModal,
         handleSaveUser,
         handleUpdateUser,
+        showModalSubscribe,
+        isSavingSubscribe,
+        handleShowSubscribeModal,
+        handleCloseSubscribeModal,
+        handleSaveSubscribe,
     } = useUserOperations({
+        lang,
         onDeleteSuccess: async () => {
             await fetchData(page.page);
         },
@@ -58,11 +63,20 @@ const UserManagementPage = () => {
             dispatch(openModalAlert({
                 message: lang['page_user_edit_success']
             }));
-        }
+        },
+        onSubscribeSaveSuccess: async () => {
+            await fetchData(page.page);
+        },
     });
-    console.log('isDeleting', isDeleting, isAdding, isEditing)
 
-    // Get table headers
+    const handleFilterSearch = (search: UserInfoSearchParams) => {
+        fetchData(1, search);
+    };
+
+    const handlePageChange = (pageNumber: number) => {
+        fetchData(pageNumber);
+    };
+
     const tableHeaders = getUserInfoTableHeaders(lang);
 
     const handleSaveUserForm = async () => {
@@ -161,11 +175,16 @@ const UserManagementPage = () => {
     return (
         <main className="bg-white p-2 md:p-4" role="main">
             <ErrorBoundary>
-                <UserInfoHeader 
+                <UserInfoHeader
                     onAddUser={handleAddUser}
-                    // onSearch={(searchTerm) => fetchData(1, searchTerm)}
                     lang={lang}
                     isLoading={isLoading}
+                />
+
+                <UserInfoFilter
+                    lang={lang}
+                    isLoading={isLoading}
+                    onSearch={handleFilterSearch}
                 />
 
                 <Suspense fallback={<p>Loading feed...</p>}>
@@ -173,7 +192,7 @@ const UserManagementPage = () => {
                         head={tableHeaders}
                         page={page.page}
                         totalPages={page.totalPages}
-                        handleActive={(pageNumber: number) => fetchData(pageNumber)}
+                        handleActive={handlePageChange}
                     >
                         <UserInfoTableContent
                             items={items}
@@ -181,6 +200,7 @@ const UserManagementPage = () => {
                             lang={lang}
                             onEdit={handleEditUser}
                             onDelete={handleShowDeleteModal}
+                            onSubscribe={handleShowSubscribeModal}
                             isLoading={isLoading}
                         />
                     </TableComponent>
@@ -216,6 +236,16 @@ const UserManagementPage = () => {
                         isEditMode={true}
                     />
                 </ModalForm>
+
+                <ModalActionUserSubscribe
+                    show={showModalSubscribe.isShow}
+                    handleClose={handleCloseSubscribeModal}
+                    title={`${lang['page_user_edit_subscription']} - ${showModalSubscribe.username}`}
+                    userId={showModalSubscribe.userId}
+                    initialData={showModalSubscribe.initialData}
+                    onSave={handleSaveSubscribe}
+                    isSaving={isSavingSubscribe}
+                />
 
                 <ModalActionDelete
                     show={showModalDelete.isShow}

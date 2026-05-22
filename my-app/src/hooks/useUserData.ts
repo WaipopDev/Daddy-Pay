@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { PAGINATION_CONFIG } from "@/constants/main";
-import { UserDataItemDataProps } from "@/types/userType";
+import { UserDataItemDataProps, UserInfoSearchParams } from "@/types/userType";
 import axios from "axios";
 import { USER_API_ENDPOINTS } from "@/constants/user";
 
@@ -10,7 +10,7 @@ interface UseUserDataReturn {
     page: PageState;
     isLoading: boolean;
     error: string | null;
-    fetchData: (pageNumber?: number, search?: string) => Promise<void>;
+    fetchData: (pageNumber?: number, search?: UserInfoSearchParams) => Promise<void>;
     refreshCurrentPage: () => Promise<void>;
 }
 
@@ -30,11 +30,33 @@ const INITIAL_STATE: UserDataState = {
 
 export const useUserData = (): UseUserDataReturn => {
     const [state, setState] = useState<UserDataState>(INITIAL_STATE);
+    const [filters, setFilters] = useState<UserInfoSearchParams>({
+        username: '',
+        email: '',
+        subscribe: '',
+        isVerified: '',
+    });
 
-    const fetchData = useCallback(async (pageNumber: number = 1, search: string = '') => {
+    const fetchData = useCallback(async (
+        pageNumber: number = 1,
+        search?: UserInfoSearchParams
+    ) => {
+        const activeFilters = search ?? filters;
+        if (search) {
+            setFilters(search);
+        }
+
         try {
             setState((prevState) => ({ ...prevState, isLoading: true, error: null }));
-            const response = await axios.get(`${USER_API_ENDPOINTS.BASE}?page=${pageNumber}&search=${search}`);
+            const response = await axios.get(USER_API_ENDPOINTS.BASE, {
+                params: {
+                    page: pageNumber,
+                    username: activeFilters.username,
+                    email: activeFilters.email,
+                    subscribe: activeFilters.subscribe,
+                    isVerified: activeFilters.isVerified,
+                },
+            });
             if (response.status === 200) {
                 setState({
                     items: response.data.items,
@@ -49,11 +71,11 @@ export const useUserData = (): UseUserDataReturn => {
         } finally {
             setState((prevState) => ({ ...prevState, isLoading: false }));
         }
-    }, []);
+    }, [filters]);
 
     const refreshCurrentPage = useCallback(async () => {
-        await fetchData(state.page.page);
-    }, [fetchData, state.page.page]);
+        await fetchData(state.page.page, filters);
+    }, [fetchData, state.page.page, filters]);
 
     useEffect(() => {
         fetchData();

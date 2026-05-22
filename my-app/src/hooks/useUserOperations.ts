@@ -1,8 +1,15 @@
 import { useState, useCallback } from 'react';
-import axios from 'axios';
-import { UserModalDeleteState, UserModalEditState } from '@/types/userType';
-import {  USER_API_ENDPOINTS } from '@/constants/user';
-import { useAppSelector } from '@/store/hook';
+import axios, { AxiosError } from 'axios';
+import {
+    UserDataItemDataProps,
+    UserModalDeleteState,
+    UserModalEditState,
+    UserModalSubscribeState,
+    UserSubscribeFormData,
+} from '@/types/userType';
+import { USER_API_ENDPOINTS } from '@/constants/user';
+import { useAppDispatch, useAppSelector } from '@/store/hook';
+import { openModalAlert } from '@/store/features/modalSlice';
 import { UserFormData } from '@/utils/userValidation';
 
 
@@ -10,9 +17,11 @@ interface UseUserOperationsReturn {
     showModalDelete: UserModalDeleteState;
     showModalAdd: boolean;
     showModalEdit: UserModalEditState;
+    showModalSubscribe: UserModalSubscribeState;
     isDeleting: boolean;
     isAdding: boolean;
     isEditing: boolean;
+    isSavingSubscribe: boolean;
     handleAddUser: () => void;
     handleEditUser: (id: string) => void;
     handleDeleteUser: (id: string) => Promise<void>;
@@ -22,20 +31,31 @@ interface UseUserOperationsReturn {
     handleCloseEditModal: () => void;
     handleSaveUser: (formData: UserFormData) => Promise<void>;
     handleUpdateUser: (formData: UserFormData) => Promise<void>;
+    handleShowSubscribeModal: (item: UserDataItemDataProps) => Promise<void>;
+    handleCloseSubscribeModal: () => void;
+    handleSaveSubscribe: (
+        userId: string,
+        data: UserSubscribeFormData
+    ) => Promise<void>;
 }
 
 interface UseUserOperationsProps {
     onDeleteSuccess?: () => Promise<void>;
     onAddSuccess?: () => Promise<void>;
     onEditSuccess?: () => Promise<void>;
+    onSubscribeSaveSuccess?: () => Promise<void>;
+    lang?: Record<string, string>;
 }
 
-export const useUserOperations = ({ 
+export const useUserOperations = ({
     onDeleteSuccess,
     onAddSuccess,
-    onEditSuccess 
+    onEditSuccess,
+    onSubscribeSaveSuccess,
+    lang = {},
 }: UseUserOperationsProps = {}): UseUserOperationsReturn => {
-    const user = useAppSelector(state => state.user)
+    const dispatch = useAppDispatch();
+    const user = useAppSelector(state => state.user);
     const [showModalDelete, setShowModalDelete] = useState<UserModalDeleteState>({ 
         isShow: false, 
         id: '' 
@@ -46,9 +66,17 @@ export const useUserOperations = ({
         id: '',
         data: undefined
     });
+    const [showModalSubscribe, setShowModalSubscribe] =
+        useState<UserModalSubscribeState>({
+            isShow: false,
+            userId: '',
+            username: '',
+            initialData: undefined,
+        });
     const [isDeleting, setIsDeleting] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [isSavingSubscribe, setIsSavingSubscribe] = useState(false);
 
     const handleAddUser = useCallback(() => {
         setShowModalAdd(true);
@@ -147,13 +175,105 @@ export const useUserOperations = ({
         }
     }, [onEditSuccess, user.id, showModalEdit.id]);
 
+    const handleShowSubscribeModal = useCallback(
+        async (item: UserDataItemDataProps) => {
+            try {
+                const response = await axios.get(USER_API_ENDPOINTS.GET_BY_ID(item.id));
+                const userData = response.status === 200 ? response.data : item;
+
+                setShowModalSubscribe({
+                    isShow: true,
+                    userId: item.id,
+                    username: item.username,
+                    initialData: {
+                        subscribe: Boolean(userData.subscribe),
+                        subscribeStartDate: userData.subscribeStartDate || '',
+                        subscribeEndDate: userData.subscribeEndDate || '',
+                    },
+                });
+            } catch (error) {
+                console.error('Error fetching user subscription data:', error);
+                setShowModalSubscribe({
+                    isShow: true,
+                    userId: item.id,
+                    username: item.username,
+                    initialData: {
+                        subscribe: Boolean(item.subscribe),
+                        subscribeStartDate: item.subscribeStartDate || '',
+                        subscribeEndDate: item.subscribeEndDate || '',
+                    },
+                });
+            }
+        },
+        []
+    );
+
+    const handleCloseSubscribeModal = useCallback(() => {
+        setShowModalSubscribe({
+            isShow: false,
+            userId: '',
+            username: '',
+            initialData: undefined,
+        });
+    }, []);
+
+    const handleSaveSubscribe = useCallback(
+        async (userId: string, data: UserSubscribeFormData) => {
+            try {
+                setIsSavingSubscribe(true);
+                const response = await axios.patch(
+                    USER_API_ENDPOINTS.SUBSCRIBE(userId),
+                    data
+                );
+
+                if (response.status === 200) {
+                    handleCloseSubscribeModal();
+                    dispatch(
+                        openModalAlert({
+                            message:
+                                lang['page_user_subscribe_success'] ||
+                                lang['global_success'] ||
+                                'Success',
+                            title: lang['global_success'] || 'Success',
+                        })
+                    );
+                    if (onSubscribeSaveSuccess) {
+                        await onSubscribeSaveSuccess();
+                    }
+                }
+            } catch (error) {
+                const err = error as AxiosError;
+                const errorMessage =
+                    (err.response?.data as { message?: string })?.message ||
+                    lang['global_error_message'] ||
+                    'Failed to update subscription';
+                dispatch(
+                    openModalAlert({
+                        message: errorMessage,
+                        title: lang['global_error'] || 'Error',
+                    })
+                );
+            } finally {
+                setIsSavingSubscribe(false);
+            }
+        },
+        [
+            dispatch,
+            handleCloseSubscribeModal,
+            lang,
+            onSubscribeSaveSuccess,
+        ]
+    );
+
     return {
         showModalDelete,
         showModalAdd,
         showModalEdit,
+        showModalSubscribe,
         isDeleting,
         isAdding,
         isEditing,
+        isSavingSubscribe,
         handleAddUser,
         handleEditUser,
         handleDeleteUser,
@@ -163,5 +283,8 @@ export const useUserOperations = ({
         handleCloseEditModal,
         handleSaveUser,
         handleUpdateUser,
+        handleShowSubscribeModal,
+        handleCloseSubscribeModal,
+        handleSaveSubscribe,
     };
 };

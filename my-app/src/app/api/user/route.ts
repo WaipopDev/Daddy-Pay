@@ -72,10 +72,35 @@ export async function GET(req: NextRequest) {
         }
         const url = new URL(req.url);
         const page = url.searchParams.get('page') || '1';
-        const response = await axios.get(`${process.env.API_URL}/api/v1/user?page=${page}&limit=10&column=username&sort=ASC`, {
+        const username = url.searchParams.get('username') || '';
+        const email = url.searchParams.get('email') || '';
+        const subscribe = url.searchParams.get('subscribe') || '';
+        const isVerified = url.searchParams.get('isVerified') || '';
+
+        const params: Record<string, string | number> = {
+            page,
+            limit: 10,
+            column: 'username',
+            sort: 'ASC',
+        };
+        if (username) {
+            params.username = username;
+        }
+        if (email) {
+            params.email = email;
+        }
+        if (subscribe) {
+            params.subscribe = subscribe;
+        }
+        if (isVerified) {
+            params.isVerified = isVerified;
+        }
+
+        const response = await axios.get(`${process.env.API_URL}/api/v1/user`, {
+            params,
             headers: {
-                Authorization: `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         });
       
         

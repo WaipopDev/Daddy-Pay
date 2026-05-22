@@ -10,8 +10,46 @@ export const USER_API_ENDPOINTS = {
     BASE: '/api/user',
     GET_BY_ID: (id: string) => `/api/user/by/${id}`,
     DELETE: (userId: string) => `/api/user?userId=${userId}`,
+    SUBSCRIBE: (userId: string) => `/api/user/subscribe/${userId}`,
     SHOP_LIST: '/api/shop-info/list-user',
 } as const;
+
+export const USER_SUBSCRIBE_STATUS = {
+    SUBSCRIBED: 'true',
+    NOT_SUBSCRIBED: 'false',
+} as const;
+
+export const USER_VERIFIED_STATUS = {
+    VERIFIED: 'true',
+    UNVERIFIED: 'false',
+} as const;
+
+export const getUserSubscribeFilterOptions = (lang: Record<string, string>) => [
+    { value: '', label: lang['global_all'] || 'All' },
+    {
+        label: lang['page_user_subscribed'] || 'Subscribed',
+        value: USER_SUBSCRIBE_STATUS.SUBSCRIBED,
+    },
+    {
+        label: lang['page_user_not_subscribed'] || 'Not Subscribed',
+        value: USER_SUBSCRIBE_STATUS.NOT_SUBSCRIBED,
+    },
+];
+
+export const getUserSubscribeStatusOptions = (lang: Record<string, string>) =>
+    getUserSubscribeFilterOptions(lang).filter((item) => item.value !== '');
+
+export const getUserVerifiedFilterOptions = (lang: Record<string, string>) => [
+    { value: '', label: lang['global_all'] || 'All' },
+    {
+        label: lang['global_verified'] || 'Verified',
+        value: USER_VERIFIED_STATUS.VERIFIED,
+    },
+    {
+        label: lang['global_unverified'] || 'Unverified',
+        value: USER_VERIFIED_STATUS.UNVERIFIED,
+    },
+];
 
 // Status values
 export const USER_STATUS = {

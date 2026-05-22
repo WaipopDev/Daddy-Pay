@@ -10,6 +10,7 @@ interface UserTableRowProps {
     lang: { [key: string]: string };
     onEdit: (id: string) => void;
     onDelete: (id: string) => void;
+    onSubscribe: (item: UserDataItemDataProps) => void;
 }
 
 /**
@@ -23,6 +24,7 @@ const UserTableRow: React.FC<UserTableRowProps> = ({
     lang,
     onEdit,
     onDelete,
+    onSubscribe,
 }) => {
     const rowNumber = (currentPage - 1) * 10 + index + 1;
     const statusInfo = formatUserStatus(item.active, lang);
@@ -55,8 +57,32 @@ const UserTableRow: React.FC<UserTableRowProps> = ({
                 </span>
             </td>
             <td className="text-center">
-                <Button variant="warning" size="sm" onClick={() => onEdit(item.id)}><i className="fa-solid fa-pen-to-square"></i></Button>
-                <Button variant="danger" size="sm" className="ml-2" onClick={() => onDelete(item.id)}><i className="fa-solid fa-trash"></i></Button>
+                <Button
+                    variant="success"
+                    size="sm"
+                    onClick={() => onSubscribe(item)}
+                    title={lang['button_edit_subscription']}
+                >
+                    <i className="fa-solid fa-calendar-check" aria-hidden="true"></i>
+                </Button>
+                <Button
+                    variant="warning"
+                    size="sm"
+                    className="ml-2"
+                    onClick={() => onEdit(item.id)}
+                    title={lang['button_edit']}
+                >
+                    <i className="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                </Button>
+                <Button
+                    variant="danger"
+                    size="sm"
+                    className="ml-2"
+                    onClick={() => onDelete(item.id)}
+                    title={lang['button_delete']}
+                >
+                    <i className="fa-solid fa-trash" aria-hidden="true"></i>
+                </Button>
             </td>
         </tr>
     );

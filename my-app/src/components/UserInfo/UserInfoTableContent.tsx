@@ -10,6 +10,7 @@ interface UserInfoTableContentProps {
     lang: { [key: string]: string };
     onEdit: (id: string) => void;
     onDelete: (id: string) => void;
+    onSubscribe: (item: UserDataItemDataProps) => void;
     isLoading?: boolean;
 }
 
@@ -23,6 +24,7 @@ const UserInfoTableContent: React.FC<UserInfoTableContentProps> = ({
     lang,
     onEdit,
     onDelete,
+    onSubscribe,
     isLoading = false,
 }) => {
     // Loading state
@@ -53,6 +55,7 @@ const UserInfoTableContent: React.FC<UserInfoTableContentProps> = ({
                     lang={lang}
                     onEdit={onEdit}
                     onDelete={onDelete}
+                    onSubscribe={onSubscribe}
                 />
             ))}
         </>
