@@ -1,6 +1,6 @@
 'use client';
 import { useAppDispatch, useAppSelector } from '@/store/hook'
-import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import React, { Suspense, useRef, useState } from 'react'
 import { Button, Col } from 'react-bootstrap'
 import TableComponent from '@/components/Table/Table'
 import ModalForm from '@/components/Modals/ModalForm';
@@ -10,7 +10,9 @@ import { openModalAlert } from '@/store/features/modalSlice';
 import { useErrorHandler } from '@/store/useErrorHandler';
 import Image from 'next/image';
 import ModalActionDelete from '@/components/Modals/ModalActionDelete';
-import { ItemMachineInfoDataProps } from '@/types/machineInfoType';
+import { ItemMachineInfoDataProps, MachineInfoSearchParams } from '@/types/machineInfoType';
+import { useMachineData } from '@/hooks/useMachineData';
+import MachineInfoFilter from '@/components/MachineInfo/MachineInfoFilter';
 
 
 
@@ -20,8 +22,7 @@ const MachineInfoPage = () => {
     const formRef = useRef<HTMLFormElement>(null);
     const { handleError } = useErrorHandler();
 
-    const [page, setPage] = useState({ page: 1, totalPages: 1 });
-    const [item, setItem] = useState<ItemMachineInfoDataProps[] | null>(null);
+    const { items: item, page, isLoading, fetchData } = useMachineData();
     const [showModal, setShowModal] = useState(false);
     const [showModalEdit, setShowModalEdit] = useState(false);
     const [editItem, setEditItem] = useState<ItemMachineInfoDataProps | null>(null);
@@ -31,25 +32,13 @@ const MachineInfoPage = () => {
     const formRefEdit = useRef<HTMLFormElement>(null);
 
 
-    const fetchData = useCallback(async (pageNumber: number = 1, search: string = '') => {
-        try {
-            const response = await axios.get(`/api/machine-info?page=${pageNumber}&search=${search}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (response.status === 200) {
-                setItem(response.data.items);
-                setPage({ page: response.data.meta.currentPage, totalPages: response.data.meta.totalPages });
-            }
-        } catch (error) {
-            console.error("Error fetching shop info:", error);
-        }
-    }, []);
+    const handleFilterSearch = (search: MachineInfoSearchParams) => {
+        fetchData(1, search);
+    };
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+    const handlePageChange = (pageNumber: number) => {
+        fetchData(pageNumber);
+    };
 
     const handleOpenMachine = () => {
         setShowModal(true);
@@ -78,7 +67,7 @@ const MachineInfoPage = () => {
             fetchData(page.page);
 
             dispatch(openModalAlert({
-                message: lang['global_add_success_message']
+                message: lang['global_add_success_message'],
             }));
         } catch (error) {
             console.error('Error saving machine data:', error);
@@ -156,15 +145,18 @@ const MachineInfoPage = () => {
     return (
         <main className="bg-white p-2 md:p-4">
             <div className="flex border-b border-gray-300 pb-2 mb-4">
-                <Col className="flex justify-start">
-
-                </Col>
+                <Col className="flex justify-start" />
                 <Col className="flex justify-end">
                     <Button variant="primary" onClick={() => handleOpenMachine()} className="w-full md:w-auto">
                         <i className="fa-solid fa-plus pr-2"></i>{lang['button_add_machine']}
                     </Button>
                 </Col>
             </div>
+            <MachineInfoFilter
+                lang={lang}
+                isLoading={isLoading}
+                onSearch={handleFilterSearch}
+            />
             <Suspense fallback={<p>Loading feed...</p>}>
                 <TableComponent
                     head={[
@@ -178,7 +170,7 @@ const MachineInfoPage = () => {
                     ]}
                     page={page.page}
                     totalPages={page.totalPages}
-                    handleActive={(number: number) => fetchData(number)}
+                    handleActive={handlePageChange}
                 >
                     {
                         item && (item.length ? item.map((item: ItemMachineInfoDataProps, index: number) => (

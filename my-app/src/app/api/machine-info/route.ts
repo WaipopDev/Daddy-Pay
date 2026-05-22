@@ -74,10 +74,31 @@ export async function GET(req: NextRequest) {
         }
         const url = new URL(req.url);
         const page = url.searchParams.get('page') || '1';
-        const response = await axios.get(`${process.env.API_URL}/api/v1/machine-info?page=${page}&limit=10&column=machineType&sort=ASC`, {
+        const machineType = url.searchParams.get('machineType') || '';
+        const machineBrand = url.searchParams.get('machineBrand') || '';
+        const machineModel = url.searchParams.get('machineModel') || '';
+
+        const params: Record<string, string | number> = {
+            page,
+            limit: 10,
+            column: 'machineType',
+            sort: 'ASC',
+        };
+        if (machineType) {
+            params.machineType = machineType;
+        }
+        if (machineBrand) {
+            params.machineBrand = machineBrand;
+        }
+        if (machineModel) {
+            params.machineModel = machineModel;
+        }
+
+        const response = await axios.get(`${process.env.API_URL}/api/v1/machine-info`, {
+            params,
             headers: {
-                Authorization: `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         });
  
         

@@ -1,3 +1,17 @@
+export interface MachineListItem {
+    id: string;
+    machineKey: string;
+    machineType: string;
+    machineBrand: string;
+    machineModel: string;
+}
+
+export interface MachineInfoSearchParams {
+    machineType: string;
+    machineBrand: string;
+    machineModel: string;
+}
+
 export interface ItemMachineInfoDataProps {
     id                : string;
     machineKey        : string;

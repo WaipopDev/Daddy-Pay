@@ -1,6 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
-import { ItemMachineInfoDataProps } from '@/types/machineInfoType';
+import {
+    ItemMachineInfoDataProps,
+    MachineInfoSearchParams,
+} from '@/types/machineInfoType';
 import { PAGINATION_CONFIG } from '@/constants/main';
 import { MACHINE_INFO_API_ENDPOINTS } from '@/constants/machineInfo';
 
@@ -9,7 +12,7 @@ interface UseMachineDataReturn {
     page              : PageState;
     isLoading         : boolean;
     error             : string | null;
-    fetchData         : (pageNumber?: number, search?: string) => Promise<void>;
+    fetchData         : (pageNumber?: number, search?: MachineInfoSearchParams) => Promise<void>;
     refreshCurrentPage: () => Promise<void>;
 }
 interface MachineInfoPageState {
@@ -31,12 +34,32 @@ export const useMachineData = (): UseMachineDataReturn => {
     // const [isLoading, setIsLoading] = useState<boolean>(false);
     // const [error, setError] = useState<string | null>(null);
     const [state, setState] = useState<MachineInfoPageState>(INITIAL_STATE);
+    const [filters, setFilters] = useState<MachineInfoSearchParams>({
+        machineType: '',
+        machineBrand: '',
+        machineModel: '',
+    });
 
-    const fetchData = useCallback(async (pageNumber: number = 1, search: string = '') => {
+    const fetchData = useCallback(async (
+        pageNumber: number = 1,
+        search?: MachineInfoSearchParams
+    ) => {
+        const activeFilters = search ?? filters;
+        if (search) {
+            setFilters(search);
+        }
+
         setState((prevState) => ({ ...prevState, isLoading: true, error: null }));
 
         try {
-            const response = await axios.get(`${MACHINE_INFO_API_ENDPOINTS.BASE}?page=${pageNumber}&search=${search}`);
+            const response = await axios.get(MACHINE_INFO_API_ENDPOINTS.BASE, {
+                params: {
+                    page: pageNumber,
+                    machineType: activeFilters.machineType,
+                    machineBrand: activeFilters.machineBrand,
+                    machineModel: activeFilters.machineModel,
+                },
+            });
             if (response.status === 200) {
                 setState({
                     item: response.data.items,
@@ -51,11 +74,11 @@ export const useMachineData = (): UseMachineDataReturn => {
         } finally {
             setState((prevState) => ({ ...prevState, isLoading: false }));
         }
-    }, []);
+    }, [filters]);
 
     const refreshCurrentPage = useCallback(async () => {
-        fetchData(state.page.page);
-    }, [fetchData, state.page.page]);
+        await fetchData(state.page.page, filters);
+    }, [fetchData, state.page.page, filters]);
 
     useEffect(() => {
         fetchData();

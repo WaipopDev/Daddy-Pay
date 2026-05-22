@@ -10,24 +10,13 @@ import TableComponent from '@/components/Table/Table';
 import _ from 'lodash';
 import ModalActionDelete from '@/components/Modals/ModalActionDelete';
 import ProgramModal, { ProgramFormData } from '@/components/ProgramInfo/ProgramModal';
-
-interface ItemDataProps {
-    id: string;
-    programKey: string;
-    programName: string;
-    programDescription: string;
-    machineInfo: {
-        id: string;
-        machineKey: string;
-        machineType: string;
-        machineBrand: string;
-        machineModel: string;
-        machineDescription: string;
-        machinePicturePath: string;
-    } | null;
-    createdAt: string;
-    updatedAt: string;
-}
+import ProgramInfoFilter from '@/components/ProgramInfo/ProgramInfoFilter';
+import { useProgramData } from '@/hooks/useProgramData';
+import type {
+    ProgramInfoItem,
+    ProgramInfoSearchParams,
+} from '@/types/programInfoType';
+import type { MachineListItem } from '@/types/machineInfoType';
 
 interface MachineDataProps {
     id: string;
@@ -42,33 +31,15 @@ const ProgramInfoPage = () => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
     const { handleError } = useErrorHandler();
 
-    const [page, setPage] = useState({ page: 1, totalPages: 1 });
-    const [item, setItem] = useState<ItemDataProps[] | null>(null);
+    const { items: item, page, isLoading, fetchData } = useProgramData();
     const [itemMachine, setItemMachine] = useState<MachineDataProps[][] | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState({ isShow: false, id: '' });
-    const [editData, setEditData] = useState<ItemDataProps | null>(null);
-
-
-    const fetchData = useCallback(async (pageNumber: number = 1, search: string = '') => {
-        try {
-            const response = await axios.get(`/api/program-info?page=${pageNumber}&search=${search}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (response.status === 200) {
-                setItem(response.data.items);
-                setPage({ page: response.data.meta.currentPage, totalPages: response.data.meta.totalPages });
-            }
-        } catch (error) {
-            console.error("Error fetching program info:", error);
-        }
-    }, []);
+    const [editData, setEditData] = useState<ProgramInfoItem | null>(null);
 
     const fetchMachineListData = useCallback(async () => {
         try {
-            const response = await axios.get('/api/machine-info/list');
+            const response = await axios.get<MachineListItem[]>('/api/machine-info/list');
             if (response.status === 200) {
                 const groupByType = _.groupBy(response.data, 'machineType');
                 const orderedByType = _.orderBy(groupByType, ['machineType'], ['asc']);
@@ -80,9 +51,16 @@ const ProgramInfoPage = () => {
     }, []);
 
     useEffect(() => {
-        fetchData();
         fetchMachineListData();
-    }, [fetchData, fetchMachineListData]);
+    }, [fetchMachineListData]);
+
+    const handleFilterSearch = (search: ProgramInfoSearchParams) => {
+        fetchData(1, search);
+    };
+
+    const handlePageChange = (pageNumber: number) => {
+        fetchData(pageNumber);
+    };
 
     const handleOpenMachine = () => {
         setShowModal(true);
@@ -126,7 +104,7 @@ const ProgramInfoPage = () => {
             const response = await axios.delete(`/api/program-info?programId=${id}`);
             if (response.status === 200) {
                 setShowModalDelete({ isShow: false, id: '' });
-                fetchData(1); // Refresh the data after deletion
+                fetchData(page.page);
             }
         } catch (error) {
             console.error("Error deleting program:", error);
@@ -135,15 +113,18 @@ const ProgramInfoPage = () => {
     return (
         <main className="bg-white p-2 md:p-4">
             <div className="flex border-b border-gray-300 pb-2 mb-4">
-                <Col className="flex justify-start">
-
-                </Col>
+                <Col className="flex justify-start" />
                 <Col className="flex justify-end">
                     <Button variant="primary" onClick={() => handleOpenMachine()} className="w-full md:w-auto">
                         <i className="fa-solid fa-plus pr-2"></i>{lang['button_add_program']}
                     </Button>
                 </Col>
             </div>
+            <ProgramInfoFilter
+                lang={lang}
+                isLoading={isLoading}
+                onSearch={handleFilterSearch}
+            />
             <Suspense fallback={<p>Loading feed...</p>}>
                 <TableComponent
                     head={[
@@ -156,26 +137,26 @@ const ProgramInfoPage = () => {
                     ]}
                     page={page.page}
                     totalPages={page.totalPages}
-                    handleActive={(number: number) => fetchData(number)}
+                    handleActive={handlePageChange}
                 >
                     {
-                        item && (item.length ? item.map((item: ItemDataProps, index: number) => (
+                        item && (item.length ? item.map((row: ProgramInfoItem, index: number) => (
                             <tr key={index}>
                                 <td className="text-center">{(page.page - 1) * 10 + index + 1}</td>
-                                <td className="text-xs md:text-sm">{item.programName}</td>
-                                <td className="text-xs md:text-sm">{item.programDescription}</td>
-                                <td className="text-xs md:text-sm">{item.machineInfo?.machineType}</td>
-                                <td className="text-xs md:text-sm">{item.machineInfo?.machineBrand}</td>
+                                <td className="text-xs md:text-sm">{row.programName}</td>
+                                <td className="text-xs md:text-sm">{row.programDescription}</td>
+                                <td className="text-xs md:text-sm">{row.machineInfo?.machineType}</td>
+                                <td className="text-xs md:text-sm">{row.machineInfo?.machineBrand}</td>
 
                                 <td>
                                     <div className="flex gap-1 justify-center">
                                         <Button variant="warning" size="sm" onClick={() => {
-                                            setEditData(item);
+                                            setEditData(row);
                                             setShowModal(true);
                                         }}>
                                             <i className="fa-solid fa-pen-to-square"></i>
                                         </Button>
-                                        <Button variant="danger" size="sm" onClick={() => setShowModalDelete({ isShow: true, id: item.id })}>
+                                        <Button variant="danger" size="sm" onClick={() => setShowModalDelete({ isShow: true, id: row.id })}>
                                             <i className="fa-solid fa-trash"></i>
                                         </Button>
                                     </div>
