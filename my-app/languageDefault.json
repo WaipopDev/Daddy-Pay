@@ -234,6 +234,11 @@
     "page_dashboard_sales_report_graph_by_month":"Sales by day of the month",
     "page_dashboard_sales_report_graph_by_year":"Sales by month of the year",
 
+    "page_dashboard_machine_status":"Machine Status",
+    "page_dashboard_machine_status_available":"The machine is available",
+    "page_dashboard_machine_status_operating":"The machine is operating",
+    "page_dashboard_machine_status_disconnected":"Number of machine disconnected",
+
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",
     "global_update_success_message":"Updated successfully.",

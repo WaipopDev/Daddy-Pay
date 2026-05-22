@@ -1,6 +1,32 @@
 import { useCallback, useEffect, useState } from "react";
 import { DASHBOARD_API_ENDPOINTS } from "@/constants/dashboard";
+import type {
+    MachineStatusApiResponse,
+    MachineStatusData,
+    MachineStatusItem,
+} from "@/types/dashboardType";
 import axios from "axios";
+
+const EMPTY_MACHINE_STATUS: MachineStatusData = {
+    summary: {
+        totalMachine: 0,
+        totalOnlineActive: 0,
+        totalOnlineInactive: 0,
+        totalOperationalActive: 0,
+        totalOperationalStandby: 0,
+    },
+    availableItems: [],
+    operatingItems: [],
+    disconnectedItems: [],
+};
+
+const groupMachineStatusItems = (items: MachineStatusItem[]) => ({
+    availableItems: items.filter((item) => item.status === 'standby'),
+    operatingItems: items.filter((item) => item.status === 'active'),
+    disconnectedItems: items.filter(
+        (item) => item.status !== 'standby' && item.status !== 'active'
+    ),
+});
 
 export const useDashboardData = () => {
     const [totalSales, setTotalSales] = useState({
@@ -59,3 +85,39 @@ export const useDashboardGraphData = () => {
         fetchGraphData,
     }
 }
+
+export const useDashboardMachineStatus = () => {
+    const [machineStatus, setMachineStatus] =
+        useState<MachineStatusData | null>(null);
+
+    const fetchMachineStatus = useCallback(async (branchId: string) => {
+        const response = await axios.get(
+            `${DASHBOARD_API_ENDPOINTS.MACHINE_STATUS}?branchId=${branchId}`
+        );
+        if (response.status === 200 && response.data) {
+            const data = response.data as MachineStatusApiResponse;
+            const items = data.items ?? [];
+            const grouped = groupMachineStatusItems(items);
+
+            setMachineStatus({
+                summary: {
+                    totalMachine: data.summary?.totalMachine ?? 0,
+                    totalOnlineActive: data.summary?.totalOnlineActive ?? 0,
+                    totalOnlineInactive: data.summary?.totalOnlineInactive ?? 0,
+                    totalOperationalActive:
+                        data.summary?.totalOperationalActive ?? 0,
+                    totalOperationalStandby:
+                        data.summary?.totalOperationalStandby ?? 0,
+                },
+                ...grouped,
+            });
+        } else {
+            setMachineStatus(EMPTY_MACHINE_STATUS);
+        }
+    }, []);
+
+    return {
+        machineStatus,
+        fetchMachineStatus,
+    };
+};

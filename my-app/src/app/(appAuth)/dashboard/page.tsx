@@ -2,7 +2,7 @@
 import React from 'react'
 import { Tab, Tabs } from 'react-bootstrap';
 import { useAppSelector } from '@/store/hook';
-import { SalesReport, GraphReport } from '@/components/Dashboard';
+import { SalesReport, GraphReport, MachineStatusReport } from '@/components/Dashboard';
 
 const DashboardPage = () => {
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
@@ -21,6 +21,12 @@ const DashboardPage = () => {
                         <SalesReport />
                         <GraphReport lang={lang} />
                     </div>
+                </Tab>
+                <Tab
+                    eventKey="machine_status"
+                    title={lang['page_dashboard_machine_status']}
+                >
+                    <MachineStatusReport lang={lang} />
                 </Tab>
             </Tabs>
         </main>
