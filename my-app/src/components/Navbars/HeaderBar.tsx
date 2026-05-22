@@ -14,11 +14,20 @@ interface MenuItems {
     key   : string;
 }
 
+/** Routes not listed in sidebar menuItems but shown in the header breadcrumb */
+const EXTRA_PAGE_LANG_KEYS: Record<string, string> = {
+    '/change-password': 'menu_change_password',
+    '/subscriptions': 'menu_subscriptions',
+};
+
 const HeaderBar: React.FC<MenuItems[]> = (menuItems) => {
     const pathname = usePathname();
     const lang = useAppSelector(state => state.lang) as { [key: string]: string }
+    const extraPageKey = EXTRA_PAGE_LANG_KEYS[pathname];
     const currentMenu = _.find(menuItems, item => pathname.startsWith(item.path)) || menuItems[0];
-    const currentTitle = lang[currentMenu.key];
+    const currentTitle = extraPageKey
+        ? lang[extraPageKey]
+        : lang[currentMenu.key];
     // const currentIcon = currentMenu.icon;
     return (
         <div className="mb-3 px-2 py-2 rounded-md flex items-center gap-2 bg-white">

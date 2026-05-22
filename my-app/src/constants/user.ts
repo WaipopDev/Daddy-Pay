@@ -8,6 +8,7 @@ export const USER_ROUTES = {
 // API Endpoints
 export const USER_API_ENDPOINTS = {
     BASE: '/api/user',
+    ME: '/api/user/me',
     GET_BY_ID: (id: string) => `/api/user/by/${id}`,
     DELETE: (userId: string) => `/api/user?userId=${userId}`,
     SUBSCRIBE: (userId: string) => `/api/user/subscribe/${userId}`,

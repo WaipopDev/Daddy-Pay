@@ -31,7 +31,11 @@ const UserDropdown = () => {
 
     const handleChangePassword = () => {
         router.push('/change-password');
-    }
+    };
+
+    const handleSubscriptions = () => {
+        router.push('/subscriptions');
+    };
 
     return (
         <>
@@ -41,6 +45,9 @@ const UserDropdown = () => {
                     <p className="px-2 w-full text-left">{user.username}</p>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => handleSubscriptions()}>
+                        {lang['menu_subscriptions']}
+                    </Dropdown.Item>
                     <Dropdown.Item onClick={() => handleChangePassword()}>
                         {lang['menu_change_password']}
                     </Dropdown.Item>

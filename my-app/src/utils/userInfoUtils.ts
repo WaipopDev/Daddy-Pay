@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { UserDataItemDataProps } from '@/types/userType';
 
 /**
@@ -55,6 +56,12 @@ export const formatUserRole = (role: string, lang: { [key: string]: string }) =>
 /**
  * Formats user subscription status for display
  */
+export const formatUserSubscriptionDate = (value?: string | null): string => {
+    if (!value) return '-';
+    const parsed = moment(value, ['YYYY-MM-DD', moment.ISO_8601], true);
+    return parsed.isValid() ? parsed.format('DD-MM-YYYY') : value;
+};
+
 export const formatUserSubscription = (isSubscribed: boolean, lang: { [key: string]: string }) => {
     return {
         text: isSubscribed ? (lang['page_user_subscribed'] || 'Subscribed') : (lang['page_user_not_subscribed'] || 'Not Subscribed'),

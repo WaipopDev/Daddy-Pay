@@ -25,6 +25,9 @@
     "page_language_settings_lang_name_required":"Language name is required",
     "menu_logout": "Logout",
     "menu_change_password": "Change Password",
+    "menu_subscriptions": "Subscriptions",
+    "page_subscriptions_registration_date": "Registration Date",
+    "page_subscriptions_expiration_date": "Expiration Date",
 
     "button_edit_language": "Edit Language",
     "button_add_language": "Add Language",
