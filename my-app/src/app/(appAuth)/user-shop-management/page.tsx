@@ -9,7 +9,7 @@ import { useErrorHandler } from '@/store/useErrorHandler';
 import ShopInfoForm from '@/components/ShopInfoForm/ShopInfoForm';
 import UserShopSelect from '@/components/UserShopManagement/UserShopSelect';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { useUserShopList } from '@/hooks/useUserShopList';
+import { useMasterShopListNotAll } from '@/hooks';
 import { SHOP_INFO_API_ENDPOINTS } from '@/constants/shopInfo';
 import type { ItemShopInfoDataProps } from '@/types/shopInfoType';
 
@@ -24,7 +24,7 @@ const UserShopManagementPage = () => {
     const lang = useAppSelector((state) => state.lang) as Record<string, string>;
     const dispatch = useAppDispatch();
     const { handleError } = useErrorHandler();
-    const { shops, isLoading: isLoadingShops } = useUserShopList();
+    const { itemShop: shops, isLoading: isLoadingShops } = useMasterShopListNotAll();
 
     const [selectedShopId, setSelectedShopId] = useState('');
     const [item, setItem] = useState<ItemShopInfoDataProps | null>(null);

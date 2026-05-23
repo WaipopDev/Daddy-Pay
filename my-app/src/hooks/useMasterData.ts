@@ -31,18 +31,23 @@ export const useMasterShopList = () => {
 
 export const useMasterShopListNotAll = () => {
     const [itemShop, setItemShop] = useState<{id:string, shopName:string}[] | []>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
     const fetchShopListData = useCallback(async () => {
+        setIsLoading(true);
         try {
             const response = await axios.get('/api/shop-info/list');
             if (response.status === 200) {
                 const orderedByType = _.orderBy(response.data, ['shopName'], ['asc']);
                 setItemShop(orderedByType);
-                // const groupByType = _.groupBy(response.data, 'machineType');
-                // const orderedByType = _.orderBy(groupByType, ['machineType'], ['asc']);
-                // setItemMachine(orderedByType);
+            } else {
+                setItemShop([]);
             }
         } catch (error) {
             console.error("Error fetching shop list:", error);
+            setItemShop([]);
+        } finally {
+            setIsLoading(false);
         }
     }, []);
 
@@ -52,6 +57,7 @@ export const useMasterShopListNotAll = () => {
 
     return {
         itemShop,
+        isLoading,
     }
 }
 

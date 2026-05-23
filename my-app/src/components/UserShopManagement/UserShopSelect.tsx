@@ -3,11 +3,14 @@
 import React from 'react';
 import { Dropdown, Form } from 'react-bootstrap';
 import { cn } from '@/lib/utils';
-import type { UserShopListItem } from '@/hooks/useUserShopList';
+interface ShopSelectItem {
+    id: string;
+    shopName: string;
+}
 
 interface UserShopSelectProps {
     lang: Record<string, string>;
-    shops: UserShopListItem[];
+    shops: ShopSelectItem[];
     value: string;
     onChange: (shopId: string) => void;
     disabled?: boolean;
