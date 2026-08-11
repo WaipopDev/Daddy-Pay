@@ -36,10 +36,10 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
     const [search, setSearch] = useState('');
 
     const selectedLabel =
-        items.find((item) => item.value === value)?.label || placeholder;
+        items.find((item) => item.value === value)?.label ?? placeholder;
 
     const filteredItems = items.filter((item) =>
-        item.label.toLowerCase().includes(search.toLowerCase())
+        (item.label ?? '').toLowerCase().includes(search.toLowerCase())
     );
 
     const handleToggle = (isOpen: boolean) => {
