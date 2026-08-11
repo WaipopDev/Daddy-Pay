@@ -4,13 +4,13 @@ import { useAppSelector } from '@/store/hook';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { Suspense, useCallback, useEffect, useState } from 'react'
-import { Button, Col, Dropdown, Form } from 'react-bootstrap';
+import { Button, Col, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 import ModalActionDelete from '@/components/Modals/ModalActionDelete';
 import { ShopManagementAdd, ShopManagementEdit } from '@/components/ShopManagement';
 import { useMasterShopList } from '@/hooks/useMasterData';
-import { cn } from '@/lib/utils';
+import SearchableDropdown from '@/components/FormGroup/SearchableDropdown';
 
 interface ItemDataProps {
     id: string;
@@ -45,9 +45,10 @@ const ShopManagementPage = () => {
     const [showModalDelete, setShowModalDelete] = useState({ isShow: false, id: '' });
     const { itemShop } = useMasterShopList();
     const [valueShop, setValueShop] = useState('');
-    // const [itemMachine, setItemMachine] = useState<MachineDataProps[][] | null>(null);
-    // const [activeShopType, setActiveShopType] = useState('');
-    // console.log("🚀 ~ ShopManagementPage ~ activeMachineType:", itemShop)
+    const shopOptions = itemShop.map((item) => ({
+        label: item.shopName,
+        value: item.id,
+    }));
 
     const fetchData = useCallback(async (pageNumber: number = 1, search: string = '') => {
         try {
@@ -116,22 +117,13 @@ const ShopManagementPage = () => {
                 <Col>
                     <Form.Group className="w-full">
                         <Form.Label className="text-sm md:text-base">{lang['filter_report_shop']}</Form.Label>
-                        <Dropdown className="nav-dropdown-w">
-                            <Dropdown.Toggle
-                                className={cn(`flex items-center w-full px-2 py-2 rounded-md h-[35px] text-sm`)}
-                            >
-                                <p className="px-2 w-full text-left text-xs md:text-sm">{valueShop ? itemShop.find(item => item.id === valueShop)?.shopName : lang['global_select']}</p>
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                {
-                                    itemShop && itemShop.map((item, index) => (
-                                        <Dropdown.Item key={index} onClick={() => setValueShop(item.id)} active={valueShop === item.id}>
-                                            {item.shopName}
-                                        </Dropdown.Item>
-                                    ))
-                                }
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <SearchableDropdown
+                            items={shopOptions}
+                            value={valueShop}
+                            onChange={setValueShop}
+                            placeholder={lang['global_select']}
+                            searchPlaceholder={lang['global_search']}
+                        />
                     </Form.Group>
                 </Col>
                 <Col className="text-end">

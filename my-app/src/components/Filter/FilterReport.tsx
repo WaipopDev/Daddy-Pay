@@ -1,14 +1,14 @@
 import { useMasterShopList } from '@/hooks';
-import React, { useState } from 'react'
-import { Button, Col, Dropdown, Form } from 'react-bootstrap';
+import React, { useMemo, useState } from 'react'
+import { Button, Col, Form } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
-import { cn } from '@/lib/utils';
 import DatePickerRange from '../FormGroup/DatePickerRange';
 import { PAYMENT_METHOD } from '@/constants/main';
 import { openModalAlert, setProcess } from '@/store/features/modalSlice';
 import { useErrorHandler } from '@/store/useErrorHandler';
 import moment from 'moment';
 import { SearchParams } from '@/hooks/useReportData';
+import SearchableDropdown from '@/components/FormGroup/SearchableDropdown';
 
 interface FilterReportProps {
     reportName: string;
@@ -23,6 +23,16 @@ const FilterReport = ({ reportName, fetchData }: FilterReportProps) => {
     const { itemShop } = useMasterShopList();
     const dispatch = useAppDispatch();
     const { handleError } = useErrorHandler();
+
+    const shopOptions = useMemo(
+        () => itemShop.map((item) => ({ label: item.shopName, value: item.id })),
+        [itemShop]
+    );
+
+    const paymentOptions = useMemo(
+        () => PAYMENT_METHOD.map((item) => ({ label: item.name, value: item.id })),
+        []
+    );
 
     console.log("🚀 ~ FilterReport ~ itemShop:", reportName)
 
@@ -59,45 +69,23 @@ const FilterReport = ({ reportName, fetchData }: FilterReportProps) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-4">
                         <Form.Group className="w-full">
                             <Form.Label className="text-sm md:text-base">{lang['filter_report_shop']}</Form.Label>
-                            <Dropdown className="nav-dropdown-w">
-                                <Dropdown.Toggle
-                                    className={cn(`flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px] text-sm`)}
-                                >
-                                    <p className="px-2 flex-1 min-w-0 text-left text-xs md:text-sm truncate">
-                                        {valueShop ? itemShop.find(item => item.id === valueShop)?.shopName : lang['global_select']}
-                                    </p>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    {
-                                        itemShop && itemShop.map((item, index) => (
-                                            <Dropdown.Item key={index} onClick={() => setValueShop(item.id)} active={valueShop === item.id}>
-                                                {item.shopName}
-                                            </Dropdown.Item>
-                                        ))
-                                    }
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            <SearchableDropdown
+                                items={shopOptions}
+                                value={valueShop}
+                                onChange={setValueShop}
+                                placeholder={lang['global_select']}
+                                searchPlaceholder={lang['global_search']}
+                            />
                         </Form.Group>
                         <Form.Group className="w-full">
                             <Form.Label className="text-sm md:text-base">{lang['filter_report_payment_method']}</Form.Label>
-                            <Dropdown className="nav-dropdown-w">
-                                <Dropdown.Toggle
-                                    className={cn(`flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px] text-sm`)}
-                                >
-                                    <p className="px-2 flex-1 min-w-0 text-left text-xs md:text-sm truncate">
-                                        {valuePaymentMethod ? PAYMENT_METHOD.find(item => item.id === valuePaymentMethod)?.name : lang['global_select']}
-                                    </p>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    {
-                                        PAYMENT_METHOD.map((item, index) => (
-                                            <Dropdown.Item key={index} onClick={() => setValuePaymentMethod(item.id)} active={valuePaymentMethod === item.id}>
-                                                {item.name}
-                                            </Dropdown.Item>
-                                        ))
-                                    }
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            <SearchableDropdown
+                                items={paymentOptions}
+                                value={valuePaymentMethod}
+                                onChange={setValuePaymentMethod}
+                                placeholder={lang['global_select']}
+                                searchPlaceholder={lang['global_search']}
+                            />
                         </Form.Group>
                         <Form.Group className="w-full">
                             <Form.Label className="text-sm md:text-base">{lang['filter_report_machine_name']}</Form.Label>
@@ -139,4 +127,3 @@ const FilterReport = ({ reportName, fetchData }: FilterReportProps) => {
 }
 
 export default FilterReport
-

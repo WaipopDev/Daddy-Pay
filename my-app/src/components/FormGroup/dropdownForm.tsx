@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Col, Dropdown, Form } from "react-bootstrap";
+import { Col, Form } from "react-bootstrap";
 import { cn } from '@/lib/utils';
+import SearchableDropdown from '@/components/FormGroup/SearchableDropdown';
 
 interface DropdownFormProps {
     placeholder?: string;
@@ -38,26 +39,17 @@ const DropdownForm: React.FC<DropdownFormProps> = ({label, required = false, dis
                         disabled={disabled}
                         isInvalid={isInvalid}
                     />
-                    <Dropdown className="nav-dropdown-w">
-                        <Dropdown.Toggle 
-                            className={cn(`flex items-center w-full px-2 py-2 rounded-md h-[35px]`, {
-                                'cursor-not-allowed bg-gray-200': disabled,
-                                'cursor-pointer bg-[#ECEEF5]': !disabled
-                            })}
-                            disabled={disabled}
-                        >
-                            <p className="px-2 w-full text-left text-sm">{ items && (items.find(item => item.value === value)?.label || placeholder)}</p>
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            {
-                                items && items.map((item, index) => (
-                                    <Dropdown.Item key={index} onClick={() => handleValueChange(item.value)}>
-                                        {item.label}
-                                    </Dropdown.Item>
-                                ))
-                            }
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <SearchableDropdown
+                        items={items || []}
+                        value={value}
+                        onChange={handleValueChange}
+                        placeholder={placeholder}
+                        disabled={disabled}
+                        toggleClassName={cn({
+                            'cursor-not-allowed bg-gray-200': disabled,
+                            'cursor-pointer bg-[#ECEEF5]': !disabled
+                        })}
+                    />
                 </div>
                 {isInvalid && <Form.Control.Feedback type="invalid">{errorMessage}</Form.Control.Feedback>}
             </Form.Group>

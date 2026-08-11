@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Dropdown, Form } from 'react-bootstrap';
-import { cn } from '@/lib/utils';
+import { Button, Form } from 'react-bootstrap';
 import { getShopStatusFilterOptions } from '@/constants/shopInfo';
 import type { ShopInfoSearchParams } from '@/types/shopInfoType';
+import SearchableDropdown from '@/components/FormGroup/SearchableDropdown';
 
 interface ShopInfoFilterProps {
     lang: Record<string, string>;
@@ -21,9 +21,6 @@ const ShopInfoFilter: React.FC<ShopInfoFilterProps> = ({
     const [shopStatus, setShopStatus] = useState('');
 
     const statusOptions = getShopStatusFilterOptions(lang);
-    const statusLabel =
-        statusOptions.find((item) => item.value === shopStatus)?.label ||
-        lang['global_all'];
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,29 +52,17 @@ const ShopInfoFilter: React.FC<ShopInfoFilterProps> = ({
                 <Form.Label className="text-sm md:text-base">
                     {lang['global_status']}
                 </Form.Label>
-                <Dropdown className="nav-dropdown-w">
-                    <Dropdown.Toggle
-                        className={cn(
-                            'flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px] text-sm'
-                        )}
-                        disabled={isLoading}
-                    >
-                        <p className="px-2 flex-1 min-w-0 text-left text-xs md:text-sm truncate">
-                            {statusLabel}
-                        </p>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        {statusOptions.map((item) => (
-                            <Dropdown.Item
-                                key={item.value || 'all'}
-                                onClick={() => setShopStatus(item.value)}
-                                active={shopStatus === item.value}
-                            >
-                                {item.label}
-                            </Dropdown.Item>
-                        ))}
-                    </Dropdown.Menu>
-                </Dropdown>
+                <SearchableDropdown
+                    items={statusOptions.map((item) => ({
+                        label: item.label,
+                        value: item.value,
+                    }))}
+                    value={shopStatus}
+                    onChange={setShopStatus}
+                    placeholder={lang['global_all']}
+                    searchPlaceholder={lang['global_search']}
+                    disabled={isLoading}
+                />
             </Form.Group>
 
             <Form.Group className="flex items-end">

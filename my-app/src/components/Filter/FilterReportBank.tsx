@@ -1,13 +1,13 @@
 import { useMasterShopList } from '@/hooks';
-import React, { useState } from 'react'
-import { Button, Col, Dropdown, Form } from 'react-bootstrap';
+import React, { useMemo, useState } from 'react'
+import { Button, Col, Form } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
-import { cn } from '@/lib/utils';
 import DatePickerRange from '../FormGroup/DatePickerRange';
 import { openModalAlert, setProcess } from '@/store/features/modalSlice';
 import { useErrorHandler } from '@/store/useErrorHandler';
 import moment from 'moment';
 import { SearchParams } from '@/hooks/useReportData';
+import SearchableDropdown from '@/components/FormGroup/SearchableDropdown';
 
 interface FilterReportProps {
     reportName: string;
@@ -21,6 +21,11 @@ const FilterReportBank = ({ reportName, fetchData }: FilterReportProps) => {
     const { itemShop } = useMasterShopList();
     const dispatch = useAppDispatch();
     const { handleError } = useErrorHandler();
+
+    const shopOptions = useMemo(
+        () => itemShop.map((item) => ({ label: item.shopName, value: item.id })),
+        [itemShop]
+    );
 
     console.log("🚀 ~ FilterReport ~ itemShop:", reportName)
 
@@ -52,24 +57,13 @@ const FilterReportBank = ({ reportName, fetchData }: FilterReportProps) => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                         <Form.Group className="w-full">
                             <Form.Label className="text-sm md:text-base">{lang['filter_report_shop']}</Form.Label>
-                            <Dropdown className="nav-dropdown-w">
-                                <Dropdown.Toggle
-                                    className={cn(`flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px] text-sm`)}
-                                >
-                                    <p className="px-2 flex-1 min-w-0 text-left text-xs md:text-sm truncate">
-                                        {valueShop ? itemShop.find(item => item.id === valueShop)?.shopName : lang['global_select']}
-                                    </p>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    {
-                                        itemShop && itemShop.map((item, index) => (
-                                            <Dropdown.Item key={index} onClick={() => setValueShop(item.id)} active={valueShop === item.id}>
-                                                {item.shopName}
-                                            </Dropdown.Item>
-                                        ))
-                                    }
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            <SearchableDropdown
+                                items={shopOptions}
+                                value={valueShop}
+                                onChange={setValueShop}
+                                placeholder={lang['global_select']}
+                                searchPlaceholder={lang['global_search']}
+                            />
                         </Form.Group>
                         <Form.Group className="w-full">
                             <Form.Label className="text-sm md:text-base">{lang['filter_report_select_date']}</Form.Label>
@@ -93,4 +87,3 @@ const FilterReportBank = ({ reportName, fetchData }: FilterReportProps) => {
 }
 
 export default FilterReportBank
-

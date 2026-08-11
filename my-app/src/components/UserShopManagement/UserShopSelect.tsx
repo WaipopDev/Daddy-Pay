@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Dropdown, Form } from 'react-bootstrap';
-import { cn } from '@/lib/utils';
+import { Form } from 'react-bootstrap';
+import SearchableDropdown from '@/components/FormGroup/SearchableDropdown';
+
 interface ShopSelectItem {
     id: string;
     shopName: string;
@@ -23,38 +24,25 @@ const UserShopSelect: React.FC<UserShopSelectProps> = ({
     onChange,
     disabled = false,
 }) => {
-    const selectedLabel =
-        shops.find((shop) => shop.id === value)?.shopName ||
-        lang['page_user_shop_placeholder'];
+    const shopOptions = shops.map((shop) => ({
+        label: shop.shopName,
+        value: shop.id,
+    }));
 
     return (
         <Form.Group className="mb-4 pb-3 border-b border-gray-200">
             <Form.Label className="text-sm md:text-base font-semibold">
                 {lang['page_user_shop']}
             </Form.Label>
-            <Dropdown className="nav-dropdown-w">
-                <Dropdown.Toggle
-                    className={cn(
-                        'flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px] text-sm max-w-md'
-                    )}
-                    disabled={disabled || shops.length === 0}
-                >
-                    <p className="px-2 flex-1 min-w-0 text-left text-xs md:text-sm truncate">
-                        {selectedLabel}
-                    </p>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                    {shops.map((shop) => (
-                        <Dropdown.Item
-                            key={shop.id}
-                            onClick={() => onChange(shop.id)}
-                            active={value === shop.id}
-                        >
-                            {shop.shopName}
-                        </Dropdown.Item>
-                    ))}
-                </Dropdown.Menu>
-            </Dropdown>
+            <SearchableDropdown
+                items={shopOptions}
+                value={value}
+                onChange={onChange}
+                placeholder={lang['page_user_shop_placeholder']}
+                searchPlaceholder={lang['global_search']}
+                disabled={disabled || shops.length === 0}
+                className="nav-dropdown-w max-w-md"
+            />
         </Form.Group>
     );
 };

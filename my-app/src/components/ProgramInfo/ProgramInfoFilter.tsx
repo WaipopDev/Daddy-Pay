@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Dropdown, Form } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import axios from 'axios';
-import { cn } from '@/lib/utils';
 import type { MachineListItem, ProgramInfoSearchParams } from '@/types/programInfoType';
 import {
     buildMachineBrandFilterOptions,
     buildMachineTypeFilterOptions,
 } from '@/utils/machineInfoUtils';
+import SearchableDropdown from '@/components/FormGroup/SearchableDropdown';
 
 interface ProgramInfoFilterProps {
     lang: Record<string, string>;
@@ -53,11 +53,6 @@ const ProgramInfoFilter: React.FC<ProgramInfoFilterProps> = ({
         [machines, machineType, allLabel]
     );
 
-    const typeLabel =
-        typeOptions.find((item) => item.value === machineType)?.label || allLabel;
-    const brandLabel =
-        brandOptions.find((item) => item.value === machineBrand)?.label || allLabel;
-
     const handleTypeChange = (value: string) => {
         setMachineType(value);
         setMachineBrand('');
@@ -94,58 +89,34 @@ const ProgramInfoFilter: React.FC<ProgramInfoFilterProps> = ({
                 <Form.Label className="text-sm md:text-base">
                     {lang['page_machine_info_machine_type']}
                 </Form.Label>
-                <Dropdown className="nav-dropdown-w">
-                    <Dropdown.Toggle
-                        className={cn(
-                            'flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px] text-sm'
-                        )}
-                        disabled={isLoading}
-                    >
-                        <p className="px-2 flex-1 min-w-0 text-left text-xs md:text-sm truncate">
-                            {typeLabel}
-                        </p>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        {typeOptions.map((item) => (
-                            <Dropdown.Item
-                                key={item.value || 'all-type'}
-                                onClick={() => handleTypeChange(item.value)}
-                                active={machineType === item.value}
-                            >
-                                {item.label}
-                            </Dropdown.Item>
-                        ))}
-                    </Dropdown.Menu>
-                </Dropdown>
+                <SearchableDropdown
+                    items={typeOptions.map((item) => ({
+                        label: item.label,
+                        value: item.value,
+                    }))}
+                    value={machineType}
+                    onChange={handleTypeChange}
+                    placeholder={allLabel}
+                    searchPlaceholder={lang['global_search']}
+                    disabled={isLoading}
+                />
             </Form.Group>
 
             <Form.Group>
                 <Form.Label className="text-sm md:text-base">
                     {lang['page_machine_info_brand']}
                 </Form.Label>
-                <Dropdown className="nav-dropdown-w">
-                    <Dropdown.Toggle
-                        className={cn(
-                            'flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px] text-sm'
-                        )}
-                        disabled={isLoading}
-                    >
-                        <p className="px-2 flex-1 min-w-0 text-left text-xs md:text-sm truncate">
-                            {brandLabel}
-                        </p>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        {brandOptions.map((item) => (
-                            <Dropdown.Item
-                                key={item.value || 'all-brand'}
-                                onClick={() => setMachineBrand(item.value)}
-                                active={machineBrand === item.value}
-                            >
-                                {item.label}
-                            </Dropdown.Item>
-                        ))}
-                    </Dropdown.Menu>
-                </Dropdown>
+                <SearchableDropdown
+                    items={brandOptions.map((item) => ({
+                        label: item.label,
+                        value: item.value,
+                    }))}
+                    value={machineBrand}
+                    onChange={setMachineBrand}
+                    placeholder={allLabel}
+                    searchPlaceholder={lang['global_search']}
+                    disabled={isLoading}
+                />
             </Form.Group>
 
             <Form.Group className="flex items-end">

@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Dropdown, Form } from 'react-bootstrap';
-import { cn } from '@/lib/utils';
+import { Button, Form } from 'react-bootstrap';
 import {
     getUserSubscribeFilterOptions,
     getUserVerifiedFilterOptions,
 } from '@/constants/user';
 import type { UserInfoSearchParams } from '@/types/userType';
+import SearchableDropdown from '@/components/FormGroup/SearchableDropdown';
 
 interface UserInfoFilterProps {
     lang: Record<string, string>;
@@ -27,13 +27,6 @@ const UserInfoFilter: React.FC<UserInfoFilterProps> = ({
 
     const subscribeOptions = getUserSubscribeFilterOptions(lang);
     const verifiedOptions = getUserVerifiedFilterOptions(lang);
-
-    const subscribeLabel =
-        subscribeOptions.find((item) => item.value === subscribe)?.label ||
-        lang['global_all'];
-    const verifiedLabel =
-        verifiedOptions.find((item) => item.value === isVerified)?.label ||
-        lang['global_all'];
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -80,58 +73,34 @@ const UserInfoFilter: React.FC<UserInfoFilterProps> = ({
                 <Form.Label className="text-sm md:text-base">
                     {lang['page_user_subscription']}
                 </Form.Label>
-                <Dropdown className="nav-dropdown-w">
-                    <Dropdown.Toggle
-                        className={cn(
-                            'flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px] text-sm'
-                        )}
-                        disabled={isLoading}
-                    >
-                        <p className="px-2 flex-1 min-w-0 text-left text-xs md:text-sm truncate">
-                            {subscribeLabel}
-                        </p>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        {subscribeOptions.map((item) => (
-                            <Dropdown.Item
-                                key={item.value || 'all-subscribe'}
-                                onClick={() => setSubscribe(item.value)}
-                                active={subscribe === item.value}
-                            >
-                                {item.label}
-                            </Dropdown.Item>
-                        ))}
-                    </Dropdown.Menu>
-                </Dropdown>
+                <SearchableDropdown
+                    items={subscribeOptions.map((item) => ({
+                        label: item.label,
+                        value: item.value,
+                    }))}
+                    value={subscribe}
+                    onChange={setSubscribe}
+                    placeholder={lang['global_all']}
+                    searchPlaceholder={lang['global_search']}
+                    disabled={isLoading}
+                />
             </Form.Group>
 
             <Form.Group>
                 <Form.Label className="text-sm md:text-base">
                     {lang['page_user_verified']}
                 </Form.Label>
-                <Dropdown className="nav-dropdown-w">
-                    <Dropdown.Toggle
-                        className={cn(
-                            'flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px] text-sm'
-                        )}
-                        disabled={isLoading}
-                    >
-                        <p className="px-2 flex-1 min-w-0 text-left text-xs md:text-sm truncate">
-                            {verifiedLabel}
-                        </p>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        {verifiedOptions.map((item) => (
-                            <Dropdown.Item
-                                key={item.value || 'all-verified'}
-                                onClick={() => setIsVerified(item.value)}
-                                active={isVerified === item.value}
-                            >
-                                {item.label}
-                            </Dropdown.Item>
-                        ))}
-                    </Dropdown.Menu>
-                </Dropdown>
+                <SearchableDropdown
+                    items={verifiedOptions.map((item) => ({
+                        label: item.label,
+                        value: item.value,
+                    }))}
+                    value={isVerified}
+                    onChange={setIsVerified}
+                    placeholder={lang['global_all']}
+                    searchPlaceholder={lang['global_search']}
+                    disabled={isLoading}
+                />
             </Form.Group>
 
             <Form.Group className="flex items-end">

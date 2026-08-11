@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useMasterShopListNotAll } from '@/hooks';
-import { Col, Dropdown, Form } from 'react-bootstrap';
+import { Col, Form } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
-import { cn } from '@/lib/utils';
 import { setProcess } from '@/store/features/modalSlice';
 import { useErrorHandler } from '@/store/useErrorHandler';
 import { SearchParams } from '@/hooks/useReportData';
+import SearchableDropdown from '@/components/FormGroup/SearchableDropdown';
 
 interface FilterDashboardProps {
     fetchData: (search: SearchParams) => Promise<void>;
@@ -17,6 +17,11 @@ const FilterDashboard = ({ fetchData }: FilterDashboardProps) => {
     const [valueShop, setValueShop] = useState('');
     const dispatch = useAppDispatch();
     const { handleError } = useErrorHandler();
+
+    const shopOptions = itemShop.map((item) => ({
+        label: item.shopName,
+        value: item.id,
+    }));
 
     useEffect(() => {
         if (itemShop.length > 0) {
@@ -52,24 +57,13 @@ const FilterDashboard = ({ fetchData }: FilterDashboardProps) => {
                 <Col md={10}>
                     <Form className="flex gap-2">
                         <Form.Group className="basis-1/4">
-                            <Dropdown className="nav-dropdown-w">
-                                <Dropdown.Toggle
-                                    className={cn(`flex items-center w-full min-w-0 px-2 py-2 rounded-md h-[35px]`)}
-                                >
-                                    <p className="px-2 flex-1 min-w-0 text-left text-sm truncate">
-                                        {valueShop ? itemShop.find(item => item.id === valueShop)?.shopName : lang['global_select']}
-                                    </p>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    {
-                                        itemShop && itemShop.map((item, index) => (
-                                            <Dropdown.Item key={index} onClick={() => setValueShop(item.id)} active={valueShop === item.id}>
-                                                {item.shopName}
-                                            </Dropdown.Item>
-                                        ))
-                                    }
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            <SearchableDropdown
+                                items={shopOptions}
+                                value={valueShop}
+                                onChange={setValueShop}
+                                placeholder={lang['global_select']}
+                                searchPlaceholder={lang['global_search']}
+                            />
                         </Form.Group>
                         {/* <Form.Group className="basis-1/4 flex items-end">
                             <Button variant="primary" type="submit"><i className="fa-solid fa-search mr-2"></i>{lang['global_search']}</Button>
@@ -82,4 +76,3 @@ const FilterDashboard = ({ fetchData }: FilterDashboardProps) => {
 }
 
 export default FilterDashboard
-
