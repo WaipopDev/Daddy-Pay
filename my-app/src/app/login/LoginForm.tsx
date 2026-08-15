@@ -108,7 +108,7 @@ const LoginForm = () => {
                         <Col className="flex justify-center items-center">
                             <div className="flex flex-col justify-center items-center">
                                 <Image 
-                                    src="/images/logo.png" 
+                                    src="/images/logo-2.png" 
                                     width={250} 
                                     height={300} 
                                     priority 
