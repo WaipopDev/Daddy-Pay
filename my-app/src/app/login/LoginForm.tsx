@@ -110,10 +110,10 @@ const LoginForm = () => {
                                 <Image 
                                     src="/images/logo.png" 
                                     width={250} 
-                                    height={250} 
+                                    height={300} 
                                     priority 
                                     alt="logo"
-                                    className="w-32 h-32 md:w-60 md:h-60"
+                                    className="w-32 h-34 md:w-60 md:h-64"
                                 />
                                 <h1 className="text-2xl md:text-4xl font-bold text-center mt-4">Sign in to Daddy Pay</h1>
                             </div>
