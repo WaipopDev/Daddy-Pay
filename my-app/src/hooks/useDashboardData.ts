@@ -5,6 +5,10 @@ import type {
     MachineStatusData,
     MachineStatusItem,
 } from "@/types/dashboardType";
+import {
+    getRemainingMs,
+    parseOperationMinutes,
+} from "@/utils/machineStatusUtils";
 import axios from "axios";
 
 const EMPTY_MACHINE_STATUS: MachineStatusData = {
@@ -20,11 +24,53 @@ const EMPTY_MACHINE_STATUS: MachineStatusData = {
     disconnectedItems: [],
 };
 
+const MASSAGE_CHAIR_MACHINE_TYPE = 'เก้าอี้นวดไฟฟ้าหยอดเหรียญ';
+
+const isMassageChairMachine = (item: MachineStatusItem) =>
+    item.machineType?.trim() === MASSAGE_CHAIR_MACHINE_TYPE;
+
+const isMassageChairOperating = (item: MachineStatusItem) => {
+    if (!isMassageChairMachine(item)) {
+        return false;
+    }
+
+    const remainingMs = getRemainingMs(
+        item.lastTransactionCreatedAt,
+        parseOperationMinutes(item.machineProgramOperationTime)
+    );
+
+    return remainingMs != null && remainingMs > 0;
+};
+
+const isOperationExpired = (item: MachineStatusItem) => {
+    const remainingMs = getRemainingMs(
+        item.lastTransactionCreatedAt,
+        parseOperationMinutes(item.machineProgramOperationTime)
+    );
+
+    return remainingMs != null && remainingMs <= 0;
+};
+
 const groupMachineStatusItems = (items: MachineStatusItem[]) => ({
-    availableItems: items.filter((item) => item.status === 'standby'),
-    operatingItems: items.filter((item) => item.status === 'active'),
+    availableItems: items.filter(
+        (item) =>
+            (isMassageChairMachine(item) && !isMassageChairOperating(item)) ||
+            (!isMassageChairMachine(item) &&
+                (item.status === 'standby' ||
+                    (item.status === 'active' && isOperationExpired(item))))
+    ),
+    operatingItems: items.filter(
+        (item) =>
+            isMassageChairOperating(item) ||
+            (!isMassageChairMachine(item) &&
+                item.status === 'active' &&
+                !isOperationExpired(item))
+    ),
     disconnectedItems: items.filter(
-        (item) => item.status !== 'standby' && item.status !== 'active'
+        (item) =>
+            !isMassageChairMachine(item) &&
+            item.status !== 'standby' &&
+            item.status !== 'active'
     ),
 });
 

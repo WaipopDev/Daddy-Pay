@@ -11,6 +11,9 @@ export const parseOperationMinutes = (
     return match ? Number.parseInt(match[0], 10) : null;
 };
 
+// Kept for compatibility with any existing callers; the backend value is minutes.
+export const parseOperationSeconds = parseOperationMinutes;
+
 export const getRemainingMs = (
     lastTransactionCreatedAt: string | null,
     operationMinutes: number | null

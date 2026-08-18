@@ -9,9 +9,16 @@ const MachineStatusReport = ({ lang }: { lang: { [key: string]: string } }) => {
     const [valueShop, setValueShop] = useState('');
 
     useEffect(() => {
-        if (valueShop) {
-            fetchMachineStatus(valueShop);
+        if (!valueShop) {
+            return;
         }
+
+        void fetchMachineStatus(valueShop);
+        const intervalId = window.setInterval(() => {
+            void fetchMachineStatus(valueShop);
+        }, 30_000);
+
+        return () => window.clearInterval(intervalId);
     }, [fetchMachineStatus, valueShop]);
 
     const fetchData = async (search: SearchParams) => {

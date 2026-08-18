@@ -26,7 +26,6 @@ const FilterDashboard = ({ fetchData }: FilterDashboardProps) => {
     useEffect(() => {
         if (itemShop.length > 0) {
             setValueShop(itemShop[0].id);
-            fetchData({ branchId: itemShop[0].id } as SearchParams);
         }
     }, [itemShop]);
 
