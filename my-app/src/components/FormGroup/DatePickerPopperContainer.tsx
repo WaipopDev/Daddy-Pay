@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 /**
@@ -9,7 +9,13 @@ import { createPortal } from 'react-dom';
 const DatePickerPopperContainer: React.FC<{ children?: React.ReactNode }> = ({
     children,
 }) => {
-    if (typeof document === 'undefined') {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isMounted) {
         return <>{children}</>;
     }
 
