@@ -3,6 +3,7 @@ import FilterDashboard from '../Filter/FilterDashboard';
 import { SearchParams } from '@/hooks/useReportData';
 import { useDashboardMachineStatus } from '@/hooks/useDashboardData';
 import MachineStatusBoxes from './MachineStatus';
+import MachineStatusLatestBranchIncomeTable from './MachineStatus/MachineStatusLatestBranchIncomeTable';
 
 const MachineStatusReport = ({ lang }: { lang: { [key: string]: string } }) => {
     const { machineStatus, fetchMachineStatus } = useDashboardMachineStatus();
@@ -32,6 +33,12 @@ const MachineStatusReport = ({ lang }: { lang: { [key: string]: string } }) => {
         <div className="bg-white py-3 border-t-2 border-gray-200">
             <FilterDashboard fetchData={fetchData} />
             <MachineStatusBoxes machineStatus={machineStatus} lang={lang} />
+            {machineStatus && (
+                <MachineStatusLatestBranchIncomeTable
+                    transactions={machineStatus.latestBranchIncomeTransactions}
+                    lang={lang}
+                />
+            )}
         </div>
     );
 };

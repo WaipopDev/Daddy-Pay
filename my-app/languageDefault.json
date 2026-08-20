@@ -238,6 +238,7 @@
     "page_dashboard_machine_status_available":"The machine is available",
     "page_dashboard_machine_status_operating":"The machine is operating",
     "page_dashboard_machine_status_disconnected":"Number of machine disconnected",
+    "page_dashboard_machine_status_latest_branch_income":"Latest Branch Income by Machine",
 
     "global_add_success_message":"Save successfully.",
     "global_edit_success_message":"Updated successfully.",

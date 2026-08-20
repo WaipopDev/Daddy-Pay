@@ -22,12 +22,32 @@ const EMPTY_MACHINE_STATUS: MachineStatusData = {
     availableItems: [],
     operatingItems: [],
     disconnectedItems: [],
+    latestBranchIncomeTransactions: [],
 };
 
 const MASSAGE_CHAIR_MACHINE_TYPE = 'เก้าอี้นวดไฟฟ้าหยอดเหรียญ';
+const MASSAGE_CHAIR_STALE_MS = 12 * 60 * 60 * 1000;
 
 const isMassageChairMachine = (item: MachineStatusItem) =>
     item.machineType?.trim() === MASSAGE_CHAIR_MACHINE_TYPE;
+
+const isMassageChairStaleDisconnected = (
+    item: MachineStatusItem,
+    nowMs: number
+) => {
+    if (!isMassageChairMachine(item)) {
+        return false;
+    }
+    const lastAt = item.lastTransactionCreatedAt;
+    if (!lastAt) {
+        return false;
+    }
+    const start = new Date(lastAt);
+    if (Number.isNaN(start.getTime())) {
+        return false;
+    }
+    return nowMs - start.getTime() > MASSAGE_CHAIR_STALE_MS;
+};
 
 const isMassageChairOperating = (item: MachineStatusItem) => {
     if (!isMassageChairMachine(item)) {
@@ -51,29 +71,35 @@ const isOperationExpired = (item: MachineStatusItem) => {
     return remainingMs != null && remainingMs <= 0;
 };
 
-const groupMachineStatusItems = (items: MachineStatusItem[]) => ({
-    availableItems: items.filter(
-        (item) =>
-            (isMassageChairMachine(item) && !isMassageChairOperating(item)) ||
-            (!isMassageChairMachine(item) &&
-                (item.status === 'standby' ||
-                    (item.status === 'active' && isOperationExpired(item))))
-    ),
-    operatingItems: items.filter(
-        (item) =>
-            isMassageChairOperating(item) ||
-            (!isMassageChairMachine(item) &&
-                item.status === 'active' &&
-                !isOperationExpired(item))
-    ),
-    disconnectedItems: items.filter(
-        (item) =>
-            !isMassageChairMachine(item) &&
-            item.status !== 'standby' &&
-            item.status !== 'active'
-    ),
-});
-
+const groupMachineStatusItems = (items: MachineStatusItem[]) => {
+    const nowMs = Date.now();
+    return {
+        availableItems: items.filter(
+            (item) =>
+                (isMassageChairMachine(item) &&
+                    !isMassageChairStaleDisconnected(item, nowMs) &&
+                    !isMassageChairOperating(item)) ||
+                (!isMassageChairMachine(item) &&
+                    (item.status === 'standby' ||
+                        (item.status === 'active' && isOperationExpired(item))))
+        ),
+        operatingItems: items.filter(
+            (item) =>
+                (isMassageChairOperating(item) &&
+                    !isMassageChairStaleDisconnected(item, nowMs)) ||
+                (!isMassageChairMachine(item) &&
+                    item.status === 'active' &&
+                    !isOperationExpired(item))
+        ),
+        disconnectedItems: items.filter(
+            (item) =>
+                isMassageChairStaleDisconnected(item, nowMs) ||
+                (!isMassageChairMachine(item) &&
+                    item.status !== 'standby' &&
+                    item.status !== 'active')
+        ),
+    };
+};
 export const useDashboardData = () => {
     const [totalSales, setTotalSales] = useState({
         totalSaleByDay:0,
@@ -144,6 +170,11 @@ export const useDashboardMachineStatus = () => {
             const data = response.data as MachineStatusApiResponse;
             const items = data.items ?? [];
             const grouped = groupMachineStatusItems(items);
+            const latestBranchIncomeTransactions = items
+                .map((item) => item.latestBranchIncomeTransaction)
+                .filter(
+                    (tx): tx is NonNullable<typeof tx> => tx != null,
+                );
 
             setMachineStatus({
                 summary: {
@@ -156,6 +187,7 @@ export const useDashboardMachineStatus = () => {
                         data.summary?.totalOperationalStandby ?? 0,
                 },
                 ...grouped,
+                latestBranchIncomeTransactions,
             });
         } else {
             setMachineStatus(EMPTY_MACHINE_STATUS);
