@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
-import { Form } from 'react-bootstrap';
+import { Button, Col, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { openModalAlert, setProcess } from '@/store/features/modalSlice';
 import { useErrorHandler } from '@/store/useErrorHandler';
@@ -11,9 +11,13 @@ import UserShopSelect from '@/components/UserShopManagement/UserShopSelect';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { useMasterShopListNotAll } from '@/hooks';
 import { SHOP_INFO_API_ENDPOINTS } from '@/constants/shopInfo';
+import { USER_ROLES } from '@/constants/user';
 import type { ItemShopInfoDataProps } from '@/types/shopInfoType';
 
 const isNumericShopId = (shopId: string) => /^\d+$/.test(shopId);
+
+const canEditShopInfo = (role: string) =>
+    role === USER_ROLES.ADMIN || role === 'super-admin';
 
 const getShopDetailUrl = (shopId: string) =>
     isNumericShopId(shopId)
@@ -22,6 +26,7 @@ const getShopDetailUrl = (shopId: string) =>
 
 const UserShopManagementPage = () => {
     const lang = useAppSelector((state) => state.lang) as Record<string, string>;
+    const user = useAppSelector((state) => state.user);
     const dispatch = useAppDispatch();
     const { handleError } = useErrorHandler();
     const { itemShop: shops, isLoading: isLoadingShops } = useMasterShopListNotAll();
@@ -32,6 +37,8 @@ const UserShopManagementPage = () => {
     const [validated, setValidated] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
+
+    const canEdit = canEditShopInfo(user.role);
 
     const activeShopId = useMemo(() => {
         if (!shops.length) return '';
@@ -89,7 +96,7 @@ const UserShopManagementPage = () => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (!isEditing) {
+        if (!canEdit || !isEditing) {
             return;
         }
 
@@ -124,28 +131,29 @@ const UserShopManagementPage = () => {
         }
     };
 
-    // const handleEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
-    //     event.preventDefault();
-    //     event.stopPropagation();
-    //     // Defer so Save (same position) does not receive the tail of this click.
-    //     window.setTimeout(() => {
-    //         setIsEditing(true);
-    //         setValidated(false);
-    //     }, 0);
-    // };
+    const handleEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!canEdit) return;
+        // Defer so Save (same position) does not receive the tail of this click.
+        window.setTimeout(() => {
+            setIsEditing(true);
+            setValidated(false);
+        }, 0);
+    };
 
-    // const handleSaveClick = () => {
-    //     if (!isEditing) return;
-    //     formRef.current?.requestSubmit();
-    // };
+    const handleSaveClick = () => {
+        if (!canEdit || !isEditing) return;
+        formRef.current?.requestSubmit();
+    };
 
-    // const handleCancelEdit = () => {
-    //     setIsEditing(false);
-    //     setValidated(false);
-    //     if (activeShopId) {
-    //         fetchShopInfo(activeShopId);
-    //     }
-    // };
+    const handleCancelEdit = () => {
+        setIsEditing(false);
+        setValidated(false);
+        if (activeShopId) {
+            fetchShopInfo(activeShopId);
+        }
+    };
 
     if (isLoadingShops) {
         return <LoadingSpinner message={lang['global_loading_data']} />;
@@ -172,54 +180,56 @@ const UserShopManagementPage = () => {
                             <LoadingSpinner message={lang['global_loading_data']} />
                         ) : item ? (
                             <>
-                                {/* <div className="flex flex-col md:flex-row pb-2 mb-4 gap-2">
-                                    <Col className="flex justify-end gap-2">
-                                        {isEditing ? (
-                                            <>
+                                {canEdit && (
+                                    <div className="flex flex-col md:flex-row pb-2 mb-4 gap-2">
+                                        <Col className="flex justify-end gap-2">
+                                            {isEditing ? (
+                                                <>
+                                                    <Button
+                                                        variant="secondary"
+                                                        type="button"
+                                                        onClick={handleCancelEdit}
+                                                        disabled={isLoadingShop}
+                                                        className="w-full md:w-auto"
+                                                    >
+                                                        <i
+                                                            className="fa-solid fa-xmark pr-2"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        {lang['button_cancel']}
+                                                    </Button>
+                                                    <Button
+                                                        variant="primary"
+                                                        type="button"
+                                                        onClick={handleSaveClick}
+                                                        disabled={isLoadingShop}
+                                                        className="w-full md:w-auto"
+                                                    >
+                                                        <i
+                                                            className="fa-solid fa-floppy-disk pr-2"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        {lang['button_save']}
+                                                    </Button>
+                                                </>
+                                            ) : (
                                                 <Button
-                                                    variant="secondary"
+                                                    variant="warning"
                                                     type="button"
-                                                    onClick={handleCancelEdit}
+                                                    onClick={handleEdit}
                                                     disabled={isLoadingShop}
                                                     className="w-full md:w-auto"
                                                 >
                                                     <i
-                                                        className="fa-solid fa-xmark pr-2"
+                                                        className="fa-solid fa-pen-to-square pr-2"
                                                         aria-hidden="true"
                                                     ></i>
-                                                    {lang['button_cancel']}
+                                                    {lang['button_edit']}
                                                 </Button>
-                                                <Button
-                                                    variant="primary"
-                                                    type="button"
-                                                    onClick={handleSaveClick}
-                                                    disabled={isLoadingShop}
-                                                    className="w-full md:w-auto"
-                                                >
-                                                    <i
-                                                        className="fa-solid fa-floppy-disk pr-2"
-                                                        aria-hidden="true"
-                                                    ></i>
-                                                    {lang['button_save']}
-                                                </Button>
-                                            </>
-                                        ) : (
-                                            <Button
-                                                variant="warning"
-                                                type="button"
-                                                onClick={handleEdit}
-                                                disabled={isLoadingShop}
-                                                className="w-full md:w-auto"
-                                            >
-                                                <i
-                                                    className="fa-solid fa-pen-to-square pr-2"
-                                                    aria-hidden="true"
-                                                ></i>
-                                                {lang['button_edit']}
-                                            </Button>
-                                        )}
-                                    </Col>
-                                </div> */}
+                                            )}
+                                        </Col>
+                                    </div>
+                                )}
                                 <Form
                                     ref={formRef}
                                     noValidate
@@ -231,7 +241,7 @@ const UserShopManagementPage = () => {
                                         key={activeShopId}
                                         item={item}
                                         action="edit"
-                                        readOnly={!isEditing}
+                                        readOnly={!canEdit || !isEditing}
                                     />
                                 </Form>
                             </>
