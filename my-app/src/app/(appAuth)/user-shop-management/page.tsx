@@ -172,7 +172,7 @@ const UserShopManagementPage = () => {
                             <LoadingSpinner message={lang['global_loading_data']} />
                         ) : item ? (
                             <>
-                                <div className="flex flex-col md:flex-row pb-2 mb-4 gap-2">
+                                {/* <div className="flex flex-col md:flex-row pb-2 mb-4 gap-2">
                                     <Col className="flex justify-end gap-2">
                                         {isEditing ? (
                                             <>
@@ -219,7 +219,7 @@ const UserShopManagementPage = () => {
                                             </Button>
                                         )}
                                     </Col>
-                                </div>
+                                </div> */}
                                 <Form
                                     ref={formRef}
                                     noValidate
