@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
-import { Button, Col, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import axios from 'axios';
 import { openModalAlert, setProcess } from '@/store/features/modalSlice';
 import { useErrorHandler } from '@/store/useErrorHandler';
@@ -124,28 +124,28 @@ const UserShopManagementPage = () => {
         }
     };
 
-    const handleEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-        event.stopPropagation();
-        // Defer so Save (same position) does not receive the tail of this click.
-        window.setTimeout(() => {
-            setIsEditing(true);
-            setValidated(false);
-        }, 0);
-    };
+    // const handleEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
+    //     event.preventDefault();
+    //     event.stopPropagation();
+    //     // Defer so Save (same position) does not receive the tail of this click.
+    //     window.setTimeout(() => {
+    //         setIsEditing(true);
+    //         setValidated(false);
+    //     }, 0);
+    // };
 
-    const handleSaveClick = () => {
-        if (!isEditing) return;
-        formRef.current?.requestSubmit();
-    };
+    // const handleSaveClick = () => {
+    //     if (!isEditing) return;
+    //     formRef.current?.requestSubmit();
+    // };
 
-    const handleCancelEdit = () => {
-        setIsEditing(false);
-        setValidated(false);
-        if (activeShopId) {
-            fetchShopInfo(activeShopId);
-        }
-    };
+    // const handleCancelEdit = () => {
+    //     setIsEditing(false);
+    //     setValidated(false);
+    //     if (activeShopId) {
+    //         fetchShopInfo(activeShopId);
+    //     }
+    // };
 
     if (isLoadingShops) {
         return <LoadingSpinner message={lang['global_loading_data']} />;
