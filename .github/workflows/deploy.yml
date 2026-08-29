@@ -1,0 +1,49 @@
+name: Deploy to VM
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-web
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Sync files to server
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+          rsync -az --delete \
+            --exclude='.env*' \
+            --exclude='node_modules' \
+            --exclude='.next' \
+            --exclude='coverage' \
+            --exclude='.vercel' \
+            --exclude='*.tsbuildinfo' \
+            --rsync-path="sudo rsync" \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            ./my-app/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html/Daddy-Pay/my-app/"
+
+      - name: Install, build and restart
+        run: |
+          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" '
+            sudo -n -H bash -c "
+              set -e
+              export PATH=/root/.nvm/versions/node/v22.14.0/bin:\$PATH
+              cd /var/www/html/Daddy-Pay/my-app
+              npm ci
+              npm run build
+              pm2 restart web --update-env
+            "
+          '
