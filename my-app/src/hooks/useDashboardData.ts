@@ -26,7 +26,7 @@ const EMPTY_MACHINE_STATUS: MachineStatusData = {
 };
 
 const MASSAGE_CHAIR_MACHINE_TYPE = 'เก้าอี้นวดไฟฟ้าหยอดเหรียญ';
-const MASSAGE_CHAIR_STALE_MS = 12 * 60 * 60 * 1000;
+const MASSAGE_CHAIR_STALE_MS = 24 * 60 * 60 * 1000;
 
 const isMassageChairMachine = (item: MachineStatusItem) =>
     item.machineType?.trim() === MASSAGE_CHAIR_MACHINE_TYPE;
