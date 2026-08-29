@@ -42,7 +42,7 @@ jobs:
               set -e
               export PATH=/root/.nvm/versions/node/v22.14.0/bin:\$PATH
               cd /var/www/html/Daddy-Pay/my-app
-              npm ci
+              npm install
               npm run build
               pm2 restart web --update-env
             "
