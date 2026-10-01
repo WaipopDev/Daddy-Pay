@@ -138,7 +138,7 @@ const BranchIncomePage = () => {
                                     // Bootstrap sets background on td/th via `.table > :not(caption) > * > *`
                                     // so we apply row colors to cells to ensure it shows.
                                     'hover:[&>td]:bg-gray-100',
-                                    item.shopManagement?.deletedAt ? '[&>td]:!bg-red-500' : '',
+                                    (item.shopManagement?.deletedAt || item.machineProgram?.deletedAt) ? '[&>td]:!bg-red-500' : '',
                                 ].join(' ')}
                             >
                                 <td className="text-center">{noIndex(page.page, index, 50)}</td>
