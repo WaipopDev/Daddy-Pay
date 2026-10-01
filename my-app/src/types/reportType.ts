@@ -18,6 +18,9 @@ export interface ReportBranchIncomeItemDataProps {
     shopManagement:{
         shopManagementName: string;
         deletedAt?: string;
+    },
+    machineProgram?:{
+        deletedAt?: string;
     }
 }
 
